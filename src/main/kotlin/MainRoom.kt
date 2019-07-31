@@ -1,10 +1,7 @@
-package logic_main_rooms
-
 import screeps.api.*
 import screeps.api.structures.StructureController
 import screeps.api.structures.StructureSpawn
 import screeps.api.structures.StructureExtension
-import utils.messenger
 
 class MainRoom(var name: String) {
     private var room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")

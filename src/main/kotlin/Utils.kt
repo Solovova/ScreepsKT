@@ -1,5 +1,3 @@
-package utils
-
 import screeps.api.*
 
 fun messenger(type: String, room: String, text: String, color: ColorConstant) {

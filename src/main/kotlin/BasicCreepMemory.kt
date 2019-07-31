@@ -1,5 +1,3 @@
-package interfaces_memory
-
 import screeps.api.CreepMemory
 
 import screeps.utils.memory.memory
