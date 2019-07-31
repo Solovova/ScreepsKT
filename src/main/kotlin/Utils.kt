@@ -17,3 +17,7 @@ fun messenger(type: String, room: String, text: String, color: ColorConstant) {
     if (fHTMLColor !== "") showText = "<font color=$fHTMLColor > $text </font>"
     console.log("$type : $room  $showText")
 }
+
+fun arrayCopy(ar0: Array<Int>, ar1: Array<Int>) {
+    ar1.forEachIndexed { index, value -> ar0[index] = value }
+}

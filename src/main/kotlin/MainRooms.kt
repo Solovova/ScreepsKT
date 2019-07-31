@@ -6,11 +6,11 @@ class MainRooms(names: Array<String>) {
     val rooms: MutableMap<String, MainRoom> = mutableMapOf()
 
     init {
-        for (name in names) {
+        names.forEachIndexed { index, name ->
             if (Game.rooms[name] == null) {
-                messenger("ERROR", name, "Not room", COLOR_RED)
+                messenger("ERROR", name, "Not room M$index", COLOR_RED)
             } else {
-                rooms[name] = MainRoom(name)
+                rooms[name] = MainRoom(name, "M$index")
             }
         }
     }

@@ -3,8 +3,25 @@ import screeps.api.structures.StructureController
 import screeps.api.structures.StructureSpawn
 import screeps.api.structures.StructureExtension
 
-class MainRoom(var name: String) {
-    private var room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
+class QueueSpawnRecord(val dstroom: String, val role: Int) {
+}
+
+class MainRoom {
+    val name: String
+    private val describe: String
+    private val room: Room
+
+    val need  = Array(3) {Array(20) {0}}
+    private val have  = Array(20) {0}
+    private val haveForQueue = Array(20) {0}
+    private val queue = mutableListOf<QueueSpawnRecord>()
+
+    constructor(name: String, describe: String) {
+        this.name = name
+        this.describe = describe
+        this.room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
+        constantInit(this)
+    }
 
     //StructureSpawn
     private var _structureSpawn: Map<String, StructureSpawn>? = null
