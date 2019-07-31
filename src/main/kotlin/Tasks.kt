@@ -2,6 +2,8 @@ import screeps.api.RoomPosition
 import screeps.api.*
 import screeps.api.Memory
 
+//ToDo Функция которая определяэт откуда харвестить, на основе сколько енергии есть, сколько уже харвестит и куда ближе
+
 enum class TypeOfTask {
     GoTo,
     Take,
