@@ -8,7 +8,7 @@ fun loop() {
 
     Memory["Account"] = "test"
     var fMainRooms: Array<String> = arrayOf()
-    if (Memory["Account"] === "test") fMainRooms = arrayOf("W3N4","W5N6")
+    if (Memory["Account"] === "test") fMainRooms = arrayOf("W3N4", "W5N6")
 
     val mainRooms = MainRooms(fMainRooms)
 
@@ -16,10 +16,10 @@ fun loop() {
 
     for (room in mainRooms.rooms.values) {
         console.log("--------->we have spawns: ${room.structureSpawn.size}")
-        for (spawn in room.structureSpawn)  console.log("--------->1 id: ${spawn.key} energy: ${spawn.value.energy}")
+        for (spawn in room.structureSpawn) console.log("--------->1 id: ${spawn.key} energy: ${spawn.value.energy}")
 
         console.log("--------->we have extensions: ${room.structureExtension.size}")
-        for (extension in room.structureExtension)  console.log("--------->1 id: ${extension.key} energy: ${extension.value.energy}")
+        for (extension in room.structureExtension) console.log("--------->1 id: ${extension.key} energy: ${extension.value.energy}")
     }
 
 }
