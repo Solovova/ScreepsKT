@@ -4,7 +4,7 @@ import screeps.api.structures.*
 class QueueSpawnRecord(val role: Int, val srcRoom: String, val dstRoom: String)
 
 class MainRoom(val name: String, private val describe: String) {
-    private val room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
+    val room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
 
     val need  = Array(3) {Array(20) {0}}
     val have  = Array(20) {0}
@@ -74,13 +74,13 @@ class MainRoom(val name: String, private val describe: String) {
     }
 
     private fun needCorrection() {
-        if (this.source.size > 1) {
-            if (this.room.energyCapacityAvailable >= 400) this.need[0][0] = 14
-            else this.need[0][0] = 16
-        } else {
-            if (this.room.energyCapacityAvailable >= 400) this.need[0][0] = 6
-            else this.need[0][0] = 7
+        when {
+            this.room.energyCapacityAvailable >= 800 -> this.need[0][0] = 10
+            this.room.energyCapacityAvailable >= 400 -> this.need[0][0] = 14
+            else -> this.need[0][0] = 16
         }
+
+        if (this.source.size == 1) this.need[0][0] = this.need[0][0] % 2 + 1
     }
 
     private fun buildQueue() {
@@ -111,13 +111,16 @@ class MainRoom(val name: String, private val describe: String) {
     }
 
     private fun getBodyRole(role: Int): Array<BodyPartConstant> {
+        var result: Array<BodyPartConstant> = arrayOf()
+
         when (role) {
             0 -> {
-                if (this.room.energyCapacityAvailable < 400 || this.have[0] < 1) return arrayOf(MOVE, MOVE, WORK, CARRY)
-                return arrayOf(MOVE, MOVE, WORK, WORK, CARRY, CARRY)
+                if (this.room.energyCapacityAvailable < 400 || this.have[0] < 1) result = arrayOf(MOVE, MOVE, WORK, CARRY)
+                else if (this.room.energyCapacityAvailable < 800) result = arrayOf(MOVE, MOVE, WORK, WORK, CARRY, CARRY)
+                else result = arrayOf(MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY)
             }
-            else -> return arrayOf(MOVE, MOVE, WORK, CARRY)
         }
+        return result
     }
 
     private fun spawnCreep() {
@@ -148,6 +151,11 @@ class MainRoom(val name: String, private val describe: String) {
         // Загружаем все extension
         for (extension in this.structureExtension.values)
             if (extension.energyCapacity > extension.energy) needs[extension] = extension.energyCapacity - extension.energy
+
+        // Загружаем Tower если енергия меньше 1000
+        val towers = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_TOWER}
+        for (tower in towers)
+            if ((tower as StructureTower).energy < 400) needs[tower] = 1000 - tower.energy
 
         if (needs.isEmpty()) return null
         // Производим коррекцию с учетем заданий которые делаются и ищем ближайший

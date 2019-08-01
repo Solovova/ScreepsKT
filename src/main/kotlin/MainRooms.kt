@@ -26,8 +26,19 @@ class MainRooms(names: Array<String>) {
         }
     }
 
-    fun buildCreeps() {
+    private fun buildCreeps() {
         this.creepsCalculate()
         for (room in rooms.values) room.buildCreeps()
+    }
+
+    private fun build() {
+        this.creepsCalculate()
+        for (room in rooms.values) room.building()
+    }
+
+    fun runInStartOfTick() {
+        this.buildCreeps()
+        this.build()
+        for (room in rooms.values) room.runTower()
     }
 }

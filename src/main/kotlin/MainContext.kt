@@ -16,7 +16,7 @@ class MainContext {
         this.mainRooms = MainRooms(Memory["MRoom"] as Array<String>)
         this.tasks.deleteTaskDiedCreep()
         this.houseKeeping()
-        this.mainRooms.buildCreeps()
+        this.mainRooms.runInStartOfTick()
         for (creep in Game.creeps.values) creep.newTask(this)
     }
 

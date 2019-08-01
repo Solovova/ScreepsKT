@@ -15,52 +15,55 @@ fun Creep.newTask(mainContext: MainContext) {
     var isTask = false
     val creepCarry: Int = this.carry.toMap().map { it.value }.sum()
 
-    // Harvest
-    if (!isTask) {
-        if (creepCarry == 0) {// Ищем c минимальным расстоянием
-            val tSource: Source = mainRoom.getSourceForHarvest(this.pos,mainContext )
-            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Harvest, idObject0 = tSource.id, posObject0 = tSource.pos))
-            isTask = true
-        }
-    }
-
-    // TransferTo
-    if (!isTask) {
-        if (creepCarry > 0) {
-            val objForFilling: Structure? = mainRoom.getSpawnOrExtensionForFiling(this.pos,mainContext)
-            if (objForFilling != null) {
-                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferTo, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
+    //00 starting creep, harvester, upgrader, builder to level 4
+    if (this.memory.role == 0) {
+        // Harvest
+        if (!isTask) {
+            if (creepCarry == 0) {// Ищем c минимальным расстоянием
+                val tSource: Source = mainRoom.getSourceForHarvest(this.pos, mainContext)
+                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Harvest, idObject0 = tSource.id, posObject0 = tSource.pos))
                 isTask = true
             }
         }
-    }
 
-    // Upgrade
-    if (!isTask) {
-        if (creepCarry > 0) {
-            if (mainRoom.structureController.level < 2 || mainRoom.structureController.ticksToDowngrade < 1000) {
+        // TransferTo
+        if (!isTask) {
+            if (creepCarry > 0) {
+                val objForFilling: Structure? = mainRoom.getSpawnOrExtensionForFiling(this.pos, mainContext)
+                if (objForFilling != null) {
+                    mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferTo, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
+                    isTask = true
+                }
+            }
+        }
+
+        // Upgrade
+        if (!isTask) {
+            if (creepCarry > 0) {
+                if (mainRoom.structureController.level < 2 || mainRoom.structureController.ticksToDowngrade < 1000) {
+                    mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Upgrade, idObject0 = mainRoom.structureController.id, posObject0 = mainRoom.structureController.pos))
+                    isTask = true
+                }
+            }
+        }
+
+        // Build
+        if (!isTask) {
+            if (creepCarry > 0 && mainRoom.constructionSite.isNotEmpty()) {
+                val tConstructionSite = mainRoom.getConstructionSite(this.pos)
+                if (tConstructionSite != null) {
+                    mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Build, idObject0 = tConstructionSite.id, posObject0 = tConstructionSite.pos))
+                    isTask = true
+                }
+            }
+        }
+
+        // Upgrade
+        if (!isTask) {
+            if (creepCarry > 0) {
                 mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Upgrade, idObject0 = mainRoom.structureController.id, posObject0 = mainRoom.structureController.pos))
-                isTask = true
+                //isTask = true
             }
-        }
-    }
-
-    // Build
-    if (!isTask) {
-        if (creepCarry > 0 && mainRoom.constructionSite.isNotEmpty()) {
-            val tConstructionSite = mainRoom.getConstructionSite(this.pos)
-            if (tConstructionSite != null) {
-                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Build, idObject0 = tConstructionSite.id, posObject0 = tConstructionSite.pos))
-                isTask = true
-            }
-        }
-    }
-
-    // Upgrade
-    if (!isTask) {
-        if (creepCarry > 0) {
-            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Upgrade, idObject0 = mainRoom.structureController.id, posObject0 = mainRoom.structureController.pos))
-            //isTask = true
         }
     }
 }
@@ -111,9 +114,6 @@ fun Creep.doTask(mainContext: MainContext) {
     }
 }
 
-
-
-
 fun Creep.endTask(mainContext: MainContext) {
     if (!mainContext.tasks.isTaskForCreep(this)) return
     val task: CreepTask = mainContext.tasks.tasks[this.id] ?: return
@@ -157,6 +157,13 @@ fun Creep.endTask(mainContext: MainContext) {
 }
 
 fun Creep.doTaskGoTo(task: CreepTask, pos: RoomPosition, range: Int) {
+    if (this.pos.roomName != pos.roomName) {
+        val exitDir = this.room.findExitTo(pos.roomName)
+        val exitPath = this.pos.findClosestByRange(exitDir)
+        if (exitPath != null) this.moveTo(exitPath.x,exitPath.y)
+        return
+    }
+
     if (this.pos.inRangeTo(pos, range)) task.come = true
     else this.moveTo(pos.x, pos.y)
 }
