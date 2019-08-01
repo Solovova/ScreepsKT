@@ -143,7 +143,7 @@ class  Tasks {
         this.tasks.remove(key)
     }
 
-    fun getEnergyCarringTo(id: String): Int {
+    fun getEnergyCaringTo(id: String): Int {
         var result = 0
         for (task in this.tasks) {
             if (task.value.type != TypeOfTask.TransferTo) continue
@@ -152,5 +152,23 @@ class  Tasks {
             result += creep.carry.energy
         }
         return result
+    }
+
+    fun getSourceHarvestNum(id: String): Int {
+        var result = 0
+        for (task in this.tasks) {
+            if (task.value.type != TypeOfTask.Harvest) continue
+            if (task.value.idObject0 != id) continue
+            result += 1
+        }
+        return result
+    }
+
+    fun deleteTaskDiedCreep() {
+        val idForDelete: MutableList<String> = mutableListOf()
+        for (task in this.tasks)
+            if (Game.getObjectById<Creep>(task.key) == null) idForDelete.add(task.key)
+
+        for (key in idForDelete) this.tasks.remove(key)
     }
 }

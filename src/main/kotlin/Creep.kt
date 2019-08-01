@@ -18,15 +18,7 @@ fun Creep.newTask(mainContext: MainContext) {
     // Harvest
     if (!isTask) {
         if (creepCarry == 0) {// Ищем c минимальным расстоянием
-            var tSource: Source = mainRoom.source.values.first()
-            var tDistance = 1000
-            for (source in mainRoom.source.values) {
-                val tRangeTmp = this.pos.getRangeTo(source.pos)
-                if (tRangeTmp < tDistance) {
-                    tDistance = tRangeTmp
-                    tSource = source
-                }
-            }
+            var tSource: Source = mainRoom.getSourceForHarvest(this.pos,mainContext )
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Harvest, idObject0 = tSource.id, posObject0 = tSource.pos))
             isTask = true
         }
@@ -35,7 +27,7 @@ fun Creep.newTask(mainContext: MainContext) {
     // TransferTo
     if (!isTask) {
         if (creepCarry > 0) {
-            val objForFilling: Structure? = mainRoom.getSpawnOrExensionForFillin(this.pos,mainContext)
+            val objForFilling: Structure? = mainRoom.getSpawnOrExtensionForFiling(this.pos,mainContext)
             if (objForFilling != null) {
                 mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferTo, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
                 isTask = true

@@ -12,6 +12,7 @@ class MainContext {
 
     fun runInStartOfTick() {
         this.mainRooms = MainRooms(Memory["MRoom"] as Array<String>)
+        this.tasks.deleteTaskDiedCreep()
         this.mainRooms.buildCreeps()
         for (creep in Game.creeps.values) creep.newTask(this)
     }

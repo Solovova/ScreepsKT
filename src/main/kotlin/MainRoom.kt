@@ -84,11 +84,11 @@ class MainRoom {
 
     private fun needCorrection() {
         if (this.source.size > 1) {
-            if (this.room.energyCapacityAvailable >= 400) this.need[0][0] = 8
-            else this.need[0][0] = 3 //10
+            if (this.room.energyCapacityAvailable >= 400) this.need[0][0] = 10
+            else this.need[0][0] = 12
         } else {
-            if (this.room.energyCapacityAvailable >= 400) this.need[0][0] = 4
-            else this.need[0][0] = 5
+            if (this.room.energyCapacityAvailable >= 400) this.need[0][0] = 6
+            else this.need[0][0] = 7
         }
     }
 
@@ -147,7 +147,7 @@ class MainRoom {
         }
     }
 
-    fun getSpawnOrExensionForFillin(pos: RoomPosition, mainContext: MainContext): Structure? {
+    fun getSpawnOrExtensionForFiling(pos: RoomPosition, mainContext: MainContext): Structure? {
         val needs : MutableMap<Structure,Int> = mutableMapOf()
 
         // Загружаем все спавны
@@ -163,7 +163,7 @@ class MainRoom {
         var tObject: Structure? = needs.keys.first()
         var tMinRange = 1000
         for (need in needs) {
-            if (need.value > mainContext.tasks.getEnergyCarringTo(need.key.id)) {
+            if (need.value > mainContext.tasks.getEnergyCaringTo(need.key.id)) {
                 val tTmpRange = pos.getRangeTo(need.key.pos)
                 if (tTmpRange < tMinRange) {
                     tMinRange = tTmpRange
@@ -185,5 +185,19 @@ class MainRoom {
             }
         }
         return tObject
+    }
+
+    fun getSourceForHarvest(pos: RoomPosition, mainContext: MainContext) : Source {
+        var tSource: Source = this.source.values.first()
+        var tDistance = 1000
+        for (source in this.source.values) {
+            val tRangeTmp = pos.getRangeTo(source.pos)
+            console.log(mainContext.tasks.getSourceHarvestNum(source.id))
+            if (tRangeTmp < tDistance && mainContext.tasks.getSourceHarvestNum(source.id) < 4 && source.energy > 200) {
+                tDistance = tRangeTmp
+                tSource = source
+            }
+        }
+        return tSource
     }
 }
