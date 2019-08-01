@@ -1,6 +1,7 @@
 import screeps.api.*
 import screeps.utils.toMap
 import screeps.api.structures.Structure
+import screeps.api.structures.StructureController
 import screeps.api.structures.StructureExtension
 import screeps.api.structures.StructureSpawn
 
@@ -34,12 +35,40 @@ fun Creep.newTask(mainContext: MainContext) {
     // TransferTo
     if (!isTask) {
         if (creepCarry > 0) {
-            val objForFilling: Structure = mainRoom.structureSpawn.values.first() as Structure  //ToDo all structure
-            console.log(objForFilling.id)
-            //if (objForFilling != null) {
+            val objForFilling: Structure? = mainRoom.getSpawnOrExensionForFillin(this.pos,mainContext)
+            if (objForFilling != null) {
                 mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferTo, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
-                //isTask = true
-            //}
+                isTask = true
+            }
+        }
+    }
+
+    // Upgrade
+    if (!isTask) {
+        if (creepCarry > 0) {
+            if (mainRoom.structureController.level < 2 || mainRoom.structureController.ticksToDowngrade < 1000) {
+                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Upgrade, idObject0 = mainRoom.structureController.id, posObject0 = mainRoom.structureController.pos))
+                isTask = true
+            }
+        }
+    }
+
+    // Build
+    if (!isTask) {
+        if (creepCarry > 0 && mainRoom.constructionSite.isNotEmpty()) {
+            val tConstructionSite = mainRoom.getConstructionSite(this.pos)
+            if (tConstructionSite != null) {
+                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Build, idObject0 = tConstructionSite.id, posObject0 = tConstructionSite.pos))
+                isTask = true
+            }
+        }
+    }
+
+    // Upgrade
+    if (!isTask) {
+        if (creepCarry > 0) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Upgrade, idObject0 = mainRoom.structureController.id, posObject0 = mainRoom.structureController.pos))
+            isTask = true
         }
     }
 }
@@ -63,17 +92,35 @@ fun Creep.doTask(mainContext: MainContext) {
         }
 
         TypeOfTask.TransferTo -> {
-            if (!task.come) {this.doTaskGoTo(task, task.posObject0, 1); }
+            if (!task.come) this.doTaskGoTo(task, task.posObject0, 1)
             if (task.come) {
                 val structure: Structure? = (Game.getObjectById(task.idObject0) as Structure?)
-                if (structure!=null) {
-                    this.transfer(structure, task.resource)
-                }
+                if (structure != null) this.transfer(structure, task.resource)
             }
         }
-        else -> {}
+
+        TypeOfTask.Upgrade -> {
+            if (!task.come) this.doTaskGoTo(task, task.posObject0, 3)
+            if (task.come) {
+                val controller: StructureController? = (Game.getObjectById(task.idObject0) as StructureController?)
+                if (controller != null) this.upgradeController(controller)
+            }
+        }
+
+        TypeOfTask.Build -> {
+            if (!task.come) this.doTaskGoTo(task, task.posObject0, 3)
+            if (task.come) {
+                val building: ConstructionSite? = (Game.getObjectById(task.idObject0) as ConstructionSite?)
+                if (building != null) this.build(building)
+            }
+        }
+        else -> {
+        }
     }
 }
+
+
+
 
 fun Creep.endTask(mainContext: MainContext) {
     if (!mainContext.tasks.isTaskForCreep(this)) return
@@ -102,6 +149,16 @@ fun Creep.endTask(mainContext: MainContext) {
             if (structure.structureType == STRUCTURE_SPAWN && (structure as StructureSpawn).energyCapacity == structure.energy) filled = true
             if (filled) mainContext.tasks.deleteTask(this.id)
         }
+
+        TypeOfTask.Upgrade -> {
+            if (creepCarry == 0) mainContext.tasks.deleteTask(this.id)
+        }
+
+        TypeOfTask.Build -> {
+            val building: ConstructionSite? = (Game.getObjectById(task.idObject0) as ConstructionSite?)
+            if (creepCarry == 0 || building == null) mainContext.tasks.deleteTask(this.id)
+        }
+
         else -> {
         }
     }

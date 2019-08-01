@@ -1,8 +1,5 @@
 import screeps.api.*
-import screeps.api.structures.SpawnOptions
-import screeps.api.structures.StructureController
-import screeps.api.structures.StructureSpawn
-import screeps.api.structures.StructureExtension
+import screeps.api.structures.*
 
 class QueueSpawnRecord(val role: Int, val srcRoom: String, val dstRoom: String)
 
@@ -65,6 +62,17 @@ class MainRoom {
                 _source = this.room.find(FIND_SOURCES).associateBy { it.id }
             }
             return _source ?: throw AssertionError("Error get Source")
+        }
+
+    //StructureExtension
+    private var _constructionSite: Map<String, ConstructionSite>? = null
+    val constructionSite: Map<String, ConstructionSite>
+        get() {
+            if (this._constructionSite == null) {
+                messenger("RECALCULATE", name, "ConstructionSite", COLOR_YELLOW)
+                _constructionSite = this.room.find(FIND_CONSTRUCTION_SITES).associate { it.id to it}
+            }
+            return _constructionSite ?: throw AssertionError("Error get ConstructionSite")
         }
 
     fun buildCreeps() {
@@ -137,5 +145,45 @@ class MainRoom {
             }
             if (result == OK) {this.queue.removeAt(0) }
         }
+    }
+
+    fun getSpawnOrExensionForFillin(pos: RoomPosition, mainContext: MainContext): Structure? {
+        val needs : MutableMap<Structure,Int> = mutableMapOf()
+
+        // Загружаем все спавны
+        for (spawn in this.structureSpawn.values)
+            if (spawn.energyCapacity > spawn.energy) needs[spawn] = spawn.energyCapacity - spawn.energy
+
+        // Загружаем все extension
+        for (extension in this.structureExtension.values)
+            if (extension.energyCapacity > extension.energy) needs[extension] = extension.energyCapacity - extension.energy
+
+        if (needs.isEmpty()) return null
+        // Производим коррекцию с учетем заданий которые делаются и ищем ближайший
+        var tObject: Structure? = needs.keys.first()
+        var tMinRange = 1000
+        for (need in needs) {
+            if (need.value > mainContext.tasks.getEnergyCarringTo(need.key.id)) {
+                val tTmpRange = pos.getRangeTo(need.key.pos)
+                if (tTmpRange < tMinRange) {
+                    tMinRange = tTmpRange
+                    tObject = need.key
+                }
+            }
+        }
+        return tObject
+    }
+
+    fun getConstructionSite(pos: RoomPosition): ConstructionSite? {
+        var tObject: ConstructionSite? = null
+        var tMinRange = 1000
+        for (construct in this.constructionSite.values) {
+            val tTmpRange = pos.getRangeTo(construct.pos)
+            if (tTmpRange < tMinRange) {
+                tMinRange = tTmpRange
+                tObject = construct
+            }
+        }
+        return tObject
     }
 }

@@ -142,4 +142,15 @@ class  Tasks {
         messenger("TASK","","Delete task: $key ", COLOR_CYAN)
         this.tasks.remove(key)
     }
+
+    fun getEnergyCarringTo(id: String): Int {
+        var result = 0
+        for (task in this.tasks) {
+            if (task.value.type != TypeOfTask.TransferTo) continue
+            if (task.value.idObject0 != id) continue
+            val creep: Creep = Game.creeps[task.key] ?: continue
+            result += creep.carry.energy
+        }
+        return result
+    }
 }
