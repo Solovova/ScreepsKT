@@ -3,22 +3,13 @@ import screeps.api.structures.*
 
 class QueueSpawnRecord(val role: Int, val srcRoom: String, val dstRoom: String)
 
-class MainRoom {
-    val name: String
-    private val describe: String
-    private val room: Room
+class MainRoom(val name: String, private val describe: String) {
+    private val room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
 
     val need  = Array(3) {Array(20) {0}}
     val have  = Array(20) {0}
     private val haveForQueue = Array(20) {0}
     private val queue = mutableListOf<QueueSpawnRecord>()
-
-    constructor(name: String, describe: String) {
-        this.name = name
-        this.describe = describe
-        this.room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
-        constantInit(this)
-    }
 
     //StructureSpawn
     private var _structureSpawn: Map<String, StructureSpawn>? = null
@@ -84,8 +75,8 @@ class MainRoom {
 
     private fun needCorrection() {
         if (this.source.size > 1) {
-            if (this.room.energyCapacityAvailable >= 400) this.need[0][0] = 10
-            else this.need[0][0] = 12
+            if (this.room.energyCapacityAvailable >= 400) this.need[0][0] = 14
+            else this.need[0][0] = 16
         } else {
             if (this.room.energyCapacityAvailable >= 400) this.need[0][0] = 6
             else this.need[0][0] = 7
@@ -199,5 +190,9 @@ class MainRoom {
             }
         }
         return tSource
+    }
+
+    init {
+        constantInit(this)
     }
 }

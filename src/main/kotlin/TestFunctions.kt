@@ -17,7 +17,7 @@ fun testingFunctions (mainContext : MainContext) {
 //    mainContext.tasks.toMemory()
     //mainContext.tasks.fromMemory()
     //console.log((mainContext.tasks.tasks["creep000001"]?.resource == RESOURCE_ENERGY).toString())
-    console.log(mainContext.mainRooms.rooms["W3N4"]!!.need[0].toString())
-    console.log(mainContext.mainRooms.rooms["W3N4"]!!.need[1].toString())
-    console.log(mainContext.mainRooms.rooms["W3N4"]!!.need[2].toString())
+//    console.log(mainContext.mainRooms.rooms["W3N4"]!!.need[0].toString())
+//    console.log(mainContext.mainRooms.rooms["W3N4"]!!.need[1].toString())
+//    console.log(mainContext.mainRooms.rooms["W3N4"]!!.need[2].toString())
 }

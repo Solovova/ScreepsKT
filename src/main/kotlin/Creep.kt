@@ -18,7 +18,7 @@ fun Creep.newTask(mainContext: MainContext) {
     // Harvest
     if (!isTask) {
         if (creepCarry == 0) {// Ищем c минимальным расстоянием
-            var tSource: Source = mainRoom.getSourceForHarvest(this.pos,mainContext )
+            val tSource: Source = mainRoom.getSourceForHarvest(this.pos,mainContext )
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Harvest, idObject0 = tSource.id, posObject0 = tSource.pos))
             isTask = true
         }
@@ -60,7 +60,7 @@ fun Creep.newTask(mainContext: MainContext) {
     if (!isTask) {
         if (creepCarry > 0) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Upgrade, idObject0 = mainRoom.structureController.id, posObject0 = mainRoom.structureController.pos))
-            isTask = true
+            //isTask = true
         }
     }
 }

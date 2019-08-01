@@ -3,9 +3,12 @@ import screeps.api.get
 import screeps.api.set
 
 fun setGlobalConstants() {
-    Memory["Account"] = "test"
-    if (Memory["Account"] === "test") {
+    Memory["Account"] = "main"
+    if (Memory["Account"] == "test") {
         Memory["MRoom"] = arrayOf("W3N4", "W5N6")
+    }
+    if (Memory["Account"] == "main") {
+        Memory["MRoom"] = arrayOf("E54N37")
     }
 }
 
