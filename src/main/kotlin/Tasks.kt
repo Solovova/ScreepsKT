@@ -1,6 +1,7 @@
 import screeps.api.RoomPosition
 import screeps.api.*
 import screeps.api.Memory
+import screeps.utils.unsafe.delete
 
 //ToDo Функция которая определяэт откуда харвестить, на основе сколько енергии есть, сколько уже харвестит и куда ближе
 
@@ -12,7 +13,7 @@ enum class TypeOfTask {
     Repair,
     Drop,
     Harvest,
-    Transfer,
+    TransferTo,
     Upgrade
 }
 
@@ -47,6 +48,8 @@ class CreepTask {
     val posObject1: RoomPosition?
     val resource: ResourceConstant
     val quantity: Int
+    var come: Boolean
+    var take: Boolean
 
     fun toMemory(): dynamic {
         val d: dynamic = object {}
@@ -57,6 +60,8 @@ class CreepTask {
         d["posObject1"] = this.posObject1
         d["resource"] = this.resource
         d["quantity"] = this.quantity
+        d["come"] = this.come
+        d["take"] = this.take
         return d
     }
 
@@ -68,6 +73,8 @@ class CreepTask {
         this.posObject1 = posObject1
         this.resource = resource
         this.quantity = quantity
+        this.come = false
+        this.take = false
     }
 
     constructor(d: dynamic) {
@@ -88,28 +95,51 @@ class CreepTask {
 
         this.resource = d["resource"].unsafeCast<ResourceConstant>()
         this.quantity = d["quantity"] as Int
+        this.come = d["come"] as Boolean
+        this.take = d["take"] as Boolean
+
+
     }
 }
 
+//1. End of tasks
+//2. Assign new tasks
+//3. Do tasks
+
 class  Tasks {
     // Все держим в памяти, в конце тика записываем в Memory если пропал объект восстанавливаем из памяти
-    val tasks: MutableMap<String, CreepTask> = mutableMapOf() //id of creep
+    val tasks: MutableMap<String, CreepTask> = mutableMapOf() //id of creepsRole
     fun add(idCreep: String, task: CreepTask) {
+        if (task.posObject0!= null) messenger("TASK",task.posObject0.roomName,"New task: $idCreep ${task.type}", COLOR_CYAN)
         tasks[idCreep] = task
     }
 
     fun toMemory() {
-        val dTasks: dynamic = object{}
+        delete(Memory["task"])
+        val dTasks: dynamic = object {}
         for (task in tasks) dTasks[task.key] = task.value.toMemory()
-        val d: dynamic = object{}
+        val d: dynamic = object {}
         d["tasks"] = dTasks
         Memory["task"] = d
     }
 
     fun fromMemory() {
-        tasks.clear()
-        val d: dynamic = Memory["task"] ?: return
-        val dTasks = d["tasks"] ?: return
-        for (key in js("Object").keys(dTasks).unsafeCast<Array<String>>()) tasks[key] = CreepTask(dTasks[key])
+        try {
+            tasks.clear()
+            val d: dynamic = Memory["task"] ?: return
+            val dTasks = d["tasks"] ?: return
+            for (key in js("Object").keys(dTasks).unsafeCast<Array<String>>()) tasks[key] = CreepTask(dTasks[key])
+        } catch (e: Exception) {
+            delete(Memory["task"])
+        }
+    }
+
+    fun isTaskForCreep(creep: Creep): Boolean {
+        return (this.tasks[creep.id] != null)
+    }
+
+    fun deleteTask(key: String) {
+        messenger("TASK","","Delete task: $key ", COLOR_CYAN)
+        this.tasks.remove(key)
     }
 }

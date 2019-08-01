@@ -77,7 +77,7 @@ class MainRoom {
     private fun needCorrection() {
         if (this.source.size > 1) {
             if (this.room.energyCapacityAvailable >= 400) this.need[0][0] = 8
-            else this.need[0][0] = 10
+            else this.need[0][0] = 3 //10
         } else {
             if (this.room.energyCapacityAvailable >= 400) this.need[0][0] = 4
             else this.need[0][0] = 5
@@ -101,7 +101,7 @@ class MainRoom {
     }
 
     private fun showQueue() {
-        //ToDo show creep who building
+        //ToDo show creepsRole who building
         var showText = "Queue: (${this.describe}) "
         for (record in this.queue) {
             var prefix = ""

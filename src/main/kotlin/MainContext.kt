@@ -1,5 +1,4 @@
-import screeps.api.Memory
-import screeps.api.get
+import screeps.api.*
 
 class MainContext {
     var mainRooms: MainRooms
@@ -14,9 +13,11 @@ class MainContext {
     fun runInStartOfTick() {
         this.mainRooms = MainRooms(Memory["MRoom"] as Array<String>)
         this.mainRooms.buildCreeps()
+        for (creep in Game.creeps.values) creep.newTask(this)
     }
 
     fun runInEndOfTick() {
+        for (creep in Game.creeps.values) creep.doTask(this)
         this.tasks.toMemory()
     }
 }

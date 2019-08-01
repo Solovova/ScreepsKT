@@ -10,7 +10,7 @@ Join the official screeps slack on https://chat.screeps.com/ and join #kotlin fo
 
 ### Getting started
 
-This AI tries to build a 'big' harvester creep with __4__ work parts which cost a hefty 550 energy!
+This AI tries to build a 'big' harvester creepsRole with __4__ work parts which cost a hefty 550 energy!
 
 If you are familiar with the official tutorials (if not do them now!) you already know this requires multiple extensions 
 and thus RCL 2. Once you run the bot in the simulator you will notice it takes quite a while to get there, because
