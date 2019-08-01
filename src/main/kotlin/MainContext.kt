@@ -13,6 +13,7 @@ class MainContext {
 
     fun runInStartOfTick() {
         this.mainRooms = MainRooms(Memory["MRoom"] as Array<String>)
+        this.mainRooms.buildCreeps()
     }
 
     fun runInEndOfTick() {

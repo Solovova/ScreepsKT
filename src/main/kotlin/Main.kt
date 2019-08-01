@@ -1,6 +1,4 @@
 import screeps.api.*
-import screeps.api.get
-
 
 var mainContext : MainContext? = null
 

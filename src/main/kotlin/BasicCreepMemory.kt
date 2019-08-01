@@ -3,9 +3,8 @@ import screeps.api.CreepMemory
 import screeps.utils.memory.memory
 
 
-//var CreepMemory.building: Boolean by memory { false }
-//var CreepMemory.pause: Int by memory { 0 }
-//var CreepMemory.role by memory(Role.UNASSIGNED)
-//var CreepMemory.task: Int by memory { 0 }
+var CreepMemory.role: Int by memory {0}
+var CreepMemory.srcRoom: String by memory {""}
+var CreepMemory.dstRoom: String by memory {""}
 
 

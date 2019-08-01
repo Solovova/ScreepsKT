@@ -1,10 +1,10 @@
 import screeps.api.*
+import screeps.api.structures.SpawnOptions
 import screeps.api.structures.StructureController
 import screeps.api.structures.StructureSpawn
 import screeps.api.structures.StructureExtension
 
-class QueueSpawnRecord(val dstroom: String, val role: Int) {
-}
+class QueueSpawnRecord(val role: Int, val srcRoom: String, val dstRoom: String)
 
 class MainRoom {
     val name: String
@@ -12,7 +12,7 @@ class MainRoom {
     private val room: Room
 
     val need  = Array(3) {Array(20) {0}}
-    private val have  = Array(20) {0}
+    val have  = Array(20) {0}
     private val haveForQueue = Array(20) {0}
     private val queue = mutableListOf<QueueSpawnRecord>()
 
@@ -67,5 +67,75 @@ class MainRoom {
             return _source ?: throw AssertionError("Error get Source")
         }
 
+    fun buildCreeps() {
+        this.needCorrection()
+        this.buildQueue()
+        this.showQueue()
+        this.spawnCreep()
+    }
 
+    private fun needCorrection() {
+        if (this.source.size > 1) {
+            if (this.room.energyCapacityAvailable >= 400) this.need[0][0] = 8
+            else this.need[0][0] = 10
+        } else {
+            if (this.room.energyCapacityAvailable >= 400) this.need[0][0] = 4
+            else this.need[0][0] = 5
+        }
+    }
+
+    private fun buildQueue() {
+        for (i in 0 until this.need.size) this.haveForQueue[i] = this.have[i]
+        val fPriorityOfRole = arrayOf(0)
+        for (priority in 0..2) {
+            for (fRole in fPriorityOfRole) {
+                var fNeed = this.need[0][fRole]
+                if (priority >= 1) fNeed += this.need[1][fRole]
+                if (priority >= 2) fNeed += this.need[2][fRole]
+                while (this.haveForQueue[fRole] < fNeed) {
+                    this.haveForQueue[fRole]++
+                    this.queue.add(QueueSpawnRecord(fRole, this.name, this.name))
+                }
+            }
+        }
+    }
+
+    private fun showQueue() {
+        //ToDo show creep who building
+        var showText = "Queue: (${this.describe}) "
+        for (record in this.queue) {
+            var prefix = ""
+            if (record.dstRoom != record.srcRoom) prefix = "S0" //ToDo to slave room prefix
+            showText += "$prefix ${record.role},"
+        }
+        console.log(showText)
+    }
+
+    private fun getBodyRole(role: Int): Array<BodyPartConstant> {
+        when (role) {
+            0 -> {
+                if (this.room.energyCapacityAvailable < 400 || this.have[0] < 1) return arrayOf(MOVE, MOVE, WORK, CARRY)
+                return arrayOf(MOVE, MOVE, WORK, WORK, CARRY, CARRY)
+            }
+            else -> return arrayOf(MOVE, MOVE, WORK, CARRY)
+        }
+    }
+
+    private fun spawnCreep() {
+        for (spawn in this.structureSpawn.values) {
+            if (this.queue.size == 0) return
+            if (!spawn.isActive() || spawn.spawning != null) continue
+            var result:ScreepsReturnCode = OK
+            if (this.queue[0].role == 0) {
+                val d: dynamic = object{}
+                d["role"] = this.queue[0].role
+                d["srcRoom"] = this.queue[0].srcRoom
+                d["dstRoom"] = this.queue[0].dstRoom
+                val spawnOptions: dynamic = object{}
+                spawnOptions["memory"] = d
+                result = spawn.spawnCreep(getBodyRole(this.queue[0].role), "mst_${this.queue[0].dstRoom}_${this.queue[0].dstRoom}_${Game.time} ", spawnOptions.unsafeCast<SpawnOptions>())
+            }
+            if (result == OK) {this.queue.removeAt(0) }
+        }
+    }
 }
