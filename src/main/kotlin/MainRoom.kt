@@ -55,16 +55,82 @@ class MainRoom(val name: String, private val describe: String) {
             return _source ?: throw AssertionError("Error get Source")
         }
 
-    //StructureExtension
+    //ConstructionSite
     private var _constructionSite: Map<String, ConstructionSite>? = null
     val constructionSite: Map<String, ConstructionSite>
         get() {
             if (this._constructionSite == null) {
                 messenger("RECALCULATE", name, "ConstructionSite", COLOR_YELLOW)
-                _constructionSite = this.room.find(FIND_CONSTRUCTION_SITES).associate { it.id to it}
+                _constructionSite = this.room.find(FIND_CONSTRUCTION_SITES).associateBy { it.id }
             }
             return _constructionSite ?: throw AssertionError("Error get ConstructionSite")
         }
+
+    //StructureTower
+    private var _structureTower: Map<String, StructureTower>? = null
+    val structureTower: Map<String, StructureTower>
+        get() {
+            if (this._structureTower == null) {
+                messenger("RECALCULATE", name, "StructureTower", COLOR_YELLOW)
+                _structureTower = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_TOWER }.associate { it.id to it as StructureTower}
+            }
+            return _structureTower ?: throw AssertionError("Error get StructureTower")
+        }
+
+    //StructureContainer //ToDo test
+    private var _structureContainer: Map<String, StructureContainer>? = null
+    val structureContainer: Map<String, StructureContainer>
+        get() {
+            if (this._structureContainer == null) {
+                messenger("RECALCULATE", name, "StructureContainer", COLOR_YELLOW)
+                _structureContainer = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_CONTAINER }.associate { it.id to it as StructureContainer}
+            }
+            return _structureContainer ?: throw AssertionError("Error get StructureContainer")
+        }
+
+    //StructureContainerNearSource //ToDo test
+    private var _structureContainerNearSource: Map<String, StructureContainer>? = null //id source
+    val structureContainerNearSource: Map<String, StructureContainer>
+        get() {
+            if (this._structureContainerNearSource == null) {
+                messenger("RECALCULATE", name, "StructureContainerNearSource", COLOR_YELLOW)
+                val resultContainer = mutableMapOf<String, StructureContainer>()
+                for (source in this.source.values)
+                    for (container in this.structureContainer.values)
+                        if (!resultContainer.containsValue(container) && source.pos.inRangeTo(container.pos, 2))
+                            resultContainer[source.id] = container
+                _structureContainerNearSource = resultContainer
+            }
+            return _structureContainerNearSource ?: throw AssertionError("Error get StructureContainerNearSource")
+        }
+
+    //StructureContainerNearController  //ToDo test
+    private var _structureContainerNearController: Map<String, StructureContainer>? = null //id source
+    val structureContainerNearController: Map<String, StructureContainer>
+        get() {
+            if (this._structureContainerNearController == null) {
+                messenger("RECALCULATE", name, "StructureContainerNearController", COLOR_YELLOW)
+                val resultContainer = mutableMapOf<String, StructureContainer>()
+
+                for (container in this.structureContainer.values)
+                    if (!this.structureContainerNearSource.containsValue(container) && this.structureController.pos.inRangeTo(container.pos, 3))
+                        resultContainer[this.structureController.id] = container
+                _structureContainerNearController = resultContainer
+            }
+            return _structureContainerNearController ?: throw AssertionError("Error get StructureContainerNearController")
+        }
+
+    //StructureStorage //ToDo test
+    private var _structureStorage: Map<String, StructureStorage>? = null
+    val structureStorage: Map<String, StructureStorage>
+        get() {
+            if (this._structureStorage == null) {
+                messenger("RECALCULATE", name, "StructureStorage", COLOR_YELLOW)
+                _structureStorage = this.room.find(FIND_HOSTILE_STRUCTURES).filter { it.structureType == STRUCTURE_STORAGE }.associate { it.id to it as StructureStorage}
+            }
+            return _structureStorage ?: throw AssertionError("Error get StructureStorage")
+        }
+
 
     fun buildCreeps() {
         this.needCorrection()
@@ -74,13 +140,22 @@ class MainRoom(val name: String, private val describe: String) {
     }
 
     private fun needCorrection() {
-        when {
-            this.room.energyCapacityAvailable >= 800 -> this.need[0][0] = 10
-            this.room.energyCapacityAvailable >= 400 -> this.need[0][0] = 14
-            else -> this.need[0][0] = 16
+        when (this.getLevelOfRoom()){
+            0 -> {
+                when {
+                    this.room.energyCapacityAvailable >= 800 -> this.need[0][0] = 10
+                    this.room.energyCapacityAvailable >= 400 -> this.need[0][0] = 14
+                    else -> this.need[0][0] = 16
+                }
+
+                if (this.source.size == 1) this.need[0][0] = this.need[0][0] % 2 + 1
+            }
+
+            1 -> {
+
+            }
         }
 
-        if (this.source.size == 1) this.need[0][0] = this.need[0][0] % 2 + 1
     }
 
     private fun buildQueue() {
@@ -153,9 +228,8 @@ class MainRoom(val name: String, private val describe: String) {
             if (extension.energyCapacity > extension.energy) needs[extension] = extension.energyCapacity - extension.energy
 
         // Загружаем Tower если енергия меньше 1000
-        val towers = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_TOWER}
-        for (tower in towers)
-            if ((tower as StructureTower).energy < 400) needs[tower] = 1000 - tower.energy
+        for (tower in this.structureTower.values)
+            if (tower.energy < 400) needs[tower] = 1000 - tower.energy
 
         if (needs.isEmpty()) return null
         // Производим коррекцию с учетем заданий которые делаются и ищем ближайший
@@ -193,12 +267,23 @@ class MainRoom(val name: String, private val describe: String) {
         for (source in this.source.values) {
             val tRangeTmp = pos.getRangeTo(source.pos)
             console.log(mainContext.tasks.getSourceHarvestNum(source.id))
-            if (tRangeTmp < tDistance && mainContext.tasks.getSourceHarvestNum(source.id) < 4 && source.energy > 200) {
+            if (tRangeTmp < tDistance && mainContext.tasks.getSourceHarvestNum(source.id) < 5 && source.energy > 100) {
                 tDistance = tRangeTmp
                 tSource = source
             }
         }
         return tSource
+    }
+    //0 - only role 0 creep
+    //1 - Storage, 3 container, energy >300+20*50 1300
+    fun getLevelOfRoom(): Int {
+        if (this.room.energyCapacityAvailable >= 1300 &&
+                this.structureContainerNearSource.size == this.source.size &&
+                this.structureContainerNearController.size == 1 &&
+                this.structureStorage.size == 1)
+            return 1
+
+        return 0
     }
 
     init {

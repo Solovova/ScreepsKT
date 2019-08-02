@@ -38,7 +38,6 @@ fun MainRoom.building() {
     if(this.constructionSite.isNotEmpty()) return
 
     if (this.structureController.level == 1) {
-        if (this.build(COLOR_WHITE, COLOR_YELLOW, STRUCTURE_CONTAINER,2)) return
         if (this.build(COLOR_WHITE, COLOR_BROWN, STRUCTURE_SPAWN,1)) return
     }
 
@@ -46,7 +45,6 @@ fun MainRoom.building() {
         if (this.room.energyCapacityAvailable!=550) {//строим extension 5
             if (this.build(COLOR_WHITE,COLOR_RED,STRUCTURE_EXTENSION,5)) return
         }
-        if (this.build(COLOR_WHITE,COLOR_PURPLE,STRUCTURE_CONTAINER,1)) return
     }
 
     if (this.structureController.level == 3) {
@@ -59,6 +57,8 @@ fun MainRoom.building() {
     }
 
     if (this.structureController.level == 4) {
+        if (this.build(COLOR_WHITE, COLOR_YELLOW, STRUCTURE_CONTAINER,2)) return
+        if (this.build(COLOR_WHITE,COLOR_PURPLE,STRUCTURE_CONTAINER,1)) return
         if (this.build(COLOR_WHITE,COLOR_ORANGE,STRUCTURE_ROAD,80)) return
         if (this.room.energyCapacityAvailable!=1300) {//строим extension 10
             if (this.build(COLOR_WHITE,COLOR_RED,STRUCTURE_EXTENSION,10)) return

@@ -1,6 +1,6 @@
 import screeps.api.*
 import screeps.api.structures.Structure
-import screeps.api.structures.StructureTower
+import screeps.api.get
 
 fun MainRoom.runTower() {
     var fTask: String? = null
@@ -138,13 +138,12 @@ fun MainRoom.runTower() {
 
     if (fTask == null) return
 
-    val towers = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_TOWER }
-
+    val towers = this.structureTower.values
     if (fMaxTower == null) fMaxTower = towers.size
     if (fMaxTower > towers.size) fMaxTower = towers.size
 
-    for (i in 0 until fMaxTower) {
-        val tower = towers[i] as StructureTower
+    for ((counter, tower) in towers.withIndex()) {
+        if (counter>fMaxTower) break
         when (fTask) {
             "attack" -> tower.attack(fTarget as Creep)
             "heal" -> tower.heal(fTarget as Creep)
