@@ -151,6 +151,7 @@ class  Tasks {
             val creep: Creep = Game.getObjectById(task.key) ?: continue
             result += creep.carry.energy
         }
+        //console.log("Test: carry to $id : $result")
         return result
     }
 

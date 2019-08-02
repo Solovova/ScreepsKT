@@ -159,9 +159,10 @@ class MainRoom(val name: String, private val describe: String) {
 
         if (needs.isEmpty()) return null
         // Производим коррекцию с учетем заданий которые делаются и ищем ближайший
-        var tObject: Structure? = needs.keys.first()
+        var tObject: Structure? = null
         var tMinRange = 1000
         for (need in needs) {
+            //console.log("Test ${need.key} need ${need.value}")
             if (need.value > mainContext.tasks.getEnergyCaringTo(need.key.id)) {
                 val tTmpRange = pos.getRangeTo(need.key.pos)
                 if (tTmpRange < tMinRange) {
