@@ -1,4 +1,5 @@
 import screeps.api.*
+import screeps.utils.unsafe.delete
 
 var mainContext : MainContext? = null
 
