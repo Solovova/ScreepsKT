@@ -22,13 +22,21 @@ fun testingFunctions (mainContext : MainContext) {
         console.log(fMainRoom.need[0].toString())
         console.log(fMainRoom.need[1].toString())
         console.log(fMainRoom.need[2].toString())
+        console.log(fMainRoom.have.toString())
+//        console.log(fMainRoom.structureContainerNearController[0]?.id)
+//        console.log(fMainRoom.structureContainerNearSource[0]?.id)
+//        console.log(fMainRoom.structureContainerNearSource[1]?.id)
+//        console.log(fMainRoom.source[0]?.id)
+//        console.log(fMainRoom.source[1]?.id)
 
-        val fSlaveRoom = fMainRoom.slaveRooms.values.firstOrNull()
-        if (fSlaveRoom != null) {
-            console.log("Slave: ${fSlaveRoom.name}")
-            console.log(fSlaveRoom.need[0].toString())
-            console.log(fSlaveRoom.need[1].toString())
-            console.log(fSlaveRoom.need[2].toString())
-        }
+
+//        val fSlaveRoom = fMainRoom.slaveRooms.values.firstOrNull()
+//        if (fSlaveRoom != null) {
+//            console.log("Slave: ${fSlaveRoom.name}")
+//            console.log(fSlaveRoom.need[0].toString())
+//            console.log(fSlaveRoom.need[1].toString())
+//            console.log(fSlaveRoom.need[2].toString())
+//        }
     }
+
 }

@@ -35,8 +35,6 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                             a.id < b.id -> -1
                             else -> 0
                         }}).withIndex().associate { it.index to it.value}
-
-                    console.log(_source.toString())
                 }
 
 
@@ -110,7 +108,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             }
 
             101 -> {
-                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY)
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY)
             }
         }
         return result

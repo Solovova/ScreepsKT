@@ -26,10 +26,9 @@ class MainContext {
     }
 
     private fun houseKeeping() {
-        if (Game.creeps.isEmpty()) return  // this is needed because Memory.creeps is undefined
+        if (Game.creeps.isEmpty()) return
         for ((creepName, _) in Memory.creeps) {
             if (Game.creeps[creepName] == null) {
-                console.log("deleting obsolete memory entry for creep $creepName")
                 delete(Memory.creeps[creepName])
             }
         }

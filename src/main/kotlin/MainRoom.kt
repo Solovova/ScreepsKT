@@ -71,7 +71,7 @@ class MainRoom(val name: String, private val describe: String, private val slave
             return _structureTower ?: throw AssertionError("Error get StructureTower")
         }
 
-    //StructureContainer //ToDo test
+    //StructureContainer
     private var _structureContainer: Map<String, StructureContainer>? = null
     private val structureContainer: Map<String, StructureContainer>
         get() {
@@ -80,9 +80,9 @@ class MainRoom(val name: String, private val describe: String, private val slave
             return _structureContainer ?: throw AssertionError("Error get StructureContainer")
         }
 
-    //StructureContainerNearSource //ToDo test
+    //StructureContainerNearSource
     private var _structureContainerNearSource: Map<Int, StructureContainer>? = null //id source
-    private val structureContainerNearSource: Map<Int, StructureContainer>
+    val structureContainerNearSource: Map<Int, StructureContainer>
         get() {
             if (this._structureContainerNearSource == null) {
                 val resultContainer = mutableMapOf<Int, StructureContainer>()
@@ -95,28 +95,28 @@ class MainRoom(val name: String, private val describe: String, private val slave
             return _structureContainerNearSource ?: throw AssertionError("Error get StructureContainerNearSource")
         }
 
-    //StructureContainerNearController  //ToDo test
-    private var _structureContainerNearController: Map<String, StructureContainer>? = null //id source
-    private val structureContainerNearController: Map<String, StructureContainer>
+    //StructureContainerNearController
+    private var _structureContainerNearController: Map<Int, StructureContainer>? = null //id source
+    val structureContainerNearController: Map<Int, StructureContainer>
         get() {
             if (this._structureContainerNearController == null) {
-                val resultContainer = mutableMapOf<String, StructureContainer>()
+                val resultContainer = mutableMapOf<Int, StructureContainer>()
                 for (container in this.structureContainer.values) {
                     val protectStructureController: StructureController? = this.structureController[0]
                     if (protectStructureController != null && !this.structureContainerNearSource.containsValue(container) && protectStructureController.pos.inRangeTo(container.pos, 3))
-                        resultContainer[protectStructureController.id] = container
+                        resultContainer[0] = container
                 }
                 _structureContainerNearController = resultContainer
             }
             return _structureContainerNearController ?: throw AssertionError("Error get StructureContainerNearController")
         }
 
-    //StructureStorage //ToDo test
+    //StructureStorage
     private var _structureStorage: Map<Int, StructureStorage>? = null
-    private val structureStorage: Map<Int, StructureStorage>
+    val structureStorage: Map<Int, StructureStorage>
         get() {
             if (this._structureStorage == null)
-                _structureStorage = this.room.find(FIND_HOSTILE_STRUCTURES).filter { it.structureType == STRUCTURE_STORAGE }.withIndex().associate { it.index to it.value as StructureStorage}
+                _structureStorage = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_STORAGE }.withIndex().associate { it.index to it.value as StructureStorage}
             return _structureStorage ?: throw AssertionError("Error get StructureStorage")
         }
 
@@ -146,19 +146,9 @@ class MainRoom(val name: String, private val describe: String, private val slave
                         if (this.source.size == 1) this.need[0][0] = this.need[0][0] % 2 + 1
                     }
                 }
-
-
             }
 
             1 -> {
-                // 0 - room 1 level
-                // 1 - harvester source 0
-                // 2 - transport source 0
-                // 3 - harvester source 1
-                // 4 - transport source 1
-                // 5 - filler
-                // 9 - small filler
-
                 //1 harvester ,carrier ,filler , small harvester-filler, small filler
                 //1.1 harvester ,carrier
                 if (this.source.containsKey(0) && this.structureContainerNearSource.containsKey(0)) {
@@ -172,143 +162,27 @@ class MainRoom(val name: String, private val describe: String, private val slave
 
                 //1.2 filler
                 if (this.need[0][5] ==0) this.need[0][5]=1 //filler
-                if (this.need[1][5] ==0) this.need[1][5]=1 //filler
 
+                this.need[0][0]=1
 
-//                    //1.3 если filler = 0 и Енергии если выпускаем смалл филлер
-//                    if ((this.have[5]==0)&&(this.structureStorage.isNotEmpty() >2000))  objRoom.Need0[9]=1;
-//                    if ((objRoom.CalcRoleCreeps[5]==0)&&(fEnergyInStorage<=2000)) objRoom.Need0[0]=2;
-
-//
-//                    //2 Builder
-//                    //2.1
-//                    objRoom.Need1[8]=0;                             //208 - Builder
-//                    //2.2 если есть что строить то выпускаем строителя
-//                    // if ((objRoom.IsBuild == 1)&&(fEnergyInStorage>20000)&&(objRoom.BoostBuilder != 1)) {
-//                    //     objRoom.Need1[8]=2;
-//                    // }
-//
-//                    //3 Mineral harvesting
-//                    if ((objRoom.Extractor !='')&&(objRoom.Containers[4] != null)){
-//                        fMineral = Game.getObjectById(objRoom.Mineral);
-//                        fMineralsInStorage = _.sum(fStorage.store) - fStorage.store.energy;
-//                        fHarvestMineralsInStorage = fStorage.store[fMineral.mineralType];
-//                        if (fHarvestMineralsInStorage == null) fHarvestMineralsInStorage = 0;
-//                        if (fMineralsInStorage<objRoom.StorageMineralAllMax && fHarvestMineralsInStorage<objRoom.StorageMineralExtractionMax && fMineral.mineralAmount!=0){
-//                            objRoom.Need1[15]=1;
-//                            objRoom.Need1[16]=1;
-//                        }
-//                    }
-//
-//                    //4 Если есть Link(2) то запускаем переносчика
-//                    if (objRoom.Links[2]!='') objRoom.Need1[14]=1;
-//
-//                    //5 LabFiller
-//                    if (objRoom.LabReaction != '')  objRoom.Need1[18]=1;
-//
-//
-//
-//                    //6 Upgrader
-//                    if (objRoom.SentEnergyToRoom == '') {
-//                        if (objRoom.MaxSpawnEnergy>=1800) {
-//                            objRoom.Need1[6]=1;
-//                            objRoom.Need1[7]=1;
-//                            objRoom.Need2[6]=2;
-//                            objRoom.Need2[7]=3;
-//                            if (objRoom.Name == 'W47N3') objRoom.Need2[6]=4;
-//                        }else{
-//                            objRoom.Need1[6]=2;
-//                            objRoom.Need1[7]=2;
-//                            objRoom.Need2[6]=1;
-//                            objRoom.Need2[7]=2;
-//
-//                        }
-//                    }else{
-//                        objRoom.Need1[6]=0;
-//                        objRoom.Need1[7]=0;
-//                        objRoom.Need2[6]=0;
-//                        objRoom.Need2[7]=0;
-//                        if (objRoom.oController < 20000) objRoom.Need1[13]=1;
-//                    }
-//
-//                    if (fEnergyInStorage<30000) {
-//                        objRoom.Need1[6]=0;
-//                        objRoom.Need1[7]=0;
-//                        objRoom.Need2[6]=0;
-//                        objRoom.Need2[7]=0;
-//                    }
-//
-//
-//                    if (objRoom.oController.level == 8){
-//                        objRoom.Need1[6]=0;
-//                        objRoom.Need1[7]=1;
-//                        objRoom.Need2[6]=0;
-//                        objRoom.Need2[7]=0;
-//                        if (objRoom.Links[3] == null) objRoom.Need1[6]=2;
-//                        if (objRoom.oController < 100000) objRoom.Need1[13]=1;
-//                    }
-//
-//                    if (objRoom.Name == 'W47N3') objRoom.Need1[6]=2;
-//
-//
-//
-//                    if (fEnergyInStorage<objRoom.StorageEnergyForce) {
-//                        objRoom.Need2[6]=0;
-//                        objRoom.Need2[7]=0;
-//                    }
-//
-//
-//                    //8 FillerTower
-//                    if (objRoom.oController.level == 8) {
-//                        objRoom.Need0[20]=1;
-//                    }
-//
-//                    //if (objRoom.Name == 'W4N3')
-//                    //9 Logist
-//                    objRoom.Need0[17]=1;
-//
-//                    //10 Far carrier
-//                    if (fEnergyInStorage>=objRoom.StorageEnergyForce && objRoom.SentEnergyToRoom != '') {
-//                        var TerminalTo = Game.getObjectById(Memory.Data[objRoom.SentEnergyToRoom].Terminal);
-//                        if (TerminalTo == null) objRoom.Need1[19]=3;
-//                    }
-//
-//                    //9 NukeFiller если сума G в терминале и нике >=5000 и есть енергия
-//
-//
-//                    //10 Builder Boorted
-//                    if (((objRoom.BoostBuilder == 1 && objRoom.IsBuild == 1) || (objRoom.BoostBuilder == 2)) && fEnergyInStorage>=80000){
-//                        objRoom.Need1[21]=1;
-//                        objRoom.Need1[22]=2;
-//                    }
-//
-//
-//                    //11 Defender
-//                    //if (objRoom.Name == 'W46N7') objRoom.Need1[23]=2;
-//
-//                    //if (objRoom.Name == 'W6N3') objRoom.Need1[23]=2;
-//
-//
-
-
-
-
-
+                //1.3 small filler
+                //if ((this.have[5]==0)&&(this.getEnergyInStorage()>2000))  this.need[0][9]=1
+                //if ((this.have[5]==0)&&(this.getEnergyInStorage()<=2000))  this.need[0][0]=2
             }
         }
 
     }
 
-    private fun buildQueue() {
-        //need0
-        //need1
-        //slave0
-        //slave1
-        //need2
-        //slave2
+    private fun getEnergyInStorage():Int {
+        var result: Int? = null
+        if (this.structureStorage.containsKey(0)) result = this.structureStorage[0]?.store?.energy
+        return result ?: 0
+    }
 
-        for (i in 0 until this.need.size) this.haveForQueue[i] = this.have[i]
-        val fPriorityOfRole = arrayOf(0)
+    private fun buildQueue() {
+        for (i in 0 until this.have.size) this.haveForQueue[i] = this.have[i]
+        val fPriorityOfRole = if (this.getEnergyInStorage() < 2000) arrayOf(0, 9, 1, 3, 2, 4, 14, 5, 20, 6, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
+        else arrayOf(0, 9, 5, 20, 1, 3, 2, 4, 14, 6, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
 
         //Main 0..1
         for (priority in 0..1) {
@@ -323,10 +197,15 @@ class MainRoom(val name: String, private val describe: String, private val slave
             }
         }
 
-        //Slave 0..1
+
+        //Slave 0
         for (slaveRoom in this.slaveRooms.values) {
             for (i in 0 until slaveRoom.need.size) slaveRoom.haveForQueue[i] = slaveRoom.have[i]
             slaveRoom.buildQueue(this.queue,0)
+        }
+
+        //Slave 1
+        for (slaveRoom in this.slaveRooms.values) {
             slaveRoom.buildQueue(this.queue,1)
         }
 
@@ -357,7 +236,7 @@ class MainRoom(val name: String, private val describe: String, private val slave
                 prefix = "${this.slaveRooms[record.slaveRoom]?.describe ?: "und"} (${this.slaveRooms[record.slaveRoom]?.name ?: "u"})"
             showText += "$prefix ${record.role},"
         }
-        console.log(showText)
+        messenger("QUEUE",this.name,showText, COLOR_YELLOW)
     }
 
     private fun getBodyRole(role: Int): Array<BodyPartConstant> {
@@ -369,6 +248,20 @@ class MainRoom(val name: String, private val describe: String, private val slave
                 else if (this.room.energyCapacityAvailable < 400) result = arrayOf(MOVE, MOVE, WORK, CARRY)
                 else if (this.room.energyCapacityAvailable < 800) result = arrayOf(MOVE, MOVE, WORK, WORK, CARRY, CARRY)
                 else result = arrayOf(MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY)
+            }
+
+            1,3 ->  {
+                result = arrayOf(MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY)
+            }
+
+            2,4 ->  {
+                //return objRoom.ContainersWaysCarrierNeed[indContainer].BodyCarriers; //ToDo auto
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+            }
+
+            5 -> {
+                if (this.room.energyCapacityAvailable>=5000) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                else result = arrayOf(MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
             }
         }
         return result
@@ -391,14 +284,9 @@ class MainRoom(val name: String, private val describe: String, private val slave
                 result = spawn.spawnCreep(getBodyRole(this.queue[0].role), "mst_${this.queue[0].mainRoom}_${this.queue[0].slaveRoom}_${Game.time} ", spawnOptions.unsafeCast<SpawnOptions>())
             else {
                 val slaveRoom = this.slaveRooms[this.queue[0].slaveRoom]
-                console.log("Build: ${slaveRoom?.name}")
                 if (slaveRoom!=null)
                     result = spawn.spawnCreep(slaveRoom.getBodyRole(this.queue[0].role), "mst_${this.queue[0].mainRoom}_${this.queue[0].slaveRoom}_${Game.time} ", spawnOptions.unsafeCast<SpawnOptions>())
-                console.log("Build: $result")
             }
-
-
-
             if (result == OK) {this.queue.removeAt(0) }
         }
     }
@@ -421,7 +309,6 @@ class MainRoom(val name: String, private val describe: String, private val slave
 
         // Загружаем Tower если енергия меньше 1000
         //ToDo set priority 0 if have hostile creeps and queue < 2
-        console.log("Queue before filling:${this.queue.size}")
         for (tower in this.structureTower.values)
             if (tower.energy < 400) needs[tower] = StructureData(tower.energyCapacity - tower.energy,2)
 
@@ -463,7 +350,6 @@ class MainRoom(val name: String, private val describe: String, private val slave
         var tDistance = 1000
         for (source in this.source.values) {
             val tRangeTmp = pos.getRangeTo(source.pos)
-            console.log(mainContext.tasks.getSourceHarvestNum(source.id))
             if (tRangeTmp < tDistance && mainContext.tasks.getSourceHarvestNum(source.id) < 5 && source.energy > 100) {
                 tDistance = tRangeTmp
                 tSource = source
@@ -474,7 +360,7 @@ class MainRoom(val name: String, private val describe: String, private val slave
     //0 - only role 0 creep
     //1 - Storage, 3 container, energy >300+20*50 1300
     private fun getLevelOfRoom(): Int {
-        if (this.room.energyCapacityAvailable >= 1300 &&
+        if (this.room.energyCapacityAvailable >= 1250 && //ToDo set 1300
                 this.structureContainerNearSource.size == this.source.size &&
                 this.structureContainerNearController.size == 1 &&
                 this.structureStorage.size == 1)

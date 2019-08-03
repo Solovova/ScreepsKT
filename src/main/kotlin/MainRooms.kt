@@ -41,7 +41,6 @@ class MainRooms(names: Array<String>) {
     }
 
     private fun build() {
-        this.creepsCalculate()
         for (room in rooms.values) room.building()
     }
 
