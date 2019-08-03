@@ -1,7 +1,4 @@
-import screeps.api.COLOR_RED
-import screeps.api.Game
-import screeps.api.get
-import screeps.api.values
+import screeps.api.*
 import screeps.utils.toMap
 
 class MainRooms(names: Array<String>) {
@@ -10,7 +7,12 @@ class MainRooms(names: Array<String>) {
     init {
         names.forEachIndexed { index, name ->
             if (Game.rooms[name] == null) messenger("ERROR", name, "Not room M$index", COLOR_RED)
-            else rooms[name] = MainRoom(name, "M$index")
+            else {
+                var slaveRoomsName: Array<String> = arrayOf()
+                if (Memory["mainRoomsData"] != null && Memory["mainRoomsData"][name] != null && Memory["mainRoomsData"][name]["slaveRooms"] != null)
+                    slaveRoomsName = Memory["mainRoomsData"][name]["slaveRooms"] as Array<String>
+                rooms[name] = MainRoom(name, "M$index", slaveRoomsName)
+            }
         }
     }
 
@@ -20,8 +22,15 @@ class MainRooms(names: Array<String>) {
 
             // Main rooms
             if (creep.memory.role in 0..99) {
-                val room: MainRoom = this.rooms[creep.memory.dstRoom] ?: continue
-                room.have[creep.memory.role]++
+                val mainRoom: MainRoom = this.rooms[creep.memory.mainRoom] ?: continue
+                mainRoom.have[creep.memory.role]++
+            }
+
+            // Slave rooms
+            if (creep.memory.role in 100..199) {
+                val mainRoom: MainRoom = this.rooms[creep.memory.mainRoom] ?: continue
+                val slaveRoom: SlaveRoom = mainRoom.slaveRooms[creep.memory.slaveRoom] ?: continue
+                slaveRoom.have[creep.memory.role-100]++
             }
         }
     }

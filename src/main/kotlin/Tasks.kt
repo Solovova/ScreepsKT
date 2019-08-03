@@ -6,7 +6,7 @@ import screeps.utils.unsafe.delete
 //ToDo Функция которая определяэт откуда харвестить, на основе сколько енергии есть, сколько уже харвестит и куда ближе
 
 enum class TypeOfTask {
-    GoTo,
+    GoToRoom,
     Take,
     Transport,
     Build,
@@ -14,7 +14,8 @@ enum class TypeOfTask {
     Drop,
     Harvest,
     TransferTo,
-    Upgrade
+    Upgrade,
+    Claim
 }
 
 enum class TypeOfInteractionsObjects {

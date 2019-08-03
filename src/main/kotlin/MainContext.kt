@@ -7,13 +7,13 @@ class MainContext {
     val tasks: Tasks
 
     init {
-        this.mainRooms = MainRooms(Memory["MRoom"] as Array<String>)
+        this.mainRooms = MainRooms(arrayOf())
         this.tasks = Tasks()
         this.tasks.fromMemory()
     }
 
     fun runInStartOfTick() {
-        this.mainRooms = MainRooms(Memory["MRoom"] as Array<String>)
+        this.mainRooms = MainRooms(Memory["mainRooms"] as Array<String>)
         this.tasks.deleteTaskDiedCreep()
         this.houseKeeping()
         this.mainRooms.runInStartOfTick()

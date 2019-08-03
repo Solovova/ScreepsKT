@@ -17,7 +17,18 @@ fun testingFunctions (mainContext : MainContext) {
 //    mainContext.tasks.toMemory()
     //mainContext.tasks.fromMemory()
     //console.log((mainContext.tasks.tasks["creep000001"]?.resource == RESOURCE_ENERGY).toString())
-    console.log(mainContext.mainRooms.rooms.values.first().need[0].toString())
-    console.log(mainContext.mainRooms.rooms.values.first().need[1].toString())
-    console.log(mainContext.mainRooms.rooms.values.first().need[2].toString())
+    val fMainRoom = mainContext.mainRooms.rooms.values.firstOrNull()
+    if (fMainRoom!=null) {
+        console.log(fMainRoom.need[0].toString())
+        console.log(fMainRoom.need[1].toString())
+        console.log(fMainRoom.need[2].toString())
+
+        val fSlaveRoom = fMainRoom.slaveRooms.values.firstOrNull()
+        if (fSlaveRoom != null) {
+            console.log("Slave: ${fSlaveRoom.name}")
+            console.log(fSlaveRoom.need[0].toString())
+            console.log(fSlaveRoom.need[1].toString())
+            console.log(fSlaveRoom.need[2].toString())
+        }
+    }
 }

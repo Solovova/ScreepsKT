@@ -1,0 +1,4 @@
+//ToDo 1 SlaveRoom
+    // 1.1. 0 - explorer
+    // 1.2. 1 - colonizer
+    // 1.3. 2 - far universal
