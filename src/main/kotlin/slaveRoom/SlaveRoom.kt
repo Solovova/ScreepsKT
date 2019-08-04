@@ -1,3 +1,8 @@
+package slaveRoom
+
+import constants.constantSlaveRoomInit
+import mainRoom.MainRoom
+import mainRoom.QueueSpawnRecord
 import screeps.api.*
 import screeps.api.structures.*
 
@@ -94,7 +99,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             if (priority >= 2) fNeed += this.need[2][fRole]
             while (this.haveForQueue[fRole] < fNeed) {
                 this.haveForQueue[fRole]++
-                queue.add(QueueSpawnRecord(fRole+100, this.parent.name, this.name))
+                queue.add(QueueSpawnRecord(fRole + 100, this.parent.name, this.name))
             }
         }
     }

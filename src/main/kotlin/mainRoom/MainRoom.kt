@@ -1,12 +1,17 @@
+package mainRoom
+
+import MainContext
+import SentEnergyToRoom
+import slaveRoom.SlaveRoom
+import constants.constantMainRoomInit
+import dataCache.CacheCarrier
+import messenger
 import screeps.api.*
 import screeps.api.structures.*
 
-data class QueueSpawnRecord(val role: Int, val mainRoom: String, val slaveRoom: String)
-
-class MainRoom(parent: MainRooms, val name: String, private val describe: String, private val slaveRoomsName: Array<String>) {
+class MainRoom(private val parent: MainRoomCollector, val name: String, private val describe: String, private val slaveRoomsName: Array<String>) {
     val room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
     val slaveRooms: MutableMap<String, SlaveRoom> = mutableMapOf()
-    val parent: MainRooms = parent
 
     val need  = Array(3) {Array(20) {0}}
     val have  = Array(20) {0}
@@ -152,13 +157,13 @@ class MainRoom(parent: MainRooms, val name: String, private val describe: String
             1 -> {
                 //1 harvester ,carrier ,filler , small harvester-filler, small filler
                 //1.1 harvester ,carrier
-                val carrierAuto0:CarrierAuto? = parent.parent.dataCache.getCacheRecordRoom("mainContainer0",this.name)
+                val carrierAuto0: CacheCarrier? = parent.parent.dataCache.getCacheRecordRoom("mainContainer0",this.name)
                 if (carrierAuto0!=null) {
                     if (this.need[1][1] == 0) this.need[1][1] = 1
                     if (this.need[1][2] == 0) this.need[1][2] = carrierAuto0.needCarriers
                 }
 
-                val carrierAuto1:CarrierAuto? = parent.parent.dataCache.getCacheRecordRoom("mainContainer1",this.name)
+                val carrierAuto1: CacheCarrier? = parent.parent.dataCache.getCacheRecordRoom("mainContainer1",this.name)
                 if (carrierAuto1!=null) {
                     if (this.need[1][3] == 0) this.need[1][3] = 1
                     if (this.need[1][4] == 0) this.need[1][4] = carrierAuto1.needCarriers
@@ -264,7 +269,7 @@ class MainRoom(parent: MainRooms, val name: String, private val describe: String
     }
 
     private fun showQueue() {
-        //ToDo show creepsRole who building
+        //ToDo show creepsRole who mainRoom.building
         var showText = "Queue: (${this.describe}) "
         for (record in this.queue) {
             var prefix = ""
@@ -272,7 +277,7 @@ class MainRoom(parent: MainRooms, val name: String, private val describe: String
                 prefix = "${this.slaveRooms[record.slaveRoom]?.describe ?: "und"} (${this.slaveRooms[record.slaveRoom]?.name ?: "u"})"
             showText += "$prefix ${record.role},"
         }
-        messenger("QUEUE",this.name,showText, COLOR_YELLOW)
+        messenger("QUEUE", this.name, showText, COLOR_YELLOW)
     }
 
     private fun getBodyRole(role: Int): Array<BodyPartConstant> {
@@ -291,9 +296,9 @@ class MainRoom(parent: MainRooms, val name: String, private val describe: String
             }
 
             2 ->  {
-                val carrierAuto:CarrierAuto? = parent.parent.dataCache.getCacheRecordRoom("mainContainer0",this.name)
+                val carrierAuto: CacheCarrier? = parent.parent.dataCache.getCacheRecordRoom("mainContainer0",this.name)
                 if (carrierAuto==null) {
-                    messenger("ERROR",this.name,"Auto not exists mainContainer0", COLOR_RED)
+                    messenger("ERROR", this.name, "Auto not exists mainContainer0", COLOR_RED)
                     result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
                 }else{
                     result = carrierAuto.needBody
@@ -301,9 +306,9 @@ class MainRoom(parent: MainRooms, val name: String, private val describe: String
             }
 
             4 ->  {
-                val carrierAuto:CarrierAuto? = parent.parent.dataCache.getCacheRecordRoom("mainContainer1",this.name)
+                val carrierAuto: CacheCarrier? = parent.parent.dataCache.getCacheRecordRoom("mainContainer1",this.name)
                 if (carrierAuto==null) {
-                    messenger("ERROR",this.name,"Auto not exists mainContainer1", COLOR_RED)
+                    messenger("ERROR", this.name, "Auto not exists mainContainer1", COLOR_RED)
                     result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
                 }else{
                     result = carrierAuto.needBody
@@ -455,6 +460,8 @@ class MainRoom(parent: MainRooms, val name: String, private val describe: String
             slaveRooms[nameSlaveRoom] = SlaveRoom(this, nameSlaveRoom, "${this.describe}S$index", typeSlaveRoom)
         }
     }
+
+
 
 
 }

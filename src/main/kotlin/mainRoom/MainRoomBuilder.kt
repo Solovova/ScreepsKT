@@ -1,7 +1,9 @@
+package mainRoom
+
 import screeps.api.*
 import screeps.api.structures.StructureController
 
-fun MainRoom.build(fPrimeColor: ColorConstant, fSecondaryColor: ColorConstant, fWhatBuild: BuildableStructureConstant, fCount: Int): Boolean {
+fun MainRoom.buildStructure(fPrimeColor: ColorConstant, fSecondaryColor: ColorConstant, fWhatBuild: BuildableStructureConstant, fCount: Int): Boolean {
     //return 1 если чтото нашли и строим 0 если ничего не нашли
     var findBuild = false
     var fCount = fCount
@@ -38,33 +40,32 @@ fun MainRoom.building() {
     //if (Math.round(Game.time/100)*100!=Game.time) return; //проверяем каждые 100 тиков
     if(this.constructionSite.isNotEmpty()) return
     val protectedStructureController: StructureController = this.structureController[0] ?: return
-
     if (protectedStructureController.level == 1) {
-        if (this.build(COLOR_WHITE, COLOR_BROWN, STRUCTURE_SPAWN,1)) return
+        if (this.buildStructure(COLOR_WHITE, COLOR_BROWN, STRUCTURE_SPAWN,1)) return
     }
 
     if (protectedStructureController.level == 2) {
         if (this.room.energyCapacityAvailable!=550) {//строим extension 5
-            if (this.build(COLOR_WHITE,COLOR_RED,STRUCTURE_EXTENSION,1)) return
+            if (this.buildStructure(COLOR_WHITE,COLOR_RED,STRUCTURE_EXTENSION,1)) return
         }
     }
 
     if (protectedStructureController.level == 3) {
         if (this.room.energyCapacityAvailable!=800) {//строим extension 5
-            if (this.build(COLOR_WHITE,COLOR_RED,STRUCTURE_EXTENSION,1)) return
+            if (this.buildStructure(COLOR_WHITE,COLOR_RED,STRUCTURE_EXTENSION,1)) return
         }
 
-        if (this.build(COLOR_WHITE,COLOR_BLUE,STRUCTURE_TOWER,1)) return
-        if (this.build(COLOR_WHITE,COLOR_CYAN,STRUCTURE_ROAD,80)) return
+        if (this.buildStructure(COLOR_WHITE,COLOR_BLUE,STRUCTURE_TOWER,1)) return
+        if (this.buildStructure(COLOR_WHITE,COLOR_CYAN,STRUCTURE_ROAD,80)) return
     }
 
     if (protectedStructureController.level == 4) {
-        if (this.build(COLOR_WHITE, COLOR_YELLOW, STRUCTURE_CONTAINER,1)) return
-        if (this.build(COLOR_WHITE,COLOR_PURPLE,STRUCTURE_CONTAINER,1)) return
-        if (this.build(COLOR_WHITE,COLOR_ORANGE,STRUCTURE_ROAD,80)) return
+        if (this.buildStructure(COLOR_WHITE, COLOR_YELLOW, STRUCTURE_CONTAINER,1)) return
+        if (this.buildStructure(COLOR_WHITE,COLOR_PURPLE,STRUCTURE_CONTAINER,1)) return
+        if (this.buildStructure(COLOR_WHITE,COLOR_ORANGE,STRUCTURE_ROAD,80)) return
         if (this.room.energyCapacityAvailable!=1300) {//строим extension 10
-            if (this.build(COLOR_WHITE,COLOR_RED,STRUCTURE_EXTENSION,1)) return
+            if (this.buildStructure(COLOR_WHITE,COLOR_RED,STRUCTURE_EXTENSION,1)) return
         }
-        if (this.build(COLOR_WHITE,COLOR_GREEN,STRUCTURE_STORAGE,1)) return
+        if (this.buildStructure(COLOR_WHITE,COLOR_GREEN,STRUCTURE_STORAGE,1)) return
     }
 }

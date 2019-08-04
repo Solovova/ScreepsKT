@@ -1,6 +1,8 @@
+package mainRoom
+
+import TowerLastTarget
 import screeps.api.*
 import screeps.api.structures.Structure
-import screeps.api.get
 
 fun MainRoom.runTower() {
     var fTask: String? = null

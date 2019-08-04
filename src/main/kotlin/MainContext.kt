@@ -1,23 +1,27 @@
+import creep.doTask
+import creep.newTask
+import dataCache.DataCache
+import mainRoom.MainRoomCollector
 import screeps.api.*
 import screeps.utils.isEmpty
 import screeps.utils.unsafe.delete
 
 class MainContext {
-    var mainRooms: MainRooms
+    var mainRoomCollector: MainRoomCollector
     val tasks: Tasks
     val dataCache : DataCache
 
     init {
-        this.mainRooms = MainRooms(this,arrayOf())
+        this.mainRoomCollector = MainRoomCollector(this, arrayOf())
         this.tasks = Tasks()
         this.dataCache = DataCache(this)
     }
 
     fun runInStartOfTick() {
-        this.mainRooms = MainRooms(this,Memory["mainRooms"] as Array<String>)
+        this.mainRoomCollector = MainRoomCollector(this, Memory["mainRoomCollector"] as Array<String>)
         this.tasks.deleteTaskDiedCreep()
         this.houseKeeping()
-        this.mainRooms.runInStartOfTick()
+        this.mainRoomCollector.runInStartOfTick()
         for (creep in Game.creeps.values) creep.newTask(this)
     }
 

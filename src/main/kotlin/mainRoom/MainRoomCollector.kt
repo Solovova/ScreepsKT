@@ -1,9 +1,16 @@
+package mainRoom
+
+import MainContext
+import slaveRoom.SlaveRoom
+import mainRoom
+import messenger
+import role
 import screeps.api.*
 import screeps.utils.toMap
+import slaveRoom
 
-class MainRooms(parent: MainContext, names: Array<String>) {
+class MainRoomCollector(val parent: MainContext, names: Array<String>) {
     val rooms: MutableMap<String, MainRoom> = mutableMapOf()
-    val parent: MainContext = parent
 
     init {
         names.forEachIndexed { index, name ->

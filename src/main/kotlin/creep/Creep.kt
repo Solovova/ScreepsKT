@@ -1,6 +1,17 @@
+package creep
+
+import CreepTask
+import MainContext
+import mainRoom.MainRoom
+import slaveRoom.SlaveRoom
+import TypeOfTask
+import mainRoom
+import messenger
+import role
 import screeps.api.*
 import screeps.api.structures.*
 import screeps.utils.toMap
+import slaveRoom
 import kotlin.random.Random
 
 fun Creep.takeFromStorage(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
@@ -137,7 +148,7 @@ fun Creep.slaveGoToRoom(mainContext: MainContext): Boolean {
     return result
 }
 
-fun Creep.slaveClaim(mainContext: MainContext,slaveRoom: SlaveRoom?): Boolean {
+fun Creep.slaveClaim(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
     var result = false
     if (slaveRoom != null) {
         val structureController: StructureController? = slaveRoom.structureController[0]
@@ -207,7 +218,7 @@ fun Creep.slaveBuild(creepCarry: Int, mainContext: MainContext, slaveRoom: Slave
 fun Creep.newTask(mainContext: MainContext) {
 
     if (this.spawning) return
-    val mainRoom: MainRoom = mainContext.mainRooms.rooms[this.memory.mainRoom] ?: return
+    val mainRoom: MainRoom = mainContext.mainRoomCollector.rooms[this.memory.mainRoom] ?: return
     var slaveRoom: SlaveRoom? = null
     if (this.memory.role in 100..199 || this.memory.role in 1100..1199) {
         slaveRoom = mainRoom.slaveRooms[this.memory.slaveRoom] ?: return
@@ -299,7 +310,7 @@ fun Creep.newTask(mainContext: MainContext) {
 fun Creep.doTask(mainContext: MainContext) {
     if (!mainContext.tasks.isTaskForCreep(this)) return
 
-    val mainRoom: MainRoom = mainContext.mainRooms.rooms[this.memory.mainRoom] ?: return
+    val mainRoom: MainRoom = mainContext.mainRoomCollector.rooms[this.memory.mainRoom] ?: return
     if (this.memory.role in 100..199 || this.memory.role in 1100..1199) {
         mainRoom.slaveRooms[this.memory.slaveRoom] ?: return
     }

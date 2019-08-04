@@ -1,3 +1,5 @@
+import dataCache.CacheCarrier
+import mainRoom.MainRoom
 import screeps.api.*
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -59,7 +61,7 @@ fun getWayFromPosToPos(fPos1: RoomPosition,fPos2: RoomPosition): PathFinder.Path
     })
 }
 
-fun getCarrierAuto (ret: PathFinder.Path, mainRoom: MainRoom):CarrierAuto {
+fun getCarrierAuto (ret: PathFinder.Path, mainRoom: MainRoom): CacheCarrier {
     val weight: Int = (SOURCE_ENERGY_CAPACITY+500)*ret.path.size*2 / 300
     val fMaxCapacity = min((mainRoom.room.energyCapacityAvailable.toDouble() / 150).roundToInt() *100,1600)
     val needCarriers = (weight.toDouble() / fMaxCapacity).roundToInt() + 1
@@ -68,5 +70,5 @@ fun getCarrierAuto (ret: PathFinder.Path, mainRoom: MainRoom):CarrierAuto {
     var fBody : Array<BodyPartConstant> = arrayOf()
     for (i in 0 until (needCapacity/100)) fBody += arrayOf(CARRY, CARRY, MOVE)
 
-    return CarrierAuto(default = false, tickRecalculate = Game.time, needCarriers = needCarriers, timeForDeath = timeForDeath, needBody = fBody)
+    return CacheCarrier(default = false, tickRecalculate = Game.time, needCarriers = needCarriers, timeForDeath = timeForDeath, needBody = fBody)
 }

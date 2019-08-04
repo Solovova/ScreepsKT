@@ -1,13 +1,10 @@
-import screeps.api.COLOR_GREEN
-import screeps.api.Memory
-import screeps.api.get
-import screeps.utils.unsafe.delete
+import dataCache.CacheCarrier
 
 fun testingFunctions (mainContext : MainContext) {
     //Testing functions
-//    for (room in mainContext.mainRooms.rooms.values) console.log(room.name)
+//    for (room in mainContext.mainRoomCollector.rooms.values) console.log(room.name)
 //
-//    for (room in mainContext.mainRooms.rooms.values) {
+//    for (room in mainContext.mainRoomCollector.rooms.values) {
 //        console.log("--------->we have spawns: ${room.structureSpawn.size}")
 //        for (spawn in room.structureSpawn) console.log("--------->1 id: ${spawn.key} energy: ${spawn.value.energy}")
 //
@@ -22,7 +19,7 @@ fun testingFunctions (mainContext : MainContext) {
 //    mainContext.tasks.toMemory()
     //mainContext.tasks.fromMemory()
     //console.log((mainContext.tasks.tasks["creep000001"]?.resource == RESOURCE_ENERGY).toString())
-    val fMainRoom = mainContext.mainRooms.rooms.values.firstOrNull()
+    val fMainRoom = mainContext.mainRoomCollector.rooms.values.firstOrNull()
     if (fMainRoom!=null) {
         console.log(fMainRoom.need[0].toString())
         console.log(fMainRoom.need[1].toString())
@@ -42,15 +39,15 @@ fun testingFunctions (mainContext : MainContext) {
 //            console.log(fSlaveRoom.need[1].toString())
 //            console.log(fSlaveRoom.need[2].toString())
 //        }
-        //mainContext.dataCache.dataCacheRecordRoom["TestData"] = CacheRecordRoom(200)
+        //mainContext.dataCache.dataCacheRecordRoom["TestData"] = dataCache.CacheRoom(200)
 //        delete(Memory["dataCache"])
-//        val cacheRecordRoom:CacheRecordRoom? = mainContext.dataCache.dataCacheRecordRoom["TestData"]
+//        val cacheRecordRoom:dataCache.CacheRoom? = mainContext.dataCache.dataCacheRecordRoom["TestData"]
 //        if (cacheRecordRoom != null){
 //            cacheRecordRoom.testData++
 //            messenger("TEST","____","testData is: ${cacheRecordRoom.testData}", COLOR_GREEN)
 //        }
 
-        val carrierAuto : CarrierAuto? = mainContext.dataCache.getCacheRecordRoom("mainContainer0", "E54N37")
+        val carrierAuto : CacheCarrier? = mainContext.dataCache.getCacheRecordRoom("mainContainer0", "E54N37")
         //if (carrierAuto!=null)
         //    messenger("TEST","E54N37","carrierAuto is: ${carrierAuto.needBody}", COLOR_GREEN)
     }
