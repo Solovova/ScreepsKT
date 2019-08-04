@@ -21,5 +21,11 @@
 //need2
 //slave2
 
+//E53N39 full  upgrade   from E54N37    in process
+//E52N37 build spawn     from E54N37    in process
+//E52N35 build spawn     from E54N37    in process
+//E52N38 build spawn     from E54N37
+//E53N38 full  upgrade   from E54N37
 
-//ToDo 5 filler role 1005 and need 1 filler then
+//E59N36 self upgrade                   in process
+

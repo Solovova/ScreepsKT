@@ -5,6 +5,7 @@ import screeps.utils.unsafe.delete
 class MainContext {
     var mainRooms: MainRooms
     val tasks: Tasks
+    val dataCache : DataCache = DataCache()
 
     init {
         this.mainRooms = MainRooms(arrayOf())
@@ -23,6 +24,7 @@ class MainContext {
     fun runInEndOfTick() {
         for (creep in Game.creeps.values) creep.doTask(this)
         this.tasks.toMemory()
+        this.dataCache.toMemory()
     }
 
     private fun houseKeeping() {

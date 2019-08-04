@@ -1,3 +1,8 @@
+import screeps.api.COLOR_GREEN
+import screeps.api.Memory
+import screeps.api.get
+import screeps.utils.unsafe.delete
+
 fun testingFunctions (mainContext : MainContext) {
     //Testing functions
 //    for (room in mainContext.mainRooms.rooms.values) console.log(room.name)
@@ -37,6 +42,15 @@ fun testingFunctions (mainContext : MainContext) {
 //            console.log(fSlaveRoom.need[1].toString())
 //            console.log(fSlaveRoom.need[2].toString())
 //        }
+        //mainContext.dataCache.dataCacheRecordRoom["TestData"] = CacheRecordRoom(200)
+        delete(Memory["dataCache"])
+        val cacheRecordRoom:CacheRecordRoom? = mainContext.dataCache.dataCacheRecordRoom["TestData"]
+        if (cacheRecordRoom != null){
+            cacheRecordRoom.testData++
+            messenger("TEST","____","testData is: ${cacheRecordRoom.testData}", COLOR_GREEN)
+        }
+
+
 
     }
 
