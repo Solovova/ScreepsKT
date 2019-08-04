@@ -7,6 +7,7 @@
 // 5 - filler
 // 6 - transport upgrader
 // 7 - upgrader
+// 8 - builder
 // 9 - small filler
 
 //Slave
@@ -21,11 +22,16 @@
 //need2
 //slave2
 
+//ToDo auto harvesting in slave room,
+//Auto road
+//Account profit
+
 //E53N39 full  upgrade   from E54N37    in process
-//E52N35 build spawn     from E54N37    in process
-//E52N38 build spawn     from E54N37
+//E52N37 full  upgrade   from E54N37    in process
 //E53N38 full  upgrade   from E54N37
 
 //E59N36 self upgrade                   in process
 //E52N37 self upgrade                   in process
+//E52N35 self upgrade                   in process
+//E52N38 self upgrade                   in process
 
