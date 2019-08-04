@@ -360,13 +360,32 @@ class MainRoom(val name: String, private val describe: String, private val slave
     //0 - only role 0 creep
     //1 - Storage, 3 container, energy >300+20*50 1300
     private fun getLevelOfRoom(): Int {
-        if (this.room.energyCapacityAvailable >= 1250 && //ToDo set 1300
+        if (this.room.energyCapacityAvailable >= 1300 &&
                 this.structureContainerNearSource.size == this.source.size &&
                 this.structureContainerNearController.size == 1 &&
                 this.structureStorage.size == 1)
             return 1
 
         return 0
+    }
+
+    fun recalculateWays() {
+//        if (this.getLevelOfRoom() != 2) return
+//        val Storage:StructureStorage = this.structureStorage[0] ?: return
+//
+//        for (i in 0 until objRoom.Containers.length) {
+//            if (objRoom.ContainersWaysToStorage[i] != null && fNeedRecalculate === 0) continue
+//            if (objRoom.Containers[i] == null) continue
+//            val fContainer = Game.getObjectById(objRoom.Containers[i]) ?: continue
+//
+//            val ret = afunc.GetWayFromPosToPos(fContainer.pos, fStorage.pos)
+//            if (!ret.incomplete) objRoom.ContainersWaysToStorage[i] = ret.path
+//
+//            var fEnergyCapacity = SOURCE_ENERGY_CAPACITY + 500
+//
+//            if (!ret.incomplete) objRoom.ContainersWaysWaight[i] = fEnergyCapacity * ret.path.length * 2 / SPAWN_ENERGY_CAPACITY
+//            if (!ret.incomplete) objRoom.ContainersWaysCarrierNeed[i] = afunc.GetInfoCarierNeed(objRoom, i)
+//        }
     }
 
     init {

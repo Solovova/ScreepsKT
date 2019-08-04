@@ -209,7 +209,7 @@ fun Creep.newTask(mainContext: MainContext) {
     if (this.spawning) return
     val mainRoom: MainRoom = mainContext.mainRooms.rooms[this.memory.mainRoom] ?: return
     var slaveRoom: SlaveRoom? = null
-    if (this.memory.role > 99) {
+    if (this.memory.role in 100..199 || this.memory.role in 1100..1199) {
         slaveRoom = mainRoom.slaveRooms[this.memory.slaveRoom] ?: return
     }
 
@@ -264,7 +264,7 @@ fun Creep.newTask(mainContext: MainContext) {
     }
 
     if (this.memory.role == 5 || this.memory.role == 1005) {
-        if ((this.memory.role == 5) && this.ticksToLive<100) this.memory.role = this.memory.role + 1000
+        if ((this.memory.role == 5) && this.ticksToLive<150) this.memory.role = this.memory.role + 1000
         if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
         if (!isTask) isTask = this.transferToFilling(creepCarry,mainContext,mainRoom)
     }
@@ -277,9 +277,9 @@ fun Creep.newTask(mainContext: MainContext) {
     if (this.memory.role == 101) {
         if (!isTask) isTask = this.slaveGoToRoom(mainContext)
         if (!isTask) isTask = this.slaveHarvest(creepCarry,mainContext,slaveRoom)
-        if (!isTask) isTask = this.slaveUpgradeNormalOrEmergency(1,creepCarry,mainContext,slaveRoom)
-        if (!isTask) isTask = this.slaveBuild(creepCarry,mainContext,slaveRoom)
         if (!isTask) isTask = this.slaveUpgradeNormalOrEmergency(0,creepCarry,mainContext,slaveRoom)
+        if (!isTask) isTask = this.slaveBuild(creepCarry,mainContext,slaveRoom)
+        if (!isTask) isTask = this.slaveUpgradeNormalOrEmergency(1,creepCarry,mainContext,slaveRoom)
     }
 }
 
@@ -287,7 +287,7 @@ fun Creep.doTask(mainContext: MainContext) {
     if (!mainContext.tasks.isTaskForCreep(this)) return
 
     val mainRoom: MainRoom = mainContext.mainRooms.rooms[this.memory.mainRoom] ?: return
-    if (this.memory.role > 99) {
+    if (this.memory.role in 100..199 || this.memory.role in 1100..1199) {
         mainRoom.slaveRooms[this.memory.slaveRoom] ?: return
     }
 
@@ -331,10 +331,15 @@ fun Creep.doTask(mainContext: MainContext) {
         }
 
         TypeOfTask.GoToRoom -> {
-            if (this.pos.roomName != this.memory.slaveRoom) {
-                val exitDir = this.room.findExitTo(this.memory.slaveRoom)
-                val exitPath = this.pos.findClosestByRange(exitDir)
-                if (exitPath != null) this.moveTo(exitPath.x,exitPath.y)
+            val flag:Flag? = this.room.find(FIND_FLAGS).firstOrNull { it.color == COLOR_GREY && it.secondaryColor == COLOR_GREY }
+            if (flag != null) {
+                this.moveTo(flag.pos.x,flag.pos.y)
+            }else {
+                if (this.pos.roomName != this.memory.slaveRoom) {
+                    val exitDir = this.room.findExitTo(this.memory.slaveRoom)
+                    val exitPath = this.pos.findClosestByRange(exitDir)
+                    if (exitPath != null) this.moveTo(exitPath.x, exitPath.y)
+                }
             }
         }
 

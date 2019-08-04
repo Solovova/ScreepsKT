@@ -55,7 +55,7 @@ fun setGlobalConstants() {
 
         //test M0
         var dMemory = Memory["mainRoomsData"]["E54N37"]
-        dMemory["slaveRooms"] = arrayOf("E53N39","E52N37")
+        dMemory["slaveRooms"] = arrayOf("E53N39","E52N37","E59N36")
 
         //fill null slaveRoomsData
         for (mainRoom in Memory["mainRooms"]){
@@ -73,6 +73,10 @@ fun setGlobalConstants() {
         dMemory = Memory["mainRoomsData"]["E54N37"]["E52N37"]
         dMemory["type"] = 1
 
+        //test M0 S2
+        dMemory = Memory["mainRoomsData"]["E54N37"]["E59N36"]
+        dMemory["type"] = 1
+
     }
 }
 
@@ -88,6 +92,13 @@ fun constantMainRoomInit(mainRoom: MainRoom) {
         //0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9
         arrayCopy(mainRoom.need[0], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
         arrayCopy(mainRoom.need[1], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+        arrayCopy(mainRoom.need[2], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+    }
+
+    if (mainRoom.name == "E54N37") {
+        //0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9
+        arrayCopy(mainRoom.need[0], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+        arrayCopy(mainRoom.need[1], arrayOf(0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
         arrayCopy(mainRoom.need[2], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
     }
 }
@@ -113,5 +124,12 @@ fun constantSlaveRoomInit(slaveRoom: SlaveRoom) {
         arrayCopy(slaveRoom.need[0], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
         arrayCopy(slaveRoom.need[1], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
         arrayCopy(slaveRoom.need[2], arrayOf(0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+    }
+
+    if (slaveRoom.parent.name == "E54N37" && slaveRoom.name == "E59N36") {
+        //0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9
+        arrayCopy(slaveRoom.need[0], arrayOf(0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+        arrayCopy(slaveRoom.need[1], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+        arrayCopy(slaveRoom.need[2], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
     }
 }
