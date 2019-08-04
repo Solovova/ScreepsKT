@@ -1,9 +1,9 @@
-import org.w3c.dom.WorkerOptions
 import screeps.api.*
 import screeps.utils.toMap
 
-class MainRooms(names: Array<String>) {
+class MainRooms(parent: MainContext, names: Array<String>) {
     val rooms: MutableMap<String, MainRoom> = mutableMapOf()
+    val parent: MainContext = parent
 
     init {
         names.forEachIndexed { index, name ->
@@ -12,7 +12,7 @@ class MainRooms(names: Array<String>) {
                 var slaveRoomsName: Array<String> = arrayOf()
                 if (Memory["mainRoomsData"] != null && Memory["mainRoomsData"][name] != null && Memory["mainRoomsData"][name]["slaveRooms"] != null)
                     slaveRoomsName = Memory["mainRoomsData"][name]["slaveRooms"] as Array<String>
-                rooms[name] = MainRoom(name, "M$index", slaveRoomsName)
+                rooms[name] = MainRoom(this, name, "M$index", slaveRoomsName)
             }
         }
     }
@@ -49,20 +49,5 @@ class MainRooms(names: Array<String>) {
         this.buildCreeps()
         this.build()
         for (room in rooms.values) room.runTower()
-        this.recalculateWays()
-    }
-
-    fun recalculateWays() {
-        val mainRoom: MainRoom = rooms.values.first()
-        val cont = mainRoom.structureContainerNearSource[0]
-        val stor = mainRoom.structureStorage[0]
-        if (cont != null && stor != null) {
-            val ret = getWayFromPosToPos(stor.pos,cont.pos)
-            if (!ret.incomplete) {
-                mainRoom.room.memory.CarrierNeeds0 = getCarrierNeed(ret,mainRoom)
-
-            }
-        }
-
     }
 }

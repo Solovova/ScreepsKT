@@ -12,8 +12,8 @@ var CreepMemory.slaveRoom: String by memory {""}
 var CreepMemory.mainRoom: String by memory {""}
 
 var RoomMemory.TowerLastTarget: String by memory {""}
-var RoomMemory.CarrierNeeds0: CarrierNeed by memory { CarrierNeed(0,0,0, 0, arrayOf()) }
-var RoomMemory.CarrierNeeds1: CarrierNeed by memory { CarrierNeed(0,0,0, 0, arrayOf()) }
+var RoomMemory.SentEnergyToRoom: String by memory {""}
+
 
 
 

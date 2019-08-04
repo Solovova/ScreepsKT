@@ -42,7 +42,7 @@ fun setGlobalConstants() {
 
 
     if (Memory["account"] == "main") {
-        Memory["mainRooms"] = arrayOf("E54N37","E59N36")
+        Memory["mainRooms"] = arrayOf("E54N37","E59N36","E52N35","E52N38")
 
         //fill null mainRoomsData
         Memory["mainRoomsData"] = object {}
@@ -55,7 +55,7 @@ fun setGlobalConstants() {
 
         //test M0
         var dMemory = Memory["mainRoomsData"]["E54N37"]
-        dMemory["slaveRooms"] = arrayOf("E53N39","E52N37","E52N35")
+        dMemory["slaveRooms"] = arrayOf("E53N39","E52N37")
 
         //fill null slaveRoomsData
         for (mainRoom in Memory["mainRooms"]){
@@ -69,13 +69,12 @@ fun setGlobalConstants() {
         dMemory = Memory["mainRoomsData"]["E54N37"]["E53N39"]
         dMemory["type"] = 1
 
-        //test M0 S1
+        //FILL DATA SLAVE ROOMS
+        //test M0 S0
         dMemory = Memory["mainRoomsData"]["E54N37"]["E52N37"]
         dMemory["type"] = 1
 
-        //test M0 S1
-        dMemory = Memory["mainRoomsData"]["E54N37"]["E52N35"]
-        dMemory["type"] = 1
+
 
 
 
@@ -100,7 +99,7 @@ fun constantMainRoomInit(mainRoom: MainRoom) {
     if (mainRoom.name == "E54N37") {
         //0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9
         arrayCopy(mainRoom.need[0], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
-        arrayCopy(mainRoom.need[1], arrayOf(0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+        arrayCopy(mainRoom.need[1], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
         arrayCopy(mainRoom.need[2], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
     }
 
@@ -124,22 +123,16 @@ fun constantSlaveRoomInit(slaveRoom: SlaveRoom) {
     if (slaveRoom.parent.name == "E54N37" && slaveRoom.name == "E53N39") {
         //0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9
         arrayCopy(slaveRoom.need[0], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
-        arrayCopy(slaveRoom.need[1], arrayOf(0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+        arrayCopy(slaveRoom.need[1], arrayOf(0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
         arrayCopy(slaveRoom.need[2], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
     }
 
+    //main
     if (slaveRoom.parent.name == "E54N37" && slaveRoom.name == "E52N37") {
         //0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9
         arrayCopy(slaveRoom.need[0], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
-        arrayCopy(slaveRoom.need[1], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
-        arrayCopy(slaveRoom.need[2], arrayOf(0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
-    }
-
-    if (slaveRoom.parent.name == "E54N37" && slaveRoom.name == "E52N35") {
-        //0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9
-        arrayCopy(slaveRoom.need[0], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
-        arrayCopy(slaveRoom.need[1], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
-        arrayCopy(slaveRoom.need[2], arrayOf(0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+        arrayCopy(slaveRoom.need[1], arrayOf(0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+        arrayCopy(slaveRoom.need[2], arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
     }
 
 

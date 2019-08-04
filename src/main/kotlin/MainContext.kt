@@ -5,16 +5,16 @@ import screeps.utils.unsafe.delete
 class MainContext {
     var mainRooms: MainRooms
     val tasks: Tasks
-    val dataCache : DataCache = DataCache()
+    val dataCache : DataCache
 
     init {
-        this.mainRooms = MainRooms(arrayOf())
+        this.mainRooms = MainRooms(this,arrayOf())
         this.tasks = Tasks()
-        this.tasks.fromMemory()
+        this.dataCache = DataCache(this)
     }
 
     fun runInStartOfTick() {
-        this.mainRooms = MainRooms(Memory["mainRooms"] as Array<String>)
+        this.mainRooms = MainRooms(this,Memory["mainRooms"] as Array<String>)
         this.tasks.deleteTaskDiedCreep()
         this.houseKeeping()
         this.mainRooms.runInStartOfTick()

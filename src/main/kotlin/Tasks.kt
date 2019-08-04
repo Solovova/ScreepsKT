@@ -110,6 +110,11 @@ class CreepTask {
 class  Tasks {
     // Все держим в памяти, в конце тика записываем в Memory если пропал объект восстанавливаем из памяти
     val tasks: MutableMap<String, CreepTask> = mutableMapOf() //id of creepsRole
+
+    init {
+        this.fromMemory()
+    }
+
     fun add(idCreep: String, task: CreepTask) {
         if (task.posObject0!= null) messenger("TASK",task.posObject0.roomName,"New task: $idCreep ${task.type}", COLOR_CYAN)
         tasks[idCreep] = task
@@ -124,7 +129,7 @@ class  Tasks {
         Memory["task"] = d
     }
 
-    fun fromMemory() {
+    private fun fromMemory() {
         try {
             tasks.clear()
             val d: dynamic = Memory["task"] ?: return

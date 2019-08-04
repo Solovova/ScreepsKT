@@ -3,9 +3,10 @@ import screeps.api.structures.*
 
 data class QueueSpawnRecord(val role: Int, val mainRoom: String, val slaveRoom: String)
 
-class MainRoom(val name: String, private val describe: String, private val slaveRoomsName: Array<String>) {
+class MainRoom(parent: MainRooms, val name: String, private val describe: String, private val slaveRoomsName: Array<String>) {
     val room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
     val slaveRooms: MutableMap<String, SlaveRoom> = mutableMapOf()
+    val parent: MainRooms = parent
 
     val need  = Array(3) {Array(20) {0}}
     val have  = Array(20) {0}
@@ -151,23 +152,58 @@ class MainRoom(val name: String, private val describe: String, private val slave
             1 -> {
                 //1 harvester ,carrier ,filler , small harvester-filler, small filler
                 //1.1 harvester ,carrier
-                if (this.source.containsKey(0) && this.structureContainerNearSource.containsKey(0)) {
+                val carrierAuto0:CarrierAuto? = parent.parent.dataCache.getCacheRecordRoom("mainContainer0",this.name)
+                if (carrierAuto0!=null) {
                     if (this.need[1][1] == 0) this.need[1][1] = 1
-                    if (this.need[1][2] == 0) this.need[1][2] = 1 //ToDo auto
+                    if (this.need[1][2] == 0) this.need[1][2] = carrierAuto0.needCarriers
                 }
-                if (this.source.containsKey(1) && this.structureContainerNearSource.containsKey(1)) {
+
+                val carrierAuto1:CarrierAuto? = parent.parent.dataCache.getCacheRecordRoom("mainContainer1",this.name)
+                if (carrierAuto1!=null) {
                     if (this.need[1][3] == 0) this.need[1][3] = 1
-                    if (this.need[1][4] == 0) this.need[1][4] = 1 //ToDo auto
+                    if (this.need[1][4] == 0) this.need[1][4] = carrierAuto1.needCarriers
                 }
 
                 //1.2 filler
-                if (this.need[0][5] ==0) this.need[0][5]=1 //filler
-
-                this.need[0][0]=1
+                if (this.need[0][5] ==0) this.need[0][5] = 1 //filler
+                if (this.need[1][5] ==0) this.need[1][5] = 1 //filler
 
                 //1.3 small filler
                 //if ((this.have[5]==0)&&(this.getEnergyInStorage()>2000))  this.need[0][9]=1
                 //if ((this.have[5]==0)&&(this.getEnergyInStorage()<=2000))  this.need[0][0]=2
+
+                //2 Upgrader
+                if (this.room.memory.SentEnergyToRoom == "") {
+                    if (this.room.energyCapacityAvailable>=1800) {
+                        this.need[1][6]=1
+                        this.need[1][7]=1
+                        this.need[2][6]=2
+                        this.need[2][7]=3
+                    }else{
+                        this.need[1][6]=2
+                        this.need[1][7]=2
+                        this.need[2][6]=1
+                        this.need[2][7]=2
+                    }
+                }else{
+                    this.need[1][6]=0
+                    this.need[1][7]=0
+                    this.need[2][6]=0
+                    this.need[2][7]=0
+                    //if (objRoom.oController < 20000) objRoom.Need1[13]=1;
+                }
+
+                if (this.getEnergyInStorage()<30000) {
+                    this.need[1][6]=0
+                    this.need[1][7]=0
+                    this.need[2][6]=0
+                    this.need[2][7]=0
+                }
+
+                //8 Builder
+                if ((this.constructionSite.isNotEmpty()) && (this.getEnergyInStorage() > 20000)) {
+                    this.need[1][8]=1
+                }
             }
         }
 
@@ -254,14 +290,50 @@ class MainRoom(val name: String, private val describe: String, private val slave
                 result = arrayOf(MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY)
             }
 
-            2,4 ->  {
-                //return objRoom.ContainersWaysCarrierNeed[indContainer].BodyCarriers; //ToDo auto
-                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+            2 ->  {
+                val carrierAuto:CarrierAuto? = parent.parent.dataCache.getCacheRecordRoom("mainContainer0",this.name)
+                if (carrierAuto==null) {
+                    messenger("ERROR",this.name,"Auto not exists mainContainer0", COLOR_RED)
+                    result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                }else{
+                    result = carrierAuto.needBody
+                }
+            }
+
+            4 ->  {
+                val carrierAuto:CarrierAuto? = parent.parent.dataCache.getCacheRecordRoom("mainContainer1",this.name)
+                if (carrierAuto==null) {
+                    messenger("ERROR",this.name,"Auto not exists mainContainer1", COLOR_RED)
+                    result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                }else{
+                    result = carrierAuto.needBody
+                }
             }
 
             5 -> {
                 if (this.room.energyCapacityAvailable>=5000) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
                 else result = arrayOf(MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+            }
+
+            6 -> {
+                if (this.room.energyCapacityAvailable<1800) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                else if (this.room.energyCapacityAvailable<=5600) result = arrayOf(CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE)
+                else result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+            }
+
+            7 -> {
+                if (this.room.energyCapacityAvailable<1800) result = arrayOf(MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY)
+                else if (this.room.energyCapacityAvailable<3000) result = arrayOf(WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE)
+                else if (this.room.energyCapacityAvailable<=5600) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                else result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+            }
+
+            8 -> {
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+            }
+
+            9 -> {
+                result = arrayOf(CARRY, CARRY, MOVE)
             }
         }
         return result
@@ -367,25 +439,6 @@ class MainRoom(val name: String, private val describe: String, private val slave
             return 1
 
         return 0
-    }
-
-    fun recalculateWays() {
-//        if (this.getLevelOfRoom() != 2) return
-//        val Storage:StructureStorage = this.structureStorage[0] ?: return
-//
-//        for (i in 0 until objRoom.Containers.length) {
-//            if (objRoom.ContainersWaysToStorage[i] != null && fNeedRecalculate === 0) continue
-//            if (objRoom.Containers[i] == null) continue
-//            val fContainer = Game.getObjectById(objRoom.Containers[i]) ?: continue
-//
-//            val ret = afunc.GetWayFromPosToPos(fContainer.pos, fStorage.pos)
-//            if (!ret.incomplete) objRoom.ContainersWaysToStorage[i] = ret.path
-//
-//            var fEnergyCapacity = SOURCE_ENERGY_CAPACITY + 500
-//
-//            if (!ret.incomplete) objRoom.ContainersWaysWaight[i] = fEnergyCapacity * ret.path.length * 2 / SPAWN_ENERGY_CAPACITY
-//            if (!ret.incomplete) objRoom.ContainersWaysCarrierNeed[i] = afunc.GetInfoCarierNeed(objRoom, i)
-//        }
     }
 
     init {

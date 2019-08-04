@@ -43,15 +43,16 @@ fun testingFunctions (mainContext : MainContext) {
 //            console.log(fSlaveRoom.need[2].toString())
 //        }
         //mainContext.dataCache.dataCacheRecordRoom["TestData"] = CacheRecordRoom(200)
-        delete(Memory["dataCache"])
-        val cacheRecordRoom:CacheRecordRoom? = mainContext.dataCache.dataCacheRecordRoom["TestData"]
-        if (cacheRecordRoom != null){
-            cacheRecordRoom.testData++
-            messenger("TEST","____","testData is: ${cacheRecordRoom.testData}", COLOR_GREEN)
-        }
+//        delete(Memory["dataCache"])
+//        val cacheRecordRoom:CacheRecordRoom? = mainContext.dataCache.dataCacheRecordRoom["TestData"]
+//        if (cacheRecordRoom != null){
+//            cacheRecordRoom.testData++
+//            messenger("TEST","____","testData is: ${cacheRecordRoom.testData}", COLOR_GREEN)
+//        }
 
-
-
+        val carrierAuto : CarrierAuto? = mainContext.dataCache.getCacheRecordRoom("mainContainer0", "E54N37")
+        //if (carrierAuto!=null)
+        //    messenger("TEST","E54N37","carrierAuto is: ${carrierAuto.needBody}", COLOR_GREEN)
     }
 
 }

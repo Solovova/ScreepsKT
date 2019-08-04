@@ -22,10 +22,10 @@
 //slave2
 
 //E53N39 full  upgrade   from E54N37    in process
-//E52N37 build spawn     from E54N37    in process
 //E52N35 build spawn     from E54N37    in process
 //E52N38 build spawn     from E54N37
 //E53N38 full  upgrade   from E54N37
 
 //E59N36 self upgrade                   in process
+//E52N37 self upgrade                   in process
 

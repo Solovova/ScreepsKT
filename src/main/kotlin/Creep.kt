@@ -221,19 +221,12 @@ fun Creep.newTask(mainContext: MainContext) {
 
     //00 starting creep, harvester, upgrader, builder to level 4
     if (this.memory.role == 0) {
-        if (mainRoom.name == "E54N37") {
-            if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
-            if (!isTask) isTask = this.buildStructure(creepCarry,mainContext,mainRoom)
-            if (!isTask) isTask = this.upgradeNormalOrEmergency(0,creepCarry,mainContext,mainRoom)
-        }else{
-            if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
-            if (!isTask) isTask = this.harvestFromSource(2,creepCarry,mainContext,mainRoom)
-            if (!isTask) isTask = this.transferToFilling(creepCarry,mainContext,mainRoom)
-            if (!isTask) isTask = this.upgradeNormalOrEmergency(1,creepCarry,mainContext,mainRoom)
-            if (!isTask) isTask = this.buildStructure(creepCarry,mainContext,mainRoom)
-            if (!isTask) isTask = this.upgradeNormalOrEmergency(0,creepCarry,mainContext,mainRoom)
-        }
-
+        if (!isTask) isTask = this.takeFromStorage(creepCarry, mainContext, mainRoom)
+        if (!isTask) isTask = this.harvestFromSource(2, creepCarry, mainContext, mainRoom)
+        if (!isTask) isTask = this.transferToFilling(creepCarry, mainContext, mainRoom)
+        if (!isTask) isTask = this.upgradeNormalOrEmergency(1, creepCarry, mainContext, mainRoom)
+        if (!isTask) isTask = this.buildStructure(creepCarry, mainContext, mainRoom)
+        if (!isTask) isTask = this.upgradeNormalOrEmergency(0, creepCarry, mainContext, mainRoom)
     }
 
     if (this.memory.role == 1 || this.memory.role == 1001) {
@@ -267,6 +260,26 @@ fun Creep.newTask(mainContext: MainContext) {
         if ((this.memory.role == 5) && this.ticksToLive<150) this.memory.role = this.memory.role + 1000
         if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
         if (!isTask) isTask = this.transferToFilling(creepCarry,mainContext,mainRoom)
+    }
+
+    if (this.memory.role == 6) {
+        if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
+        if (!isTask) isTask = this.transferToContainer(2,creepCarry,mainContext,mainRoom)
+    }
+
+    if (this.memory.role == 7) {
+        if (!isTask) isTask = this.takeFromContainer(2,creepCarry,mainContext,mainRoom)
+        if (!isTask) isTask = this.upgradeNormalOrEmergency(0,creepCarry,mainContext,mainRoom)
+    }
+
+    if (this.memory.role == 8) {
+        if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
+        if (!isTask) isTask = this.buildStructure(creepCarry, mainContext, mainRoom)
+    }
+
+    if (this.memory.role == 9) {
+        if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
+        if (!isTask) isTask = this.transferToFilling(creepCarry, mainContext, mainRoom)
     }
 
     if (this.memory.role == 100) {
@@ -422,13 +435,23 @@ fun Creep.endTask(mainContext: MainContext) {
 }
 
 fun Creep.doTaskGoTo(task: CreepTask, pos: RoomPosition, range: Int) {
-    if (this.pos.roomName != pos.roomName) {
-        val exitDir = this.room.findExitTo(pos.roomName)
-        val exitPath = this.pos.findClosestByRange(exitDir)
-        if (exitPath != null) this.moveTo(exitPath.x,exitPath.y)
-        return
-    }
+//    if (this.pos.roomName != pos.roomName) {
+//        val exitDir = this.room.findExitTo(pos.roomName)
+//        val exitPath = this.pos.findClosestByRange(exitDir)
+//        if (exitPath != null) this.moveTo(exitPath.x,exitPath.y)
+//        return
+//    }
 
     if (this.pos.inRangeTo(pos, range)) task.come = true
-    else this.moveTo(pos.x, pos.y)
+    else this.moveTo(pos)
+
+//        if (this.pos.x == 0 || this.pos.x == 49 || this.pos.y == 0 || this.pos.y == 49) {
+//        var x = this.pos.x
+//        var y = this.pos.y
+//        if (this.pos.x == 0) x = 1
+//        if (this.pos.x == 49) x = 48
+//        if (this.pos.y == 0) y = 1
+//        if (this.pos.y == 49) y = 48
+//        this.moveTo(x, y)
+//    } else this.moveTo(pos)
 }
