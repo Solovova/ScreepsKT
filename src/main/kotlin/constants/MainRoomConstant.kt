@@ -2,14 +2,12 @@ package constants
 
 import messenger
 import screeps.api.COLOR_RED
-import screeps.api.Game
-import screeps.api.get
 
 class MainRoomConstant {
     var slaveRooms : Array<String> = arrayOf()
     val slaveRoomConstantContainer: MutableMap<String,SlaveRoomConstant> = mutableMapOf()
     //Upgrader
-    var energyUpgradable : Int = 50000 //how much energy must be in storage for start upgrade controller
+    var energyUpgradable : Int = 40000 //how much energy must be in storage for start upgrade controller
 
     //Builder
     var energyBuilder : Int = 20000 //how much energy must be in storage for start building
@@ -20,6 +18,10 @@ class MainRoomConstant {
             messenger("ERROR", slaveRoomName, "initialization don't see SlaveRoomConstant", COLOR_RED)
             SlaveRoomConstant()
         }else slaveRoomConstant
+    }
+
+    fun s(index: Int) : SlaveRoomConstant {
+        return this.getSlaveRoomConstant(this.slaveRooms[index])
     }
 
     fun initSlaveRoomConstantContainer(names: Array<String>) {

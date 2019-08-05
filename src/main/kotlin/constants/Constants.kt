@@ -12,8 +12,8 @@ class Constants {
     val mainRoomConstantContainer: MutableMap<String, MainRoomConstant> = mutableMapOf()
 
     init {
-        //this.initMain()
-        this.initTest()
+        this.initMain()
+        //this.initTest()
     }
 
     fun initMainRoomConstantContainer(names: Array<String>) {
@@ -32,5 +32,14 @@ class Constants {
             messenger("ERROR", mainRoomName, "initialization don't see MainRoomConstant", COLOR_RED)
             MainRoomConstant()
         }else mainRoomConstant
+    }
+
+    fun m(index: Int) : MainRoomConstant {
+        return this.getMainRoomConstant(this.mainRooms[index])
+    }
+
+    fun s(indexMain: Int, indexSlave: Int) : SlaveRoomConstant {
+        val mainRoomConstant:MainRoomConstant = this.getMainRoomConstant(this.mainRooms[indexMain])
+        return mainRoomConstant.s(indexSlave)
     }
 }
