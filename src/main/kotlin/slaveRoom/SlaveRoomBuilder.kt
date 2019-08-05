@@ -1,6 +1,5 @@
 package slaveRoom
 
-import mainRoom.MainRoom
 import screeps.api.*
 import screeps.api.structures.StructureController
 

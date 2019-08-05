@@ -18,7 +18,7 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
             val mainRoomConstant: MainRoomConstant? = this.parent.constants.mainRoomConstantContainer[name]
             if (mainRoomConstant != null)
                 rooms[name] = MainRoom(this, name, "M$index", mainRoomConstant)
-            else messenger("ERROR", "$name", "initialization don't see mainRoomConstant", COLOR_RED)
+            else messenger("ERROR", name, "initialization don't see mainRoomConstant", COLOR_RED)
         }
     }
 
