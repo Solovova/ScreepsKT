@@ -5,7 +5,9 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 fun messenger(type: String, room: String, text: String, color: ColorConstant) {
-    //if (type === "FILLED") {return; }
+    if (type == "TASK") return
+    if (type == "TEST") return
+
     var fHTMLColor = ""
     if (color === COLOR_YELLOW) fHTMLColor = "yellow"
     if (color === COLOR_RED) fHTMLColor = "red"

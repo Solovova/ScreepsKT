@@ -216,6 +216,16 @@ fun Creep.endTask(mainContext: MainContext) {
 
         TypeOfTask.Take -> {
             if (creepCarry != 0) mainContext.tasks.deleteTask(this.id)
+
+            val structure: Structure? = (Game.getObjectById(task.idObject0) as Structure?)
+
+            if (structure == null) mainContext.tasks.deleteTask(this.id)
+            else {
+                if (structure.structureType == STRUCTURE_CONTAINER
+                        && (structure as StructureContainer).store.energy == 0) mainContext.tasks.deleteTask(this.id)
+                if (structure.structureType == STRUCTURE_STORAGE
+                        && (structure as StructureStorage).store.energy == 0) mainContext.tasks.deleteTask(this.id)
+            }
         }
 
         TypeOfTask.TransferTo -> {

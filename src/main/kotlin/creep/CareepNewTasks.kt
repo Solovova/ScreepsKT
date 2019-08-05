@@ -130,7 +130,7 @@ fun Creep.takeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext
             0 -> objForFilling = mainRoom.structureContainerNearSource[0]
             1 -> objForFilling = mainRoom.structureContainerNearSource[1]
             2 -> objForFilling = mainRoom.structureContainerNearController[0]
-            3 -> objForFilling = mainRoom.structureContainer.values.maxBy { it.store.energy}
+            3 -> objForFilling = mainRoom.structureContainer.values.filter { it.store.energy != 0 }.maxBy { it.store.energy}
         }
         if (objForFilling != null) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Take, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
