@@ -1,3 +1,5 @@
+import Tasks
+import constants.Constants
 import creep.doTask
 import creep.newTask
 import dataCache.DataCache
@@ -10,6 +12,7 @@ class MainContext {
     var mainRoomCollector: MainRoomCollector
     val tasks: Tasks
     val dataCache : DataCache
+    val constants: Constants = Constants()
 
     init {
         this.mainRoomCollector = MainRoomCollector(this, arrayOf())
@@ -18,7 +21,7 @@ class MainContext {
     }
 
     fun runInStartOfTick() {
-        this.mainRoomCollector = MainRoomCollector(this, Memory["mainRoomCollector"] as Array<String>)
+        this.mainRoomCollector = MainRoomCollector(this, this.constants.mainRooms)
         this.tasks.deleteTaskDiedCreep()
         this.houseKeeping()
         this.mainRoomCollector.runInStartOfTick()

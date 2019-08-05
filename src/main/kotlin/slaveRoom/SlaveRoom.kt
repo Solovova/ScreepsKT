@@ -1,12 +1,13 @@
 package slaveRoom
 
+import constants.SlaveRoomConstant
 import constants.constantSlaveRoomInit
 import mainRoom.MainRoom
 import mainRoom.QueueSpawnRecord
 import screeps.api.*
 import screeps.api.structures.*
 
-class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, val type: Int) {
+class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, val slaveRoomConstant: SlaveRoomConstant) {
     val room: Room? = Game.rooms[this.name]
 
     val need = Array(3) { Array(20) { 0 } }

@@ -1,4 +1,5 @@
 import dataCache.CacheCarrier
+import screeps.api.COLOR_GREEN
 
 fun testingFunctions (mainContext : MainContext) {
     //Testing functions
@@ -51,5 +52,15 @@ fun testingFunctions (mainContext : MainContext) {
         //if (carrierAuto!=null)
         //    messenger("TEST","E54N37","carrierAuto is: ${carrierAuto.needBody}", COLOR_GREEN)
     }
+
+    val mainRoom = mainContext.mainRoomCollector.rooms["E59N36"]
+    if (mainRoom != null) {
+        for (record in mainRoom.structureContainerNearSource)
+            messenger("TEST",mainRoom.name,"structureContainerNearSource: ${record.key}  ${record.value.id}", COLOR_GREEN)
+
+        for (record in mainRoom.source)
+            messenger("TEST",mainRoom.name,"source: ${record.key}  ${record.value.id}", COLOR_GREEN)
+    }
+
 
 }

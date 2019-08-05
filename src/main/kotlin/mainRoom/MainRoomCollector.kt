@@ -1,6 +1,7 @@
 package mainRoom
 
 import MainContext
+import constants.MainRoomConstant
 import slaveRoom.SlaveRoom
 import mainRoom
 import messenger
@@ -14,13 +15,10 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
 
     init {
         names.forEachIndexed { index, name ->
-            if (Game.rooms[name] == null) messenger("ERROR", name, "Not room M$index", COLOR_RED)
-            else {
-                var slaveRoomsName: Array<String> = arrayOf()
-                if (Memory["mainRoomsData"] != null && Memory["mainRoomsData"][name] != null && Memory["mainRoomsData"][name]["slaveRooms"] != null)
-                    slaveRoomsName = Memory["mainRoomsData"][name]["slaveRooms"] as Array<String>
-                rooms[name] = MainRoom(this, name, "M$index", slaveRoomsName)
-            }
+            val mainRoomConstant: MainRoomConstant? = this.parent.constants.mainRoomConstantContainer[name]
+            if (mainRoomConstant != null)
+                rooms[name] = MainRoom(this, name, "M$index", mainRoomConstant)
+            else messenger("ERROR", "$name", "initialization don't see mainRoomConstant", COLOR_RED)
         }
     }
 

@@ -2,6 +2,8 @@ package mainRoom
 
 import MainContext
 import SentEnergyToRoom
+import constants.MainRoomConstant
+import constants.SlaveRoomConstant
 import slaveRoom.SlaveRoom
 import constants.constantMainRoomInit
 import dataCache.CacheCarrier
@@ -9,7 +11,7 @@ import messenger
 import screeps.api.*
 import screeps.api.structures.*
 
-class MainRoom(private val parent: MainRoomCollector, val name: String, private val describe: String, private val slaveRoomsName: Array<String>) {
+class MainRoom(private val parent: MainRoomCollector, val name: String, private val describe: String, private val mainRoomConstant: MainRoomConstant) {
     val room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
     val slaveRooms: MutableMap<String, SlaveRoom> = mutableMapOf()
 
@@ -155,11 +157,11 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
 
                 if (this.source.containsKey(0) && this.structureContainerNearSource.containsKey(0)) {
                     if (this.need[1][1] == 0) this.need[1][1] = 1
-                    this.need[0][0] = this.need[0][0] - 2
+                    //this.need[0][0] = this.need[0][0] - 2
                 }
 
                 if (this.source.containsKey(1) && this.structureContainerNearSource.containsKey(1))
-                    if (this.need[1][3] == 0) this.need[1][1] = 1
+                    if (this.need[1][3] == 0) this.need[1][3] = 1
             }
 
             1 -> {
@@ -203,19 +205,23 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
                     this.need[1][7]=0
                     this.need[2][6]=0
                     this.need[2][7]=0
-                    if (this.getTicksToDowngrade() < 20000) this.need[0][13]=1
                 }
 
-                if (this.getEnergyInStorage()<50000) {
+                if (this.getEnergyInStorage()<this.mainRoomConstant.energyUpgradable) {
                     this.need[1][6]=0
                     this.need[1][7]=0
                     this.need[2][6]=0
                     this.need[2][7]=0
-                    if (this.getTicksToDowngrade() < 20000) this.need[0][13]=1
                 }
 
+                //2.1 Small upgrader
+                if (this.need[0][6] == 0 && this.need[1][6] == 0 && this.need[2][6] == 0 &&
+                        this.need[0][7] == 0 && this.need[1][7] == 0 && this.need[2][7] == 0 &&
+                        this.have[6] == 0 && this.have[7] == 0 && this.getTicksToDowngrade() < 20000)
+                    this.need[0][13]=1
+
                 //8 Builder
-                if ((this.constructionSite.isNotEmpty()) && (this.getEnergyInStorage() > 20000)) {
+                if ((this.constructionSite.isNotEmpty()) && (this.getEnergyInStorage() > this.mainRoomConstant.energyBuilder)) {
                     this.need[1][8]=1
                 }
             }
@@ -470,19 +476,11 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
     init {
         constantMainRoomInit(this)
 
-        //SlaveRooms
-        this.slaveRoomsName.forEachIndexed { index, nameSlaveRoom ->
-            var typeSlaveRoom: Int = 0
-            if (Memory["mainRoomsData"] != null
-                    && Memory["mainRoomsData"][this.name] != null
-                    && Memory["mainRoomsData"][this.name][nameSlaveRoom] != null
-                && Memory["mainRoomsData"][this.name][nameSlaveRoom]["type"] != null)
-                typeSlaveRoom = Memory["mainRoomsData"][this.name][nameSlaveRoom]["type"] as Int
-            slaveRooms[nameSlaveRoom] = SlaveRoom(this, nameSlaveRoom, "${this.describe}S$index", typeSlaveRoom)
+        this.mainRoomConstant.slaveRooms.forEachIndexed {  index, slaveName ->
+            val slaveRoomConstant: SlaveRoomConstant? = mainRoomConstant.slaveRoomConstantContainer[slaveName]
+            if (slaveRoomConstant != null)
+                slaveRooms[slaveName] = SlaveRoom(this, slaveName, "${this.describe}S$index", slaveRoomConstant)
+            else messenger("ERROR", "${this.name} $slaveName", "initialization don't see slaveRoomConstant", COLOR_RED)
         }
     }
-
-
-
-
 }

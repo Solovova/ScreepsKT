@@ -38,3 +38,6 @@
 //E52N35 self upgrade                   in process
 //E52N38 self upgrade                   in process
 
+//ToDo slave room full auto
+//build road, when limit calculate next tick for check
+
