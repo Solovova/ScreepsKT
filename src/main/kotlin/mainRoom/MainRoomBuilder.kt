@@ -54,7 +54,7 @@ fun MainRoom.building() {
         if (this.room.energyCapacityAvailable!=800) {//строим extension 5
             if (this.buildStructure(COLOR_WHITE,COLOR_RED,STRUCTURE_EXTENSION,1)) return
         }
-
+        if (this.buildStructure(COLOR_WHITE, COLOR_YELLOW, STRUCTURE_CONTAINER,1)) return
         if (this.buildStructure(COLOR_WHITE,COLOR_BLUE,STRUCTURE_TOWER,1)) return
         if (this.buildStructure(COLOR_WHITE,COLOR_CYAN,STRUCTURE_ROAD,80)) return
     }

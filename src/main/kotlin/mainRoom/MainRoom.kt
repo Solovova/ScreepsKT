@@ -79,7 +79,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
 
     //StructureContainer
     private var _structureContainer: Map<String, StructureContainer>? = null
-    private val structureContainer: Map<String, StructureContainer>
+    val structureContainer: Map<String, StructureContainer>
         get() {
             if (this._structureContainer == null)
                 _structureContainer = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_CONTAINER }.associate { it.id to it as StructureContainer}
@@ -152,6 +152,14 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
                         if (this.source.size == 1) this.need[0][0] = this.need[0][0] % 2 + 1
                     }
                 }
+
+                if (this.source.containsKey(0) && this.structureContainerNearSource.containsKey(0)) {
+                    if (this.need[1][1] == 0) this.need[1][1] = 1
+                    this.need[0][0] = this.need[0][0] - 2
+                }
+
+                if (this.source.containsKey(1) && this.structureContainerNearSource.containsKey(1))
+                    if (this.need[1][3] == 0) this.need[1][1] = 1
             }
 
             1 -> {
@@ -174,8 +182,8 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
                 if (this.need[1][5] ==0) this.need[1][5] = 1 //filler
 
                 //1.3 small filler
-                //if ((this.have[5]==0)&&(this.getEnergyInStorage()>2000))  this.need[0][9]=1
-                //if ((this.have[5]==0)&&(this.getEnergyInStorage()<=2000))  this.need[0][0]=2
+                if ((this.have[5]==0)&&(this.getEnergyInStorage()>2000))  this.need[0][9]=1
+                if ((this.have[5]==0)&&(this.getEnergyInStorage()<=2000))  this.need[0][0]=2
 
                 //2 Upgrader
                 if (this.room.memory.SentEnergyToRoom == "") {
@@ -195,14 +203,15 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
                     this.need[1][7]=0
                     this.need[2][6]=0
                     this.need[2][7]=0
-                    //if (objRoom.oController < 20000) objRoom.Need1[13]=1;
+                    if (this.getTicksToDowngrade() < 20000) this.need[0][13]=1
                 }
 
-                if (this.getEnergyInStorage()<30000) {
+                if (this.getEnergyInStorage()<50000) {
                     this.need[1][6]=0
                     this.need[1][7]=0
                     this.need[2][6]=0
                     this.need[2][7]=0
+                    if (this.getTicksToDowngrade() < 20000) this.need[0][13]=1
                 }
 
                 //8 Builder
@@ -214,7 +223,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
 
     }
 
-    private fun getEnergyInStorage():Int {
+    fun getEnergyInStorage():Int {
         var result: Int? = null
         if (this.structureStorage.containsKey(0)) result = this.structureStorage[0]?.store?.energy
         return result ?: 0
@@ -292,7 +301,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
             }
 
             1,3 ->  {
-                result = arrayOf(MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY)
+                result = arrayOf(MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY)
             }
 
             2 ->  {
@@ -340,6 +349,10 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
             9 -> {
                 result = arrayOf(CARRY, CARRY, MOVE)
             }
+
+            13 -> {
+                result = arrayOf(WORK, CARRY, MOVE)
+            }
         }
         return result
     }
@@ -376,7 +389,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
         // Загружаем все extension
         for (extension in this.structureExtension.values)
             if (extension.energyCapacity > extension.energy)
-                needs[extension] = StructureData(extension.energyCapacity - extension.energy,2)
+                needs[extension] = StructureData(extension.energyCapacity - extension.energy,1)
 
         // Загружаем все спавны
         for (spawn in this.structureSpawn.values)
@@ -387,7 +400,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
         // Загружаем Tower если енергия меньше 1000
         //ToDo set priority 0 if have hostile creeps and queue < 2
         for (tower in this.structureTower.values)
-            if (tower.energy < 400) needs[tower] = StructureData(tower.energyCapacity - tower.energy,2)
+            if (tower.energy < 400) needs[tower] = StructureData(tower.energyCapacity - tower.energy,3)
 
         if (needs.isEmpty()) return null
         // Производим коррекцию с учетем заданий которые делаются и ищем ближайший
@@ -445,6 +458,14 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
 
         return 0
     }
+
+    private fun getTicksToDowngrade(): Int {
+        var result = 0
+        val protectedStructureController = this.structureController[0]
+        if (protectedStructureController != null) result = protectedStructureController.ticksToDowngrade
+        return result
+    }
+
 
     init {
         constantMainRoomInit(this)

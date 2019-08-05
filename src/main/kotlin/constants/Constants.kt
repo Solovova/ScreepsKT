@@ -27,26 +27,12 @@ fun setGlobalConstants() {
         //test M0
         //var dMemory = Memory["mainRoomsData"]["W3N4"]
         //dMemory["slaveRooms"] = arrayOf("W1N3")
-
-
-
-        //fill null slaveRoomsData
-        for (mainRoom in Memory["mainRoomCollector"]){
-            for (slaveRoom in Memory["mainRoomsData"][mainRoom]["slaveRooms"]) {
-                Memory["mainRoomsData"][mainRoom][slaveRoom] = object {}
-            }
-        }
-
-        //FILL DATA SLAVE ROOMS
-        //test M0 S0
-        //dMemory = Memory["mainRoomsData"]["W3N4"]["W1N3"]
-        //dMemory["type"] = 1
     }
 
 
 
     if (Memory["account"] == "main") {
-        Memory["mainRoomCollector"] = arrayOf("E54N37","E59N36","E52N35","E52N38")
+        Memory["mainRoomCollector"] = arrayOf("E54N37","E59N36","E52N35","E52N38","E53N39")
 
         //fill null mainRoomsData
         Memory["mainRoomsData"] = object {}
@@ -59,24 +45,7 @@ fun setGlobalConstants() {
 
         //test M0
         var dMemory = Memory["mainRoomsData"]["E54N37"]
-        dMemory["slaveRooms"] = arrayOf("E53N39","E52N37")
-
-        //fill null slaveRoomsData
-        for (mainRoom in Memory["mainRoomCollector"]){
-            for (slaveRoom in Memory["mainRoomsData"][mainRoom]["slaveRooms"]) {
-                Memory["mainRoomsData"][mainRoom][slaveRoom] = object {}
-            }
-        }
-
-        //FILL DATA SLAVE ROOMS
-        //test M0 S0
-        dMemory = Memory["mainRoomsData"]["E54N37"]["E53N39"]
-        dMemory["type"] = 1
-
-        //FILL DATA SLAVE ROOMS
-        //test M0 S0
-        dMemory = Memory["mainRoomsData"]["E54N37"]["E52N37"]
-        dMemory["type"] = 1
+        dMemory["slaveRooms"] = arrayOf("E52N37")
     }
 }
 
@@ -133,6 +102,8 @@ fun constantSlaveRoomInit(slaveRoom: SlaveRoom) {
         arrayCopy(slaveRoom.need[1], arrayOf(0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
         arrayCopy(slaveRoom.need[2], arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     }
+
+
 
 
 }

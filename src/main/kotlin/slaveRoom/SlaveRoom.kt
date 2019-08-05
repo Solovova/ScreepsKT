@@ -61,7 +61,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
 
     //StructureContainer //ToDo test
     private var _structureContainer: Map<String, StructureContainer>? = null
-    private val structureContainer: Map<String, StructureContainer>
+    val structureContainer: Map<String, StructureContainer>
         get() {
             if (this.room == null)
                 _structureContainer = mapOf()
@@ -87,12 +87,23 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             return _structureContainerNearSource ?: throw AssertionError("Error get StructureContainerNearSource")
         }
 
+    //StructureStorage
+    private var _structureStorage: Map<Int, StructureStorage>? = null
+    val structureStorage: Map<Int, StructureStorage>
+        get() {
+            if (this.room == null)
+                _structureStorage = mapOf()
+            else if (this._structureStorage == null)
+                _structureStorage = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_STORAGE }.withIndex().associate { it.index to it.value as StructureStorage }
+            return _structureStorage ?: throw AssertionError("Error get StructureStorage")
+        }
+
     init {
         constantSlaveRoomInit(this)
     }
 
     fun buildQueue(queue: MutableList<QueueSpawnRecord>, priority: Int) {
-        val fPriorityOfRole = arrayOf(0, 1)
+        val fPriorityOfRole = arrayOf(0, 1 , 2)
         for (fRole in fPriorityOfRole) {
             var fNeed = this.need[0][fRole]
             if (priority >= 1) fNeed += this.need[1][fRole]
@@ -114,6 +125,10 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
 
             101 -> {
                 result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY)
+            }
+
+            102 -> {
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
             }
         }
         return result

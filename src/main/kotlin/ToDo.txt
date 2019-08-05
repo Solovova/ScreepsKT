@@ -9,10 +9,13 @@
 // 7 - upgrader
 // 8 - builder
 // 9 - small filler
+//13 - small upgrader
 
 //Slave
 // 0 - colonizer +
-// 0 - universal +
+// 1 - universal +
+// 2 - far carrier
+
 
 //Queue priority
 //need0
