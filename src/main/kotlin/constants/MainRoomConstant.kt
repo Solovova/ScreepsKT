@@ -11,8 +11,9 @@ class MainRoomConstant {
 
     //Builder
     var energyBuilder : Int = 20000 //how much energy must be in storage for start building
+    var note : String = ""
 
-    fun getSlaveRoomConstant(slaveRoomName: String) : SlaveRoomConstant {
+    private fun getSlaveRoomConstant(slaveRoomName: String) : SlaveRoomConstant {
         val slaveRoomConstant:SlaveRoomConstant ? = this.slaveRoomConstantContainer[slaveRoomName]
         return if (slaveRoomConstant == null) {
             messenger("ERROR", slaveRoomName, "initialization don't see SlaveRoomConstant", COLOR_RED)

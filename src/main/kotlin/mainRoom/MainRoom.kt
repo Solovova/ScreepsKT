@@ -6,6 +6,7 @@ import constants.MainRoomConstant
 import constants.SlaveRoomConstant
 import slaveRoom.SlaveRoom
 import constants.constantMainRoomInit
+import creep.getDescribeForQueue
 import dataCache.CacheCarrier
 import messenger
 import screeps.api.*
@@ -131,8 +132,9 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
     fun buildCreeps() {
         this.needCorrection()
         this.buildQueue()
-        this.showQueue()
+
         this.spawnCreep()
+        this.showQueue()
     }
 
     private fun needCorrection() {
@@ -283,16 +285,32 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
             slaveRoom.buildQueue(this.queue,2)
     }
 
+
     private fun showQueue() {
         //ToDo show creepsRole who mainRoom.building
-        var showText = "Queue: (${this.describe}) "
+        var showText = "(${this.describe}):".padEnd(8)
+        var textSpawning: String = ""
+
+        for (spawn in this.structureSpawn) {
+            val recordSpawning = spawn.value.spawning
+            if (recordSpawning != null) {
+                val creep: Creep? = Game.creeps[recordSpawning.name]
+                textSpawning += creep?.getDescribeForQueue(parent.parent) ?: ""
+            }
+        }
+
+        showText += textSpawning
+        showText = showText.padEnd(45) + ":"
+
+
         for (record in this.queue) {
             var prefix = ""
             if (record.mainRoom != record.slaveRoom)
-                prefix = "${this.slaveRooms[record.slaveRoom]?.describe ?: "und"} (${this.slaveRooms[record.slaveRoom]?.name ?: "u"})"
+                prefix = this.slaveRooms[record.slaveRoom]?.describe ?: "und"
             showText += "$prefix ${record.role},"
         }
-        messenger("QUEUE", this.name, showText, COLOR_YELLOW)
+
+        messenger("QUEUE", this.name, showText, COLOR_YELLOW, testBefore = "(${this.mainRoomConstant.note}".padEnd(30) + ")")
     }
 
     private fun getBodyRole(role: Int): Array<BodyPartConstant> {

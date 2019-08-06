@@ -13,6 +13,15 @@ import screeps.api.structures.*
 import screeps.utils.toMap
 import slaveRoom
 
+fun Creep.getDescribeForQueue(mainContext: MainContext):String {
+    val mainRoom: MainRoom = mainContext.mainRoomCollector.rooms[this.memory.mainRoom] ?: return ""
+    var slaveRoom: SlaveRoom? = null
+    if (this.memory.role in 100..199 || this.memory.role in 1100..1199) {
+        slaveRoom = mainRoom.slaveRooms[this.memory.slaveRoom] ?: return ""
+    }
+    return "(" +(slaveRoom?.describe ?: "" ).padEnd(7) + this.memory.role.toString().padEnd(3) +")"
+}
+
 fun Creep.newTask(mainContext: MainContext) {
 
     if (this.spawning) return
