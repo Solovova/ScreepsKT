@@ -1,4 +1,4 @@
-import dataCache.CacheCarrier
+import constants.CacheCarrier
 import mainRoom.MainRoom
 import screeps.api.*
 import kotlin.math.min

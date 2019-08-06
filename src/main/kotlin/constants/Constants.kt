@@ -16,7 +16,7 @@ import screeps.utils.unsafe.delete
 
 
 class Constants {
-    private val globalConstant: GlobalConstant = GlobalConstant()  //cashed
+    val globalConstant: GlobalConstant = GlobalConstant()  //cashed
     var mainRooms: Array<String> = arrayOf() //simple
     val mainRoomConstantContainer: MutableMap<String, MainRoomConstant> = mutableMapOf() //cashed
 
@@ -63,14 +63,18 @@ class Constants {
     }
 
     fun toMemory() {
+        val d: dynamic = this.toDynamic()
         delete(Memory["global"])
-        Memory["global"] = this.toDynamic()
+        Memory["global"] = d
     }
 
     fun fromDynamic(d: dynamic) {
         if (d["mainRoomConstantContainer"] != null)
             for (record in mainRoomConstantContainer)
                 record.value.fromDynamic(d["mainRoomConstantContainer"][record.key])
+
+        if (d["globalConstant"] != null)
+            globalConstant.fromDynamic(d["globalConstant"] )
     }
 
     fun fromMemory() {

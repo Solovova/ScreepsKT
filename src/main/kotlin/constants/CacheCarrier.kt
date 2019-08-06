@@ -1,4 +1,4 @@
-package dataCache
+package constants
 
 import screeps.api.BodyPartConstant
 import screeps.api.CARRY

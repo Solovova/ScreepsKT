@@ -6,7 +6,8 @@ import constants.SlaveRoomConstant
 import slaveRoom.SlaveRoom
 import constants.constantMainRoomInit
 import creep.getDescribeForQueue
-import dataCache.CacheCarrier
+import constants.CacheCarrier
+import getCacheRecordRoom
 import messenger
 import screeps.api.*
 import screeps.api.structures.*
@@ -168,13 +169,13 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
             1 -> {
                 //1 harvester ,carrier ,filler , small harvester-filler, small filler
                 //1.1 harvester ,carrier
-                val carrierAuto0: CacheCarrier? = parent.parent.dataCache.getCacheRecordRoom("mainContainer0",this.name)
+                val carrierAuto0: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer0",this.name)
                 if (carrierAuto0!=null) {
                     if (this.need[1][1] == 0) this.need[1][1] = 1
                     if (this.need[1][2] == 0) this.need[1][2] = carrierAuto0.needCarriers
                 }
 
-                val carrierAuto1: CacheCarrier? = parent.parent.dataCache.getCacheRecordRoom("mainContainer1",this.name)
+                val carrierAuto1: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer1",this.name)
                 if (carrierAuto1!=null) {
                     if (this.need[1][3] == 0) this.need[1][3] = 1
                     if (this.need[1][4] == 0) this.need[1][4] = carrierAuto1.needCarriers
@@ -328,7 +329,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
             }
 
             2 ->  {
-                val carrierAuto: CacheCarrier? = parent.parent.dataCache.getCacheRecordRoom("mainContainer0",this.name)
+                val carrierAuto: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer0",this.name)
                 if (carrierAuto==null) {
                     messenger("ERROR", this.name, "Auto not exists mainContainer0", COLOR_RED)
                     result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
@@ -338,7 +339,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
             }
 
             4 ->  {
-                val carrierAuto: CacheCarrier? = parent.parent.dataCache.getCacheRecordRoom("mainContainer1",this.name)
+                val carrierAuto: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer1",this.name)
                 if (carrierAuto==null) {
                     messenger("ERROR", this.name, "Auto not exists mainContainer1", COLOR_RED)
                     result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)

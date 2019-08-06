@@ -1,7 +1,6 @@
 import constants.Constants
 import creep.doTask
 import creep.newTask
-import dataCache.DataCache
 import mainRoom.MainRoomCollector
 import screeps.api.*
 import screeps.utils.isEmpty
@@ -14,13 +13,11 @@ import screeps.utils.unsafe.delete
 class MainContext {
     var mainRoomCollector: MainRoomCollector = MainRoomCollector(this, arrayOf())
     val tasks: Tasks
-    val dataCache : DataCache
     val constants: Constants = Constants()
     var initOnThisTick: Boolean = true
 
     init {
         this.tasks = Tasks()
-        this.dataCache = DataCache(this)
 
         //Only this  //ToDo run once, if we run in init don't run runInStartOfTick in future
         this.runInStartOfTick()
@@ -39,7 +36,6 @@ class MainContext {
     fun runInEndOfTick() {
         for (creep in Game.creeps.values) creep.doTask(this)
         this.tasks.toMemory()
-        this.dataCache.toMemory()
 
         //only this
         this.initOnThisTick = false

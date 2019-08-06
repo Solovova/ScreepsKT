@@ -3,7 +3,7 @@ package constants
 fun Constants.initMain() {
     this.initMainRoomConstantContainer( arrayOf("E54N37","E59N36","E52N35","E52N38","E53N39","E52N37","E54N39", "E51N39") )
     this.getMainRoomConstant("E54N37").initSlaveRoomConstantContainer(arrayOf("E52N37","E51N37"))  //M0
-    this.getMainRoomConstant("E59N36").initSlaveRoomConstantContainer(arrayOf("E57N34","E58N37"))  //M1
+    this.getMainRoomConstant("E59N36").initSlaveRoomConstantContainer(arrayOf("E57N34","E59N38"))  //M1
     this.getMainRoomConstant("E53N39").initSlaveRoomConstantContainer(arrayOf("E53N38"))  //M4
 
 

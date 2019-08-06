@@ -3,8 +3,6 @@ import screeps.api.*
 import screeps.api.Memory
 import screeps.utils.unsafe.delete
 
-//ToDo Функция которая определяэт откуда харвестить, на основе сколько енергии есть, сколько уже харвестит и куда ближе
-
 enum class TypeOfTask {
     GoToRoom,
     Take,
@@ -121,11 +119,11 @@ class  Tasks {
     }
 
     fun toMemory() {
-        delete(Memory["task"])
         val dTasks: dynamic = object {}
         for (task in tasks) dTasks[task.key] = task.value.toMemory()
         val d: dynamic = object {}
         d["tasks"] = dTasks
+        delete(Memory["task"])
         Memory["task"] = d
     }
 

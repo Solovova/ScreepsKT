@@ -1,4 +1,4 @@
-import dataCache.CacheCarrier
+import constants.CacheCarrier
 import screeps.api.COLOR_GREEN
 
 fun testingFunctions (mainContext : MainContext) {
@@ -48,7 +48,7 @@ fun testingFunctions (mainContext : MainContext) {
 //            messenger("TEST","____","testData is: ${cacheRecordRoom.testData}", COLOR_GREEN)
 //        }
 
-        val carrierAuto : CacheCarrier? = mainContext.dataCache.getCacheRecordRoom("mainContainer0", "E54N37")
+        val carrierAuto : CacheCarrier? = mainContext.getCacheRecordRoom("mainContainer0", "E54N37")
         //if (carrierAuto!=null)
         //    messenger("TEST","E54N37","carrierAuto is: ${carrierAuto.needBody}", COLOR_GREEN)
     }
