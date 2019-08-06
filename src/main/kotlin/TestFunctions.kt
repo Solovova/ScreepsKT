@@ -55,11 +55,18 @@ fun testingFunctions (mainContext : MainContext) {
 
     val mainRoom = mainContext.mainRoomCollector.rooms["E59N36"]
     if (mainRoom != null) {
-        for (record in mainRoom.structureContainerNearSource)
-            messenger("TEST",mainRoom.name,"structureContainerNearSource: ${record.key}  ${record.value.id}", COLOR_GREEN)
+//        for (record in mainRoom.structureContainerNearSource)
+//            messenger("TEST",mainRoom.name,"structureContainerNearSource: ${record.key}  ${record.value.id}", COLOR_GREEN)
+//
+//        for (record in mainRoom.source)
+//            messenger("TEST",mainRoom.name,"source: ${record.key}  ${record.value.id}", COLOR_GREEN)
+       // mainRoom.constant.testCashed = 1
+        //mainRoom.constant.testUnCashed = 1
 
-        for (record in mainRoom.source)
-            messenger("TEST",mainRoom.name,"source: ${record.key}  ${record.value.id}", COLOR_GREEN)
+        mainRoom.constant.testCashed += 1
+        mainRoom.constant.testUnCashed += 1
+        messenger("TEST",mainRoom.name,"testCashed: ${mainRoom.constant.testCashed}  ", COLOR_GREEN)
+        messenger("TEST",mainRoom.name,"testUnCashed: ${mainRoom.constant.testUnCashed}  ", COLOR_GREEN)
     }
 
 

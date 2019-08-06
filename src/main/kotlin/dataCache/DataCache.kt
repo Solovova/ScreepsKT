@@ -11,23 +11,11 @@ import screeps.api.structures.Structure
 
 //Class for cashing data, in end of tick it serialize and write to memory, read data from memory only then constructing
 
-
-
-
-
 class DataCache(private val parent: MainContext) {
-    private val dataCacheRoom: MutableMap<String, CacheRoom> = mutableMapOf()
     private val dataCacheCarrierAuto: MutableMap<String, CacheCarrier> = mutableMapOf()
 
     fun toMemory() {
         val dHead : dynamic = object {}
-
-        //dataCacheRoom
-        dHead["dataCacheRoom"] = object {}
-        val dLevelDataCacheRecordRoom = dHead["dataCacheRoom"]
-
-        for (record in dataCacheRoom)
-            dLevelDataCacheRecordRoom[record.key] = record.value.toDynamic()
 
         //dataCacheCarrierAuto
         dHead["dataCacheCarrierAuto"] = object {}
@@ -45,11 +33,6 @@ class DataCache(private val parent: MainContext) {
     private fun fromMemory() {
         val dHead : dynamic = Memory["dataCache"] ?: return
 
-        //dataCacheRoom
-        val dLevelDataCacheRecordRoom : dynamic = dHead["dataCacheRoom"]
-        if (dLevelDataCacheRecordRoom != null)
-            for (recordKey in js("Object").keys(dLevelDataCacheRecordRoom).unsafeCast<Array<String>>())
-                dataCacheRoom[recordKey] = CacheRoom.initFromDynamic(dLevelDataCacheRecordRoom[recordKey])
 
         //dataCacheCarrierAuto
         val dLevelDataCacheCarrierAuto : dynamic = dHead["dataCacheCarrierAuto"]

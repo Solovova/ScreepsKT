@@ -1,15 +1,25 @@
 package constants
 
 import messenger
-import screeps.api.COLOR_RED
-import screeps.api.Game
-import screeps.api.get
+import screeps.api.*
+import screeps.utils.unsafe.delete
+
+//Two type constants
+//simple - initializing on start of tick, you can change it but data not save in memory and on next tick will be initialized default data
+//cashed - initializing in program, at end of tick save to memory, and red on start of next tick
+
+//MainRoom.constant         - simple
+//MainRoom.constant.cashed  - cashed
+
+//SlaveRoom.constant         - simple
+//SlaveRoom.constant.cashed  - cashed
 
 
 class Constants {
-    val globalConstant: GlobalConstant = GlobalConstant()
-    var mainRooms: Array<String> = arrayOf()
-    val mainRoomConstantContainer: MutableMap<String, MainRoomConstant> = mutableMapOf()
+    private val globalConstant: GlobalConstant = GlobalConstant()  //cashed
+    var mainRooms: Array<String> = arrayOf() //simple
+    val mainRoomConstantContainer: MutableMap<String, MainRoomConstant> = mutableMapOf() //cashed
+
 
     init {
         this.initMain()
@@ -41,5 +51,30 @@ class Constants {
     fun s(indexMain: Int, indexSlave: Int) : SlaveRoomConstant {
         val mainRoomConstant:MainRoomConstant = this.getMainRoomConstant(this.mainRooms[indexMain])
         return mainRoomConstant.s(indexSlave)
+    }
+
+    fun toDynamic(): dynamic {
+        val result: dynamic = object {}
+        result["globalConstant"] = this.globalConstant.toDynamic()
+        result["mainRoomConstantContainer"] = object {}
+        for (record in this.mainRoomConstantContainer)
+                result["mainRoomConstantContainer"][record.key] = record.value.toDynamic()
+        return result
+    }
+
+    fun toMemory() {
+        delete(Memory["global"])
+        Memory["global"] = this.toDynamic()
+    }
+
+    fun fromDynamic(d: dynamic) {
+        if (d["mainRoomConstantContainer"] != null)
+            for (record in mainRoomConstantContainer)
+                record.value.fromDynamic(d["mainRoomConstantContainer"][record.key])
+    }
+
+    fun fromMemory() {
+        val d: dynamic = Memory["global"]
+        if (d!= null) this.fromDynamic(d)
     }
 }

@@ -7,10 +7,10 @@ fun SlaveRoom.buildStructure(fPrimeColor: ColorConstant, fSecondaryColor: ColorC
     if (this.room == null) return false
     //return 1 если чтото нашли и строим 0 если ничего не нашли
     var findBuild = false
-    var fCount = fCount
+    var fTempCount = fCount
     val flags = this.room.find(FIND_FLAGS).filter { it.color == fPrimeColor && it.secondaryColor == fSecondaryColor }
-    if (flags.size < fCount) fCount = flags.size
-    for (i in 0 until fCount) {
+    if (flags.size < fTempCount) fTempCount = flags.size
+    for (i in 0 until fTempCount) {
         if (this.room.createConstructionSite(flags[i].pos, fWhatBuild) == OK) {
             flags[i].remove()
             findBuild = true
@@ -41,7 +41,7 @@ fun SlaveRoom.building() {
     //if (Math.round(Game.time/100)*100!=Game.time) return; //проверяем каждые 100 тиков
     if (this.room == null) return
 
-    if (this.slaveRoomConstant.model != 1) return  // Build by flag only in colonize room
+    if (this.constant.model != 1) return  // Build by flag only in colonize room
 
     if(this.constructionSite.isNotEmpty()) return
     val protectedStructureController: StructureController = this.structureController[0] ?: return

@@ -7,9 +7,6 @@ var CreepMemory.role: Int by memory {0}
 var CreepMemory.slaveRoom: String by memory {""}
 var CreepMemory.mainRoom: String by memory {""}
 
-var RoomMemory.TowerLastTarget: String by memory {""}
-var RoomMemory.SentEnergyToRoom: String by memory {""}
-
 
 
 

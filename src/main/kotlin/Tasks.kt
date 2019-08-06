@@ -116,7 +116,7 @@ class  Tasks {
     }
 
     fun add(idCreep: String, task: CreepTask) {
-        if (task.posObject0!= null) messenger("TASK",task.posObject0.roomName,"New task: $idCreep ${task.type}", COLOR_CYAN)
+        if (task.posObject0!= null) messenger("TASK", task.posObject0.roomName, "New task: $idCreep ${task.type}", COLOR_CYAN)
         tasks[idCreep] = task
     }
 
@@ -145,7 +145,7 @@ class  Tasks {
     }
 
     fun deleteTask(key: String) {
-        messenger("TASK","","Delete task: $key ", COLOR_CYAN)
+        messenger("TASK", "", "Delete task: $key ", COLOR_CYAN)
         this.tasks.remove(key)
     }
 

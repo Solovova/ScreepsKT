@@ -1,6 +1,5 @@
 package mainRoom
 
-import TowerLastTarget
 import screeps.api.*
 import screeps.api.structures.Structure
 
@@ -32,12 +31,12 @@ fun MainRoom.runTower() {
     if (fTask == null) {
         if (hostile.isNotEmpty()) {
             fTask = "attack"
-            if (this.room.memory.TowerLastTarget == hostile[0].id && hostile.size >= 2) fTarget = hostile[1]
+            if (this.constant.TowerLastTarget == hostile[0].id && hostile.size >= 2) fTarget = hostile[1]
             else fTarget = hostile[0]
 
-            this.room.memory.TowerLastTarget = fTarget.id
+            this.constant.TowerLastTarget = fTarget.id
         } else {
-            this.room.memory.TowerLastTarget = ""
+            this.constant.TowerLastTarget = ""
         }
     }
 

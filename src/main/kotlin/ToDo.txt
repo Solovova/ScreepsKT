@@ -41,3 +41,9 @@
 //ToDo slave room full auto
 //build road, when limit calculate next tick for check
 
+
+
+//Examples
+for (key in js("Object").keys(testMutable.asDynamic()).unsafeCast<Array<String>>())
+                console.log(key)
+

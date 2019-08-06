@@ -22,7 +22,7 @@ fun messenger(type: String, room: String, text: String, color: ColorConstant = C
               testBefore: String = "", colorBefore: ColorConstant = COLOR_WHITE,
               testAfter: String = "", colorAfter: ColorConstant = COLOR_WHITE) {
     if (type == "TASK") return
-    if (type == "TEST") return
+    //if (type == "TEST") return
 
 
     val showText = "<font color=${colorToHTMLColor(color)} > $text </font>"

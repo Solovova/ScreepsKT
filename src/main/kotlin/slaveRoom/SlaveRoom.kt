@@ -7,7 +7,7 @@ import mainRoom.QueueSpawnRecord
 import screeps.api.*
 import screeps.api.structures.*
 
-class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, val slaveRoomConstant: SlaveRoomConstant) {
+class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, val constant: SlaveRoomConstant) {
     val room: Room? = Game.rooms[this.name]
 
     val need = Array(3) { Array(20) { 0 } }

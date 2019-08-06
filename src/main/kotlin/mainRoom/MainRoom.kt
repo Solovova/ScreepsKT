@@ -1,7 +1,6 @@
 package mainRoom
 
 import MainContext
-import SentEnergyToRoom
 import constants.MainRoomConstant
 import constants.SlaveRoomConstant
 import slaveRoom.SlaveRoom
@@ -12,7 +11,7 @@ import messenger
 import screeps.api.*
 import screeps.api.structures.*
 
-class MainRoom(private val parent: MainRoomCollector, val name: String, private val describe: String, private val mainRoomConstant: MainRoomConstant) {
+class MainRoom(private val parent: MainRoomCollector, val name: String, private val describe: String, val constant: MainRoomConstant) {
     val room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
     val slaveRooms: MutableMap<String, SlaveRoom> = mutableMapOf()
 
@@ -190,7 +189,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
                 if ((this.have[5]==0)&&(this.getEnergyInStorage()<=2000))  this.need[0][0]=2
 
                 //2 Upgrader
-                if (this.room.memory.SentEnergyToRoom == "") {
+                if (this.constant.SentEnergyToRoom == "") {
                     if (this.room.energyCapacityAvailable>=1800) {
                         this.need[1][6]=1
                         this.need[1][7]=1
@@ -209,7 +208,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
                     this.need[2][7]=0
                 }
 
-                if (this.getEnergyInStorage()<this.mainRoomConstant.energyUpgradable) {
+                if (this.getEnergyInStorage()<this.constant.energyUpgradable) {
                     this.need[1][6]=0
                     this.need[1][7]=0
                     this.need[2][6]=0
@@ -223,7 +222,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
                     this.need[0][13]=1
 
                 //8 Builder
-                if ((this.constructionSite.isNotEmpty()) && (this.getEnergyInStorage() > this.mainRoomConstant.energyBuilder)) {
+                if ((this.constructionSite.isNotEmpty()) && (this.getEnergyInStorage() > this.constant.energyBuilder)) {
                     this.need[1][8]=1
                 }
             }
@@ -289,7 +288,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
     private fun showQueue() {
         //ToDo show creepsRole who mainRoom.building
         var showText = "(${this.describe}):".padEnd(8)
-        var textSpawning: String = ""
+        var textSpawning  = ""
 
         for (spawn in this.structureSpawn) {
             val recordSpawning = spawn.value.spawning
@@ -310,7 +309,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
             showText += "$prefix ${record.role},"
         }
 
-        messenger("QUEUE", this.name, showText, COLOR_YELLOW, testBefore = "(${this.mainRoomConstant.note}".padEnd(30) + ")")
+        messenger("QUEUE", this.name, showText, COLOR_YELLOW, testBefore = "(${this.constant.note}".padEnd(30) + ")")
     }
 
     private fun getBodyRole(role: Int): Array<BodyPartConstant> {
@@ -494,11 +493,11 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
     init {
         constantMainRoomInit(this)
 
-        this.mainRoomConstant.slaveRooms.forEachIndexed {  index, slaveName ->
-            val slaveRoomConstant: SlaveRoomConstant? = mainRoomConstant.slaveRoomConstantContainer[slaveName]
+        this.constant.slaveRooms.forEachIndexed { index, slaveName ->
+            val slaveRoomConstant: SlaveRoomConstant? = this.constant.slaveRoomConstantContainer[slaveName]
             if (slaveRoomConstant != null)
                 slaveRooms[slaveName] = SlaveRoom(this, slaveName, "${this.describe}S$index", slaveRoomConstant)
-            else messenger("ERROR", "${this.name} $slaveName", "initialization don't see slaveRoomConstant", COLOR_RED)
+            else messenger("ERROR", "${this.name} $slaveName", "initialization don't see constant", COLOR_RED)
         }
     }
 }

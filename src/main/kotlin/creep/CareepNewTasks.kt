@@ -12,6 +12,7 @@ import slaveRoom.SlaveRoom
 import kotlin.random.Random
 import MainContext
 import CreepTask
+import TypeOfTask
 import slaveRoom
 
 fun Creep.takeFromStorage(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
@@ -219,8 +220,7 @@ fun Creep.slaveTransferToStorageOrContainer(creepCarry: Int, mainContext: MainCo
     var result = false
     if (slaveRoom != null) {
         if (creepCarry > 0) {
-            var objForFilling: Structure? = null
-            objForFilling = slaveRoom.structureStorage[0]
+            var objForFilling: Structure? =  slaveRoom.structureStorage[0]
             if (objForFilling == null) objForFilling = slaveRoom.structureContainer.values.firstOrNull()
             if (objForFilling != null) {
                 mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferTo, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))

@@ -1,4 +1,5 @@
 import screeps.api.*
+import kotlin.reflect.KProperty1
 
 var mainContext : MainContext? = null
 
@@ -10,7 +11,7 @@ fun loop() {
     val protectedMainContext = mainContext ?: return
 
     // Start tick functions
-    protectedMainContext.runInStartOfTick()
+    if (!protectedMainContext.initOnThisTick)   protectedMainContext.runInStartOfTick()
 
     // Testing functions
     testingFunctions(protectedMainContext)
