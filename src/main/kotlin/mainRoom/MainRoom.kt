@@ -131,6 +131,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
 
     fun buildCreeps() {
         this.needCorrection()
+        for (slaveRoomRecord in this.slaveRooms) slaveRoomRecord.value.needCorrection()
         this.buildQueue()
 
         this.spawnCreep()
@@ -258,7 +259,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
 
         //Slave 0
         for (slaveRoom in this.slaveRooms.values) {
-            for (i in 0 until slaveRoom.need.size) slaveRoom.haveForQueue[i] = slaveRoom.have[i]
+            for (i in 0 until slaveRoom.have.size) slaveRoom.haveForQueue[i] = slaveRoom.have[i]
             slaveRoom.buildQueue(this.queue,0)
         }
 

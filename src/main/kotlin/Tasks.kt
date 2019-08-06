@@ -13,7 +13,9 @@ enum class TypeOfTask {
     Harvest,
     TransferTo,
     Upgrade,
-    Claim
+    Claim,
+    Reserve,
+    GoToPos
 }
 
 enum class TypeOfInteractionsObjects {

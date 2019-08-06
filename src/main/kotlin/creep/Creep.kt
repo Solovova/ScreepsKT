@@ -115,7 +115,7 @@ fun Creep.newTask(mainContext: MainContext) {
 
     if (this.memory.role == 101) {
         if (!isTask) isTask = this.slaveGoToRoom(mainContext)
-        if (!isTask) isTask = this.slaveHarvest(creepCarry,mainContext,slaveRoom)
+        if (!isTask) isTask = this.slaveHarvest(2, creepCarry,mainContext,slaveRoom)
         if (!isTask) isTask = this.slaveUpgradeNormalOrEmergency(0,creepCarry,mainContext,slaveRoom)
         if (!isTask) isTask = this.slaveBuild(creepCarry,mainContext,slaveRoom)
         if (!isTask) isTask = this.slaveUpgradeNormalOrEmergency(1,creepCarry,mainContext,slaveRoom)
@@ -123,7 +123,38 @@ fun Creep.newTask(mainContext: MainContext) {
 
     if (this.memory.role == 102) {
         if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
-        if (!isTask) isTask = this.slaveTransferToStorageOrContainer(creepCarry,mainContext,mainRoom,slaveRoom)
+        if (!isTask) isTask = this.slaveTransferToStorageOrContainer(2, creepCarry,mainContext,mainRoom,slaveRoom)
+    }
+
+    if (this.memory.role == 103) {
+        if (!isTask) isTask = this.slaveGoToRoom(mainContext)
+        if (!isTask) isTask = this.slaveReserve(mainContext,slaveRoom)
+    }
+
+    if (this.memory.role == 104) {
+        if (!isTask) isTask = this.GoToPoint(mainContext, RoomPosition(25,25,this.memory.slaveRoom))
+    }
+
+    if (this.memory.role == 105 || this.memory.role == 1105) {
+        if ((this.memory.role == 105) && this.ticksToLive<150) this.memory.role = this.memory.role + 1000
+        if (!isTask) isTask = this.slaveHarvest(0,creepCarry,mainContext,slaveRoom)
+        if (slaveRoom!= null && slaveRoom.structureContainerNearSource[0] == null)
+            this.room.createConstructionSite(this.pos, STRUCTURE_CONTAINER)
+        if (!isTask) isTask = this.slaveBuild(creepCarry,mainContext,slaveRoom, 2)
+        if (!isTask) isTask = this.slaveRepairContainer(0, creepCarry,mainContext,slaveRoom)
+        if (!isTask) isTask = this.slaveTransferToStorageOrContainer(0, creepCarry,mainContext,mainRoom,slaveRoom)
+
+    }
+
+    if (this.memory.role == 107 || this.memory.role == 1107) {
+        if ((this.memory.role == 107) && this.ticksToLive<150) this.memory.role = this.memory.role + 1000
+        if (!isTask) isTask = this.slaveHarvest(1,creepCarry,mainContext,slaveRoom)
+        if (slaveRoom!= null && slaveRoom.structureContainerNearSource[0] == null)
+            this.room.createConstructionSite(this.pos, STRUCTURE_CONTAINER)
+        if (!isTask) isTask = this.slaveBuild(creepCarry,mainContext,slaveRoom, 2)
+        if (!isTask) isTask = this.slaveRepairContainer(1, creepCarry,mainContext,slaveRoom)
+        if (!isTask) isTask = this.slaveTransferToStorageOrContainer(1, creepCarry,mainContext,mainRoom,slaveRoom)
+
     }
 }
 
@@ -174,6 +205,16 @@ fun Creep.doTask(mainContext: MainContext) {
             }
         }
 
+        TypeOfTask.Repair -> {
+            if (!task.come) this.doTaskGoTo(task, task.posObject0, 3)
+            if (task.come) {
+                val repairStructure: Structure? = (Game.getObjectById(task.idObject0) as Structure?)
+                if (repairStructure != null) {
+                    this.repair(repairStructure)
+                }
+            }
+        }
+
         TypeOfTask.GoToRoom -> {
             val flag:Flag? = this.room.find(FIND_FLAGS).firstOrNull { it.color == COLOR_GREY && it.secondaryColor == COLOR_GREY }
             if (flag != null) {
@@ -201,6 +242,18 @@ fun Creep.doTask(mainContext: MainContext) {
                 val structure: Structure? = (Game.getObjectById(task.idObject0) as Structure?)
                 if (structure != null) this.withdraw(structure, task.resource)
             }
+        }
+
+        TypeOfTask.Reserve -> {
+            if (!task.come) this.doTaskGoTo(task, task.posObject0, 1)
+            if (task.come) {
+                val structureController: StructureController? = (Game.getObjectById(task.idObject0) as StructureController?)
+                if (structureController != null) this.reserveController(structureController)
+            }
+        }
+
+        TypeOfTask.GoToPos -> {
+            if (!task.come) this.doTaskGoTo(task, task.posObject0, 0)
         }
 
         else -> {
@@ -252,6 +305,12 @@ fun Creep.endTask(mainContext: MainContext) {
             if (structure.structureType == STRUCTURE_EXTENSION && (structure as StructureExtension).energyCapacity == structure.energy) filled = true
             if (structure.structureType == STRUCTURE_SPAWN && (structure as StructureSpawn).energyCapacity == structure.energy) filled = true
             if (structure.structureType == STRUCTURE_TOWER && (structure as StructureTower).energyCapacity == structure.energy) filled = true
+            if (structure.structureType == STRUCTURE_CONTAINER &&
+                    (structure as StructureContainer).store.toMap().map { it.value }.sum() == structure.storeCapacity)  filled = true
+            if (structure.structureType == STRUCTURE_STORAGE &&
+                    (structure as StructureStorage).store.toMap().map { it.value }.sum() == structure.storeCapacity)  filled = true
+            if (structure.structureType == STRUCTURE_TERMINAL &&
+                    (structure as StructureTerminal).store.toMap().map { it.value }.sum() == structure.storeCapacity)  filled = true
             if (filled) mainContext.tasks.deleteTask(this.id)
         }
 
@@ -264,8 +323,18 @@ fun Creep.endTask(mainContext: MainContext) {
             if (creepCarry == 0 || building == null) mainContext.tasks.deleteTask(this.id)
         }
 
+        TypeOfTask.Repair -> {
+            val structure: Structure? = (Game.getObjectById(task.idObject0) as Structure?)
+            if (creepCarry == 0 || structure == null || structure.hits > structure.hitsMax - 1000) mainContext.tasks.deleteTask(this.id)
+        }
+
         TypeOfTask.GoToRoom -> {
             if (this.pos.roomName == this.memory.slaveRoom) mainContext.tasks.deleteTask(this.id)
+        }
+
+        TypeOfTask.GoToPos -> {
+            if (task.posObject0 == null) mainContext.tasks.deleteTask(this.id)
+            else if (this.pos.inRangeTo(task.posObject0,0)) mainContext.tasks.deleteTask(this.id)
         }
 
         else -> {

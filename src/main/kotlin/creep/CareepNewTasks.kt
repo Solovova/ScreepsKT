@@ -1,10 +1,6 @@
 package creep
 
 import mainRoom.MainRoom
-import screeps.api.Creep
-import screeps.api.RESOURCE_ENERGY
-import screeps.api.RoomPosition
-import screeps.api.Source
 import screeps.api.structures.Structure
 import screeps.api.structures.StructureController
 import screeps.api.structures.StructureStorage
@@ -13,6 +9,8 @@ import kotlin.random.Random
 import MainContext
 import CreepTask
 import TypeOfTask
+import screeps.api.*
+import screeps.api.structures.StructureContainer
 import slaveRoom
 
 fun Creep.takeFromStorage(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
@@ -150,6 +148,17 @@ fun Creep.slaveGoToRoom(mainContext: MainContext): Boolean {
     return result
 }
 
+fun Creep.GoToPoint(mainContext: MainContext, pos: RoomPosition): Boolean {
+    var result = false
+    if (this.pos != pos) {
+        mainContext.tasks.add(this.id, CreepTask(TypeOfTask.GoToPos, idObject0 = this.memory.slaveRoom, posObject0 = pos))
+        result = true
+    }
+    return result
+}
+
+
+
 fun Creep.slaveClaim(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
     var result = false
     if (slaveRoom != null) {
@@ -162,11 +171,30 @@ fun Creep.slaveClaim(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
     return result
 }
 
-fun Creep.slaveHarvest(creepCarry: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+fun Creep.slaveReserve(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+    var result = false
+    if (slaveRoom != null) {
+        val structureController: StructureController? = slaveRoom.structureController[0]
+        if (structureController != null && !structureController.my) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Reserve, idObject0 = structureController.id, posObject0 = structureController.pos))
+            result = true
+        }
+    }
+    return result
+}
+
+fun Creep.slaveHarvest(type: Int, creepCarry: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+    //type 0 - source 0, 1 - source 1, 2 - random
     var result = false
     if (slaveRoom != null) {
         if (creepCarry == 0) {
-            val tSource: Source? = slaveRoom.source[Random.nextInt(slaveRoom.source.size)]
+            var tSource: Source? = null
+            when (type) {
+                0 -> tSource = slaveRoom.source[0]
+                1 -> tSource = slaveRoom.source[1]
+                2 -> tSource = slaveRoom.source[Random.nextInt(slaveRoom.source.size)]
+            }
+
             if (tSource!=null) {
                 mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Harvest, idObject0 = tSource.id, posObject0 = tSource.pos))
                 result = true
@@ -202,13 +230,38 @@ fun Creep.slaveUpgradeNormalOrEmergency(type: Int, creepCarry: Int, mainContext:
     return result
 }
 
-fun Creep.slaveBuild(creepCarry: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+fun Creep.slaveBuild(creepCarry: Int, mainContext: MainContext, slaveRoom: SlaveRoom?, range: Int = 100): Boolean {
     var result = false
     if (slaveRoom != null) {
         if (creepCarry > 0 && slaveRoom.constructionSite.isNotEmpty()) {
             val tConstructionSite = slaveRoom.getConstructionSite(this.pos)
-            if (tConstructionSite != null) {
-                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Build, idObject0 = tConstructionSite.id, posObject0 = tConstructionSite.pos))
+            if (tConstructionSite != null)
+                if (this.pos.inRangeTo(tConstructionSite.pos, range)){
+                    mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Build, idObject0 = tConstructionSite.id, posObject0 = tConstructionSite.pos))
+                    result = true
+                }
+        }
+    }
+    return result
+}
+
+fun Creep.slaveTransferToStorageOrContainer(type: Int, creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom, slaveRoom: SlaveRoom?): Boolean {
+    //type 0 - cont 0, 1 - cont 1, 2 - any
+    var result = false
+    if (slaveRoom != null) {
+        if (creepCarry > 0) {
+            var objForFilling: Structure? =  null
+            when (type) {
+                0 -> objForFilling = slaveRoom.structureContainerNearSource[0]
+                1 -> objForFilling = slaveRoom.structureContainerNearSource[1]
+                2 -> {
+                    objForFilling =  slaveRoom.structureStorage[0]
+                    if (objForFilling == null) objForFilling = slaveRoom.structureContainer.values.firstOrNull()
+                }
+            }
+
+            if (objForFilling != null) {
+                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferTo, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
                 result = true
             }
         }
@@ -216,16 +269,23 @@ fun Creep.slaveBuild(creepCarry: Int, mainContext: MainContext, slaveRoom: Slave
     return result
 }
 
-fun Creep.slaveTransferToStorageOrContainer(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom, slaveRoom: SlaveRoom?): Boolean {
+fun Creep.slaveRepairContainer(type: Int, creepCarry: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
     var result = false
     if (slaveRoom != null) {
         if (creepCarry > 0) {
-            var objForFilling: Structure? =  slaveRoom.structureStorage[0]
-            if (objForFilling == null) objForFilling = slaveRoom.structureContainer.values.firstOrNull()
-            if (objForFilling != null) {
-                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferTo, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
-                result = true
+            var containerRepair: StructureContainer? = null
+            when (type) {
+                0 -> containerRepair = slaveRoom.structureContainerNearSource[0]
+                1 -> containerRepair = slaveRoom.structureContainerNearSource[1]
             }
+
+            if (containerRepair != null) {
+                if (containerRepair.hits < (containerRepair.hitsMax - 10000)){
+                    mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Repair, idObject0 = containerRepair.id, posObject0 = containerRepair.pos))
+                    result = true
+                }
+            }
+
         }
     }
     return result

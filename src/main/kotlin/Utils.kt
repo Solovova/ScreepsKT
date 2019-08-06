@@ -21,7 +21,7 @@ fun colorToHTMLColor(color: ColorConstant): String {
 fun messenger(type: String, room: String, text: String, color: ColorConstant = COLOR_GREY,
               testBefore: String = "", colorBefore: ColorConstant = COLOR_WHITE,
               testAfter: String = "", colorAfter: ColorConstant = COLOR_WHITE) {
-    if (type == "TASK") return
+    //if (type == "TASK") return
     //if (type == "TEST") return
 
 

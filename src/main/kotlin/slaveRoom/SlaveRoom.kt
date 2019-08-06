@@ -75,7 +75,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
 
     //StructureContainerNearSource //ToDo test
     private var _structureContainerNearSource: Map<Int, StructureContainer>? = null //id source
-    private val structureContainerNearSource: Map<Int, StructureContainer>
+    val structureContainerNearSource: Map<Int, StructureContainer>
         get() {
             if (this._structureContainerNearSource == null) {
                 val resultContainer = mutableMapOf<Int, StructureContainer>()
@@ -104,7 +104,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
     }
 
     fun buildQueue(queue: MutableList<QueueSpawnRecord>, priority: Int) {
-        val fPriorityOfRole = arrayOf(0, 1 , 2)
+        val fPriorityOfRole = arrayOf(0, 1 , 2 , 3,  4 , 5, 7, 6, 8)
         for (fRole in fPriorityOfRole) {
             var fNeed = this.need[0][fRole]
             if (priority >= 1) fNeed += this.need[1][fRole]
@@ -131,6 +131,19 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             102 -> {
                 result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
             }
+
+            103 -> {
+                result = arrayOf(CLAIM, CLAIM, MOVE, MOVE)
+            }
+
+            104 -> {
+                result = arrayOf(MOVE)
+            }
+
+            105, 107 -> {
+                result = arrayOf(MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY)
+            }
+
         }
         return result
     }
@@ -146,6 +159,35 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             }
         }
         return tObject
+    }
+
+    fun needCorrection() {
+        when (this.constant.model) {
+            0 -> {
+                //
+                console.log("${this.room == null}")
+
+                //1 Explorer 104
+                if (this.room == null) {
+                    this.need[0][4] = 1
+                }
+
+                //2 Reserve 103
+                val protectedStructureController: StructureController? = this.structureController[0]
+                if (protectedStructureController != null) {
+                    val reservation = protectedStructureController.reservation
+                    if (reservation != null && reservation.ticksToEnd < 1000) this.need[0][3] = 1
+                    if (reservation == null ) this.need[0][3] = 1
+                }
+
+                //3 Harvester 105
+                if (this.source[0] != null)  this.need[0][5] = 1
+                if (this.source[1] != null)  this.need[0][7] = 1
+
+
+
+            }
+        }
     }
 }
 

@@ -22,8 +22,8 @@ class Constants {
 
 
     init {
-        this.initMain()
-        //this.initTest()
+        //this.initMain()
+        this.initTest()
     }
 
     fun initMainRoomConstantContainer(names: Array<String>) {

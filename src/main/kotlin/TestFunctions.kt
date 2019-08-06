@@ -22,10 +22,10 @@ fun testingFunctions (mainContext : MainContext) {
     //console.log((mainContext.tasks.tasks["creep000001"]?.resource == RESOURCE_ENERGY).toString())
     val fMainRoom = mainContext.mainRoomCollector.rooms.values.firstOrNull()
     if (fMainRoom!=null) {
-        console.log(fMainRoom.need[0].toString())
-        console.log(fMainRoom.need[1].toString())
-        console.log(fMainRoom.need[2].toString())
-        console.log(fMainRoom.have.toString())
+//        console.log(fMainRoom.need[0].toString())
+//        console.log(fMainRoom.need[1].toString())
+//        console.log(fMainRoom.need[2].toString())
+//        console.log(fMainRoom.have.toString())
 //        console.log(fMainRoom.structureContainerNearController[0]?.id)
 //        console.log(fMainRoom.structureContainerNearSource[0]?.id)
 //        console.log(fMainRoom.structureContainerNearSource[1]?.id)
@@ -53,7 +53,7 @@ fun testingFunctions (mainContext : MainContext) {
         //    messenger("TEST","E54N37","carrierAuto is: ${carrierAuto.needBody}", COLOR_GREEN)
     }
 
-    val mainRoom = mainContext.mainRoomCollector.rooms["E59N36"]
+    var mainRoom = mainContext.mainRoomCollector.rooms["E59N36"]
     if (mainRoom != null) {
 //        for (record in mainRoom.structureContainerNearSource)
 //            messenger("TEST",mainRoom.name,"structureContainerNearSource: ${record.key}  ${record.value.id}", COLOR_GREEN)
@@ -68,6 +68,20 @@ fun testingFunctions (mainContext : MainContext) {
         messenger("TEST",mainRoom.name,"testCashed: ${mainRoom.constant.testCashed}  ", COLOR_GREEN)
         messenger("TEST",mainRoom.name,"testUnCashed: ${mainRoom.constant.testUnCashed}  ", COLOR_GREEN)
     }
+
+    mainRoom = mainContext.mainRoomCollector.rooms["W3N4"]
+
+    if (mainRoom != null) {
+        val slaveRoom = mainRoom.slaveRooms["W3N3"]
+        if (slaveRoom != null) {
+            console.log(slaveRoom.need[0].toString())
+            console.log(slaveRoom.need[1].toString())
+            console.log(slaveRoom.need[2].toString())
+            console.log(slaveRoom.have.toString())
+        }
+    }
+
+
 
 
 }
