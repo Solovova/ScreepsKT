@@ -8,7 +8,6 @@ import constants.constantMainRoomInit
 import creep.getDescribeForQueue
 import constants.CacheCarrier
 import mainContext.getCacheRecordRoom
-import messenger
 import screeps.api.*
 import screeps.api.structures.*
 
@@ -311,7 +310,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
             showText += "$prefix ${record.role},"
         }
 
-        messenger("QUEUE", this.name, showText, COLOR_YELLOW, testBefore = "(${this.constant.note}".padEnd(30) + ")")
+        parent.parent.messenger("QUEUE", this.name, showText, COLOR_YELLOW, testBefore = "(${this.constant.note}".padEnd(30) + ")")
     }
 
     private fun getBodyRole(role: Int): Array<BodyPartConstant> {
@@ -332,7 +331,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
             2 ->  {
                 val carrierAuto: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer0",this)
                 if (carrierAuto==null) {
-                    messenger("ERROR", this.name, "Auto not exists mainContainer0", COLOR_RED)
+                    parent.parent.messenger("ERROR", this.name, "Auto not exists mainContainer0", COLOR_RED)
                     result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
                 }else{
                     result = carrierAuto.needBody
@@ -342,7 +341,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
             4 ->  {
                 val carrierAuto: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer1",this)
                 if (carrierAuto==null) {
-                    messenger("ERROR", this.name, "Auto not exists mainContainer1", COLOR_RED)
+                    parent.parent.messenger("ERROR", this.name, "Auto not exists mainContainer1", COLOR_RED)
                     result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
                 }else{
                     result = carrierAuto.needBody
@@ -505,7 +504,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
             val slaveRoomConstant: SlaveRoomConstant? = this.constant.slaveRoomConstantContainer[slaveName]
             if (slaveRoomConstant != null)
                 slaveRooms[slaveName] = SlaveRoom(this, slaveName, "${this.describe}S$index", slaveRoomConstant)
-            else messenger("ERROR", "${this.name} $slaveName", "initialization don't see constant", COLOR_RED)
+            else parent.parent.messenger("ERROR", "${this.name} $slaveName", "initialization don't see constant", COLOR_RED)
         }
     }
 

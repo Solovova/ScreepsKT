@@ -3,7 +3,6 @@ package mainContext
 import screeps.api.*
 import constants.CacheCarrier
 import mainRoom.MainRoom
-import messenger
 import screeps.api.COLOR_YELLOW
 import screeps.api.Game
 import screeps.api.structures.Structure

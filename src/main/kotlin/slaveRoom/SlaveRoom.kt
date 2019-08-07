@@ -6,7 +6,6 @@ import constants.constantSlaveRoomInit
 import mainContext.getCacheRecordRoom
 import mainRoom.MainRoom
 import mainRoom.QueueSpawnRecord
-import messenger
 import screeps.api.*
 import screeps.api.structures.*
 import kotlin.math.roundToInt
@@ -151,7 +150,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             106 -> {
                 val carrierAuto: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer0",this.parent,this)
                 if (carrierAuto==null) {
-                    messenger("ERROR", this.name, "Auto not exists slaveContainer0", COLOR_RED)
+                    parent.parent.parent.messenger("ERROR", this.name, "Auto not exists slaveContainer0", COLOR_RED)
                     result = arrayOf()
                 }else{
                     result = carrierAuto.needBody
@@ -161,7 +160,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             108 -> {
                 val carrierAuto: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer1",this.parent,this)
                 if (carrierAuto==null) {
-                    messenger("ERROR", this.name, "Auto not exists slaveContainer0", COLOR_RED)
+                    parent.parent.parent.messenger("ERROR", this.name, "Auto not exists slaveContainer0", COLOR_RED)
                     result = arrayOf()
                 }else{
                     result = carrierAuto.needBody
@@ -253,7 +252,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
         val sProfit : String = (this.constant.profitUp - this.constant.profitDown).toString().padEnd(10)
         val sTicks: String = (Game.time - this.constant.profitStart).toString().padEnd(8)
 
-        messenger("TEST", this.describe,
+        parent.parent.parent.messenger("PROFIT", this.describe,
                 "Profit ----> ${this.name}  ($sProfitPT per. 1500 ticks) ticks: $sTicks  + $sUp  - $sDown  $sProfit", COLOR_WHITE)
     }
 

@@ -4,7 +4,6 @@ import mainContext.MainContext
 import constants.MainRoomConstant
 import slaveRoom.SlaveRoom
 import mainRoom
-import messenger
 import role
 import screeps.api.*
 import screeps.utils.toMap
@@ -17,8 +16,8 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
         names.forEachIndexed { index, name ->
             val mainRoomConstant: MainRoomConstant? = this.parent.constants.mainRoomConstantContainer[name]
             if (mainRoomConstant != null)
-                rooms[name] = MainRoom(this, name, "M$index", mainRoomConstant)
-            else messenger("ERROR", name, "initialization don't see mainRoomConstant", COLOR_RED)
+                rooms[name] = MainRoom(this, name, "M${index.toString().padStart(2,'0')}", mainRoomConstant)
+            else parent.messenger("ERROR", name, "initialization don't see mainRoomConstant", COLOR_RED)
         }
     }
 

@@ -71,8 +71,8 @@ fun testingFunctions (mainContext : MainContext) {
 
         mainRoom.constant.testCashed += 1
         mainRoom.constant.testUnCashed += 1
-        messenger("TEST",mainRoom.name,"testCashed: ${mainRoom.constant.testCashed}  ", COLOR_GREEN)
-        messenger("TEST",mainRoom.name,"testUnCashed: ${mainRoom.constant.testUnCashed}  ", COLOR_GREEN)
+        mainContext.messenger("TEST",mainRoom.name,"testCashed: ${mainRoom.constant.testCashed}  ", COLOR_GREEN)
+        mainContext.messenger("TEST",mainRoom.name,"testUnCashed: ${mainRoom.constant.testUnCashed}  ", COLOR_GREEN)
     }
 
     mainRoom = mainContext.mainRoomCollector.rooms["W3N4"]

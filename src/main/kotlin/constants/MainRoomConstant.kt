@@ -1,9 +1,9 @@
 package constants
 
-import messenger
 import screeps.api.COLOR_RED
 
-class MainRoomConstant {
+class MainRoomConstant(parent: Constants) {
+    val parent: Constants = parent
     var slaveRooms : Array<String> = arrayOf() //simple
     val slaveRoomConstantContainer: MutableMap<String,SlaveRoomConstant> = mutableMapOf() //cashed
     //Upgrader
@@ -23,7 +23,7 @@ class MainRoomConstant {
     private fun getSlaveRoomConstant(slaveRoomName: String) : SlaveRoomConstant {
         val slaveRoomConstant:SlaveRoomConstant ? = this.slaveRoomConstantContainer[slaveRoomName]
         return if (slaveRoomConstant == null) {
-            messenger("ERROR", slaveRoomName, "initialization don't see SlaveRoomConstant", COLOR_RED)
+            parent.parent.messenger("ERROR", slaveRoomName, "initialization don't see SlaveRoomConstant", COLOR_RED)
             SlaveRoomConstant()
         }else slaveRoomConstant
     }

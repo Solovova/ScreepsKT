@@ -1,3 +1,4 @@
+import mainContext.MainContext
 import screeps.api.RoomPosition
 import screeps.api.*
 import screeps.api.Memory
@@ -107,16 +108,17 @@ class CreepTask {
 //2. Assign new tasks
 //3. Do tasks
 
-class  Tasks {
+class  Tasks(parent:MainContext) {
     // Все держим в памяти, в конце тика записываем в Memory если пропал объект восстанавливаем из памяти
     val tasks: MutableMap<String, CreepTask> = mutableMapOf() //id of creepsRole
+    val parent:MainContext = parent
 
     init {
         this.fromMemory()
     }
 
     fun add(idCreep: String, task: CreepTask) {
-        if (task.posObject0!= null) messenger("TASK", task.posObject0.roomName, "New task: $idCreep ${task.type}", COLOR_CYAN)
+        if (task.posObject0!= null) parent.messenger("TASK", task.posObject0.roomName, "New task: $idCreep ${task.type}", COLOR_CYAN)
         tasks[idCreep] = task
     }
 
@@ -145,7 +147,7 @@ class  Tasks {
     }
 
     fun deleteTask(key: String) {
-        messenger("TASK", "", "Delete task: $key ", COLOR_CYAN)
+        parent.messenger("TASK", "", "Delete task: $key ", COLOR_CYAN)
         this.tasks.remove(key)
     }
 

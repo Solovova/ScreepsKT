@@ -6,7 +6,6 @@ import mainRoom.MainRoom
 import slaveRoom.SlaveRoom
 import TypeOfTask
 import mainRoom
-import messenger
 import role
 import screeps.api.*
 import screeps.api.structures.*
@@ -186,7 +185,7 @@ fun Creep.doTask(mainContext: MainContext) {
 
     val task: CreepTask = mainContext.tasks.tasks[this.id] ?: return
     if (task.posObject0 == null) {
-        messenger("ERROR", "", "PosFrom not have", COLOR_RED)
+        mainContext.messenger("ERROR", "", "PosFrom not have", COLOR_RED)
         return
     }
 

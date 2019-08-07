@@ -1,6 +1,6 @@
 package constants
 
-import messenger
+import mainContext.MainContext
 import screeps.api.*
 import screeps.utils.unsafe.delete
 
@@ -15,33 +15,34 @@ import screeps.utils.unsafe.delete
 //SlaveRoom.constant.cashed  - cashed
 
 
-class Constants {
+class Constants(parent: MainContext) {
     val globalConstant: GlobalConstant = GlobalConstant()  //cashed
     var mainRooms: Array<String> = arrayOf() //simple
     val mainRoomConstantContainer: MutableMap<String, MainRoomConstant> = mutableMapOf() //cashed
+    val parent:MainContext = parent
 
 
 
     init {
-        //this.initMain()
-                this.initTest()
+        this.initMain()
+        //this.initTest()
     }
 
     fun initMainRoomConstantContainer(names: Array<String>) {
         var resultMainRooms: Array<String> = arrayOf()
         for (name in names)
             if (Game.rooms[name] != null) {
-                mainRoomConstantContainer[name] = MainRoomConstant()
+                mainRoomConstantContainer[name] = MainRoomConstant(this)
                 resultMainRooms += name
-            } else messenger("ERROR", name, "initialization don't see room in Game.rooms", COLOR_RED)
+            } else parent.messenger("ERROR", name, "initialization don't see room in Game.rooms", COLOR_RED)
         this.mainRooms = resultMainRooms
     }
 
     fun getMainRoomConstant(mainRoomName: String) : MainRoomConstant {
         val mainRoomConstant:MainRoomConstant ? = mainRoomConstantContainer[mainRoomName]
         return if (mainRoomConstant == null) {
-            messenger("ERROR", mainRoomName, "initialization don't see MainRoomConstant", COLOR_RED)
-            MainRoomConstant()
+            parent.messenger("ERROR", mainRoomName, "initialization don't see MainRoomConstant", COLOR_RED)
+            MainRoomConstant(this)
         }else mainRoomConstant
     }
 

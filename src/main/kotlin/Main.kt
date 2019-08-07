@@ -13,11 +13,13 @@ fun loop() {
 //    delete(Memory["test"])
 
 
-    messenger("HEAD", "", "Current game tick is ${Game.time} _________________________________________", COLOR_WHITE)
+
     // Initialisation and protect mainContext
     if (mainContextGlob == null) mainContextGlob = MainContext()
 
     val protectedMainContext = mainContextGlob ?: return
+
+    protectedMainContext.messenger("HEAD", "", "Current game tick is ${Game.time} _________________________________________", COLOR_WHITE)
 
     // Start tick functions
     if (!protectedMainContext.initOnThisTick)   protectedMainContext.runInStartOfTick()

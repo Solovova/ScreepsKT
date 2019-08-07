@@ -15,17 +15,14 @@ import screeps.utils.unsafe.delete
 
 class MainContext {
     var mainRoomCollector: MainRoomCollector = MainRoomCollector(this, arrayOf())
-    val tasks: Tasks
-    val constants: Constants = Constants()
+    val tasks: Tasks = Tasks(this)
+    val constants: Constants = Constants(this)
     var initOnThisTick: Boolean = true
+    private val messengerMap : MutableMap<String,String> = mutableMapOf()
 
     init {
-        this.tasks = Tasks()
-
-        //Only this  //ToDo run once, if we run in init don't run runInStartOfTick in future
         this.runInStartOfTick()
         this.constants.fromMemory()
-
     }
 
     fun runInStartOfTick() {
@@ -41,11 +38,10 @@ class MainContext {
     }
 
     fun runInEndOfTick() {
+        this.messengerShow()
+        this.initOnThisTick = false
         for (creep in Game.creeps.values) creep.doTask(this)
         this.tasks.toMemory()
-
-        //only this
-        this.initOnThisTick = false
         this.constants.toMemory()
     }
 
@@ -56,5 +52,57 @@ class MainContext {
                 delete(Memory.creeps[creepName])
             }
         }
+    }
+
+    fun messenger(type: String, room: String, text: String, color: ColorConstant = COLOR_GREY,
+                  testBefore: String = "", colorBefore: ColorConstant = COLOR_WHITE,
+                  testAfter: String = "", colorAfter: ColorConstant = COLOR_WHITE) {
+
+        fun colorToHTMLColor(color: ColorConstant): String {
+            return when(color) {
+                COLOR_YELLOW -> "yellow"
+                COLOR_RED -> "red"
+                COLOR_GREEN -> "green"
+                COLOR_BLUE -> "blue"
+                COLOR_ORANGE -> "orange"
+                COLOR_CYAN -> "cyan"
+                COLOR_GREY -> "grey"
+                else -> "white"
+
+            }
+        }
+
+        if (type == "TASK") return
+        //if (type == "TEST") return
+
+
+        val prefix: String = when(type) {
+            "HEAD" -> "00"
+            "ERROR" -> "05"
+            "QUEUE" -> "07"
+            "PROFIT" -> "09"
+            "TASK" -> "11"
+            "TEST" -> "13"
+            else -> "99"
+
+        }
+
+        val typeForMM = "$prefix$type${messengerMap.size.toString().padStart(3,'0')}"
+
+
+        val showText = "<font color=${colorToHTMLColor(color)} > $text </font>"
+        val showTextBefore = "<font color=${colorToHTMLColor(colorBefore)} > $testBefore </font>"
+        val showTextAfter = "<font color=${colorToHTMLColor(colorAfter)} > $testAfter </font>"
+
+        //console.log(typeForMM)
+        messengerMap[typeForMM] = "$type : $room $showTextBefore $showText $showTextAfter"
+    }
+
+    private fun messengerShow(){
+        val sortedKeys = messengerMap.keys.toList().sortedBy { it }
+
+        for (key in sortedKeys)
+            console.log(messengerMap[key])
+        messengerMap.clear()
     }
 }
