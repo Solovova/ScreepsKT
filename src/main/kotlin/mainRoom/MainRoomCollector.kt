@@ -60,19 +60,25 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
         }
     }
 
-    private fun buildCreeps() {
-
-        for (room in rooms.values) room.buildCreeps()
-    }
-
-
     fun runInStartOfTick() {
         this.creepsCalculate()
         this.creepsCalculateProfit()
-        for (room in rooms.values) room.runInStartOfTick()
+        for (room in rooms.values) {
+            try {
+                room.runInStartOfTick()
+            }catch (e: Exception) {
+                parent.messenger("ERROR", "Room in start of tick", room.name, COLOR_RED)
+            }
+        }
     }
 
     fun runNotEveryTick() {
-        for (record in this.rooms) record.value.runNotEveryTick()
+        for (record in this.rooms) {
+            try {
+                record.value.runNotEveryTick()
+            }catch (e: Exception) {
+                parent.messenger("ERROR", "Room noe every tick", record.value.room.name, COLOR_RED)
+            }
+        }
     }
 }

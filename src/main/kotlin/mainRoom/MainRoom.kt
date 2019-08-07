@@ -510,7 +510,13 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
     }
 
     fun runNotEveryTick() {
-        for (record in this.slaveRooms) record.value.runNotEveryTick()
+        for (record in this.slaveRooms) {
+            try {
+                record.value.runNotEveryTick()
+            }catch (e: Exception) {
+                parent.parent.messenger("ERROR", "Slave not every tick", record.value.name, COLOR_RED)
+            }
+        }
         this.building()
     }
 
@@ -518,6 +524,12 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
         this.runTower()
         this.buildCreeps()
 
-        for (room in this.slaveRooms.values) room.runInStartOfTick()
+        for (room in this.slaveRooms.values) {
+            try {
+                room.runInStartOfTick()
+            }catch (e: Exception) {
+                parent.parent.messenger("ERROR", "Slave room in start", room.name, COLOR_RED)
+            }
+        }
     }
 }

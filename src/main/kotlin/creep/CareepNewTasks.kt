@@ -313,11 +313,15 @@ fun Creep.slaveTransferToFilling(creepCarry: Int, mainContext: MainContext, main
     if (creepCarry > 0 && slaveRoom != null) {
         var objForFilling: Structure? = slaveRoom.room?.find(FIND_STRUCTURES)?.filter {
             it.structureType == STRUCTURE_EXTENSION
-        }?.first { (it as StructureExtension).energy < it.energyCapacity }
+        }?.firstOrNull { (it as StructureExtension).energy < it.energyCapacity }
 
         if (objForFilling == null) objForFilling = slaveRoom.room?.find(FIND_STRUCTURES)?.filter {
             it.structureType == STRUCTURE_SPAWN
-        }?.first { (it as StructureSpawn).energy < it.energyCapacity }
+        }?.firstOrNull { (it as StructureSpawn).energy < it.energyCapacity }
+
+        if (objForFilling == null) objForFilling = slaveRoom.room?.find(FIND_STRUCTURES)?.filter {
+            it.structureType == STRUCTURE_TOWER
+        }?.firstOrNull { (it as StructureTower).energy < it.energyCapacity }
 
         if (objForFilling != null) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferTo, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
