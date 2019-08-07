@@ -1,6 +1,6 @@
 package mainRoom
 
-import MainContext
+import mainContext.MainContext
 import constants.MainRoomConstant
 import slaveRoom.SlaveRoom
 import mainRoom
@@ -24,7 +24,8 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
 
     private fun creepsCalculate() {
         for (creep in Game.creeps.values) {
-            if (creep.carry.toMap().map { it.value }.sum() == 0 && creep.ticksToLive < 100) creep.suicide()
+            if (creep.carry.toMap().map { it.value }.sum() == 0 && creep.ticksToLive < 100 &&
+                    creep.memory.role < 1000) creep.suicide()
 
             // Main rooms
             if (creep.memory.role in 0..99) {
@@ -41,18 +42,38 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
         }
     }
 
+    private fun creepsCalculateProfit() {
+        if (Memory["profitCreep"] == null) Memory["profitCreep"] = object {}
+
+        for (creep in Game.creeps.values) {
+            if (creep.memory.role == 106 || creep.memory.role == 108 || creep.memory.role == 1106 || creep.memory.role == 1108) {
+                val mainRoom: MainRoom = this.rooms[creep.memory.mainRoom] ?: continue
+                val slaveRoom: SlaveRoom = mainRoom.slaveRooms[creep.memory.slaveRoom] ?: continue
+
+                val carry: Int = creep.carry.energy
+                var oldCarry:Int = 0
+                if (Memory["profitCreep"][creep.id] != null)
+                    oldCarry = Memory["profitCreep"][creep.id] as Int
+
+                if ((carry - oldCarry) > 2) slaveRoom.profitPlus(carry - oldCarry)
+                Memory["profitCreep"][creep.id] = carry
+            }
+        }
+    }
+
     private fun buildCreeps() {
-        this.creepsCalculate()
+
         for (room in rooms.values) room.buildCreeps()
     }
 
-    private fun build() {
-        for (room in rooms.values) room.building()
-    }
 
     fun runInStartOfTick() {
-        this.buildCreeps()
-        this.build()
-        for (room in rooms.values) room.runTower()
+        this.creepsCalculate()
+        this.creepsCalculateProfit()
+        for (room in rooms.values) room.runInStartOfTick()
+    }
+
+    fun runNotEveryTick() {
+        for (record in this.rooms) record.value.runNotEveryTick()
     }
 }

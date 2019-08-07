@@ -49,7 +49,7 @@ class MainRoomConstant {
         if (this.slaveRooms.isNotEmpty()) {
             result["slaveRoomConstantContainer"] = object {}
             for (record in this.slaveRoomConstantContainer)
-                    result["slaveRoomConstantContainer"][record.key] = record.value.toDynamicFigly()
+                    result["slaveRoomConstantContainer"][record.key] = record.value.toDynamic()
         }
         return result
     }
@@ -58,5 +58,8 @@ class MainRoomConstant {
         if (d == null) return
         if (d["TowerLastTarget"] != null) this.TowerLastTarget = d["TowerLastTarget"] as String
         if (d["testCashed"] != null) this.testCashed = d["testCashed"] as Int
+        if (d["slaveRoomConstantContainer"] != null)
+            for (record in slaveRoomConstantContainer)
+                record.value.fromDynamic(d["slaveRoomConstantContainer"][record.key])
     }
 }

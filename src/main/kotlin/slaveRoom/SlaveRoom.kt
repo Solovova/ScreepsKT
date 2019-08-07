@@ -1,11 +1,15 @@
 package slaveRoom
 
+import constants.CacheCarrier
 import constants.SlaveRoomConstant
 import constants.constantSlaveRoomInit
+import mainContext.getCacheRecordRoom
 import mainRoom.MainRoom
 import mainRoom.QueueSpawnRecord
+import messenger
 import screeps.api.*
 import screeps.api.structures.*
+import kotlin.math.roundToInt
 
 class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, val constant: SlaveRoomConstant) {
     val room: Room? = Game.rooms[this.name]
@@ -104,7 +108,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
     }
 
     fun buildQueue(queue: MutableList<QueueSpawnRecord>, priority: Int) {
-        val fPriorityOfRole = arrayOf(0, 1 , 2 , 3,  4 , 5, 7, 6, 8)
+        val fPriorityOfRole = arrayOf(0, 1 , 2 , 3,  4 , 5, 7, 9, 6, 8)
         for (fRole in fPriorityOfRole) {
             var fNeed = this.need[0][fRole]
             if (priority >= 1) fNeed += this.need[1][fRole]
@@ -144,6 +148,30 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                 result = arrayOf(MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY)
             }
 
+            106 -> {
+                val carrierAuto: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer0",this.parent,this)
+                if (carrierAuto==null) {
+                    messenger("ERROR", this.name, "Auto not exists slaveContainer0", COLOR_RED)
+                    result = arrayOf()
+                }else{
+                    result = carrierAuto.needBody
+                }
+            }
+
+            108 -> {
+                val carrierAuto: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer1",this.parent,this)
+                if (carrierAuto==null) {
+                    messenger("ERROR", this.name, "Auto not exists slaveContainer0", COLOR_RED)
+                    result = arrayOf()
+                }else{
+                    result = carrierAuto.needBody
+                }
+            }
+
+            109 -> {
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+            }
+
         }
         return result
     }
@@ -165,7 +193,11 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
         when (this.constant.model) {
             0 -> {
                 //
-                console.log("${this.room == null}")
+                if (this.room!=null) {
+                    if (this.room.find(FIND_STRUCTURES).any { it.structureType == STRUCTURE_POWER_BANK }) return
+                    if (this.room.find(FIND_HOSTILE_CREEPS).isNotEmpty()) return
+                }
+
 
                 //1 Explorer 104
                 if (this.room == null) {
@@ -184,10 +216,59 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                 if (this.source[0] != null)  this.need[0][5] = 1
                 if (this.source[1] != null)  this.need[0][7] = 1
 
+                //4 Carrier
+                val carrierAuto0: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer0",this.parent,this)
+                if (carrierAuto0!=null) {
+                    if (this.need[1][6] == 0) this.need[1][6] = carrierAuto0.needCarriers
+                }
+
+                val carrierAuto1: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer1",this.parent,this)
+                if (carrierAuto1!=null) {
+                    if (this.need[1][8] == 0) this.need[1][8] = carrierAuto1.needCarriers
+                }
+
+                //4 Builder 109
+                if (this.constructionSite.size > 2 && this.need[1][9] == 0 &&
+                        this.structureContainerNearSource.size == this.source.size) this.need[1][9] = 2
+
 
 
             }
         }
+    }
+
+    fun runNotEveryTick() {
+    }
+
+    fun runInStartOfTick() {
+        if (this.constant.model != 1) this.profitShow()
+        if (this.parent.parent.parent.constants.globalConstant.clearProfit) this.profitClear()
+    }
+
+    private fun profitShow() {
+        val sProfitPT:String = (((this.constant.profitUp - this.constant.profitDown).toDouble() /
+                (Game.time - this.constant.profitStart).toDouble()) * 1500.0 ).roundToInt().toString().padStart(10)
+        val sUp : String = this.constant.profitUp.toString().padEnd(10)
+        val sDown : String = this.constant.profitDown.toString().padEnd(10)
+        val sProfit : String = (this.constant.profitUp - this.constant.profitDown).toString().padEnd(10)
+        val sTicks: String = (Game.time - this.constant.profitStart).toString().padEnd(8)
+
+        messenger("TEST", this.describe,
+                "Profit ----> ${this.name}  ($sProfitPT per. 1500 ticks) ticks: $sTicks  + $sUp  - $sDown  $sProfit", COLOR_WHITE)
+    }
+
+    private fun profitClear() {
+        constant.profitUp = 0
+        constant.profitDown = 0
+        constant.profitStart = Game.time
+    }
+
+    fun profitMinus(role: Int) {
+        this.constant.profitDown += getBodyRole(role).sumBy { BODYPART_COST[it] ?: 0 }
+    }
+
+    fun profitPlus(put: Int) {
+        this.constant.profitUp += put
     }
 }
 

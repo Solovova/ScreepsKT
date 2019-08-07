@@ -1,7 +1,7 @@
 package creep
 
 import CreepTask
-import MainContext
+import mainContext.MainContext
 import mainRoom.MainRoom
 import slaveRoom.SlaveRoom
 import TypeOfTask
@@ -136,26 +136,44 @@ fun Creep.newTask(mainContext: MainContext) {
     }
 
     if (this.memory.role == 105 || this.memory.role == 1105) {
-        if ((this.memory.role == 105) && this.ticksToLive<150) this.memory.role = this.memory.role + 1000
-        if (!isTask) isTask = this.slaveHarvest(0,creepCarry,mainContext,slaveRoom)
-        if (slaveRoom!= null && slaveRoom.structureContainerNearSource[0] == null)
+        if ((this.memory.role == 105) && this.ticksToLive < 200) this.memory.role = this.memory.role + 1000
+        if (!isTask) isTask = this.slaveHarvest(0, creepCarry, mainContext, slaveRoom)
+        if (!isTask) isTask = this.slaveBuild(creepCarry, mainContext, slaveRoom, 2)
+        if (!isTask) if (slaveRoom != null && slaveRoom.structureContainerNearSource[0] == null)
             this.room.createConstructionSite(this.pos, STRUCTURE_CONTAINER)
-        if (!isTask) isTask = this.slaveBuild(creepCarry,mainContext,slaveRoom, 2)
-        if (!isTask) isTask = this.slaveRepairContainer(0, creepCarry,mainContext,slaveRoom)
+        if (!isTask) isTask = this.slaveRepairContainer(0, creepCarry, mainContext, slaveRoom)
         if (!isTask) isTask = this.slaveTransferToStorageOrContainer(0, creepCarry,mainContext,mainRoom,slaveRoom)
 
     }
 
-    if (this.memory.role == 107 || this.memory.role == 1107) {
-        if ((this.memory.role == 107) && this.ticksToLive<150) this.memory.role = this.memory.role + 1000
-        if (!isTask) isTask = this.slaveHarvest(1,creepCarry,mainContext,slaveRoom)
-        if (slaveRoom!= null && slaveRoom.structureContainerNearSource[0] == null)
-            this.room.createConstructionSite(this.pos, STRUCTURE_CONTAINER)
-        if (!isTask) isTask = this.slaveBuild(creepCarry,mainContext,slaveRoom, 2)
-        if (!isTask) isTask = this.slaveRepairContainer(1, creepCarry,mainContext,slaveRoom)
-        if (!isTask) isTask = this.slaveTransferToStorageOrContainer(1, creepCarry,mainContext,mainRoom,slaveRoom)
-
+    if (this.memory.role == 109) {
+        if (!isTask) isTask = this.slaveGoToRoom(mainContext)
+        if (!isTask) isTask = this.slaveTakeFromContainer(4, creepCarry, mainContext, mainRoom, slaveRoom)
+        if (!isTask) isTask = this.slaveBuild(creepCarry,mainContext,slaveRoom)
     }
+
+    if (this.memory.role == 107 || this.memory.role == 1107) {
+        if ((this.memory.role == 107) && this.ticksToLive < 200) this.memory.role = this.memory.role + 1000
+        if (!isTask) isTask = this.slaveHarvest(1, creepCarry, mainContext, slaveRoom)
+        if (!isTask) isTask = this.slaveBuild(creepCarry, mainContext, slaveRoom, 2)
+        if (!isTask) if (slaveRoom != null && slaveRoom.structureContainerNearSource[0] == null)
+            this.room.createConstructionSite(this.pos, STRUCTURE_CONTAINER)
+        if (!isTask) isTask = this.slaveRepairContainer(1, creepCarry, mainContext, slaveRoom)
+        if (!isTask) isTask = this.slaveTransferToStorageOrContainer(1, creepCarry, mainContext, mainRoom, slaveRoom)
+    }
+
+    if (this.memory.role == 106 || this.memory.role == 1006) {
+        if ((this.memory.role == 106) && this.ticksToLive<100) this.memory.role = this.memory.role + 1000
+        if (!isTask) isTask = this.slaveTakeFromContainer(0,creepCarry,mainContext,mainRoom,slaveRoom)
+        if (!isTask) isTask = this.transferToStorage(creepCarry,mainContext,mainRoom)
+    }
+
+    if (this.memory.role == 108 || this.memory.role == 1008) {
+        if ((this.memory.role == 108) && this.ticksToLive<100) this.memory.role = this.memory.role + 1000
+        if (!isTask) isTask = this.slaveTakeFromContainer(1,creepCarry,mainContext,mainRoom,slaveRoom)
+        if (!isTask) isTask = this.transferToStorage(creepCarry,mainContext,mainRoom)
+    }
+
 }
 
 fun Creep.doTask(mainContext: MainContext) {
@@ -346,5 +364,17 @@ fun Creep.endTask(mainContext: MainContext) {
 
 fun Creep.doTaskGoTo(task: CreepTask, pos: RoomPosition, range: Int) {
     if (this.pos.inRangeTo(pos, range)) task.come = true
-    else if (this.fatigue ==0) this.moveTo(pos)
+    else {
+        if (this.memory.role == 106 || this.memory.role == 108 || this.memory.role == 1106 || this.memory.role == 1108)
+            if (this.room.name != this.memory.mainRoom) {
+                val room: Room? = Game.rooms[this.pos.roomName]
+                if (room != null) {
+                    val fFind: Array<Structure> = (room.lookForAt(LOOK_STRUCTURES,this.pos.x, this.pos.y) ?: arrayOf())
+                            .filter { it.structureType == STRUCTURE_ROAD && it.hits < (it.hitsMax - 100)}.toTypedArray()
+                    if (fFind.isNotEmpty()) this.repair(fFind[0])
+                }
+            }
+
+        if (this.fatigue ==0) this.moveTo(pos)
+    }
 }

@@ -21,9 +21,10 @@ class Constants {
     val mainRoomConstantContainer: MutableMap<String, MainRoomConstant> = mutableMapOf() //cashed
 
 
+
     init {
         //this.initMain()
-        this.initTest()
+                this.initTest()
     }
 
     fun initMainRoomConstantContainer(names: Array<String>) {

@@ -1,18 +1,18 @@
 package mainRoom
 
-import MainContext
+import mainContext.MainContext
 import constants.MainRoomConstant
 import constants.SlaveRoomConstant
 import slaveRoom.SlaveRoom
 import constants.constantMainRoomInit
 import creep.getDescribeForQueue
 import constants.CacheCarrier
-import getCacheRecordRoom
+import mainContext.getCacheRecordRoom
 import messenger
 import screeps.api.*
 import screeps.api.structures.*
 
-class MainRoom(private val parent: MainRoomCollector, val name: String, private val describe: String, val constant: MainRoomConstant) {
+class MainRoom(val parent: MainRoomCollector, val name: String, private val describe: String, val constant: MainRoomConstant) {
     val room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
     val slaveRooms: MutableMap<String, SlaveRoom> = mutableMapOf()
 
@@ -170,13 +170,13 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
             1 -> {
                 //1 harvester ,carrier ,filler , small harvester-filler, small filler
                 //1.1 harvester ,carrier
-                val carrierAuto0: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer0",this.name)
+                val carrierAuto0: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer0",this)
                 if (carrierAuto0!=null) {
                     if (this.need[1][1] == 0) this.need[1][1] = 1
                     if (this.need[1][2] == 0) this.need[1][2] = carrierAuto0.needCarriers
                 }
 
-                val carrierAuto1: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer1",this.name)
+                val carrierAuto1: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer1",this)
                 if (carrierAuto1!=null) {
                     if (this.need[1][3] == 0) this.need[1][3] = 1
                     if (this.need[1][4] == 0) this.need[1][4] = carrierAuto1.needCarriers
@@ -330,7 +330,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
             }
 
             2 ->  {
-                val carrierAuto: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer0",this.name)
+                val carrierAuto: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer0",this)
                 if (carrierAuto==null) {
                     messenger("ERROR", this.name, "Auto not exists mainContainer0", COLOR_RED)
                     result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
@@ -340,7 +340,7 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
             }
 
             4 ->  {
-                val carrierAuto: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer1",this.name)
+                val carrierAuto: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer1",this)
                 if (carrierAuto==null) {
                     messenger("ERROR", this.name, "Auto not exists mainContainer1", COLOR_RED)
                     result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
@@ -402,7 +402,13 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
                 if (slaveRoom!=null)
                     result = spawn.spawnCreep(slaveRoom.getBodyRole(this.queue[0].role), "mst_${this.queue[0].mainRoom}_${this.queue[0].slaveRoom}_${Game.time} ", spawnOptions.unsafeCast<SpawnOptions>())
             }
-            if (result == OK) {this.queue.removeAt(0) }
+            if (result == OK) {
+                this.queue[0].slaveRoom != this.queue[0].mainRoom
+                val slaveRoom: SlaveRoom? = this.slaveRooms[this.queue[0].slaveRoom]
+                slaveRoom?.profitMinus(this.queue[0].role)
+
+                this.queue.removeAt(0)
+            }
         }
     }
 
@@ -501,5 +507,17 @@ class MainRoom(private val parent: MainRoomCollector, val name: String, private 
                 slaveRooms[slaveName] = SlaveRoom(this, slaveName, "${this.describe}S$index", slaveRoomConstant)
             else messenger("ERROR", "${this.name} $slaveName", "initialization don't see constant", COLOR_RED)
         }
+    }
+
+    fun runNotEveryTick() {
+        for (record in this.slaveRooms) record.value.runNotEveryTick()
+        this.building()
+    }
+
+    fun runInStartOfTick() {
+        this.runTower()
+        this.buildCreeps()
+
+        for (room in this.slaveRooms.values) room.runInStartOfTick()
     }
 }

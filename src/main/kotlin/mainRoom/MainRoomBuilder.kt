@@ -2,6 +2,7 @@ package mainRoom
 
 import screeps.api.*
 import screeps.api.structures.StructureController
+import slaveRoom.buildWaysInRoom
 import slaveRoom.building
 
 fun MainRoom.buildStructure(fPrimeColor: ColorConstant, fSecondaryColor: ColorConstant, fWhatBuild: BuildableStructureConstant, fCount: Int): Boolean {
@@ -38,8 +39,16 @@ fun MainRoom.building() {
     //7 COLOR_ORANGE    STRUCTURE_ROAD before storage
     //8 COLOR_BROWN     STRUCTURE_SPAWN
 
-    for (record in this.slaveRooms)
-        record.value.building() // ToDo only colonize
+    for (record in this.slaveRooms) {
+        if (record.value.constant.model == 1) record.value.building()
+        if (record.value.constant.model == 0 && record.value.constant.autoBuildRoad) {
+            val resultRoad = record.value.buildWaysInRoom()
+            console.log("Build road in slave: ${record.value.name} : $resultRoad")
+            if (!resultRoad) break
+        }
+    }
+
+
 
     //if (Math.round(Game.time/100)*100!=Game.time) return; //проверяем каждые 100 тиков
     if(this.constructionSite.isNotEmpty()) return

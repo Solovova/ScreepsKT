@@ -1,8 +1,7 @@
+import mainContext.MainContext
 import screeps.api.*
-import screeps.utils.unsafe.delete
-import kotlin.reflect.KProperty1
 
-var mainContext : MainContext? = null
+var mainContextGlob : MainContext? = null
 
 fun loop() {
 //    delete(Memory["rooms"])
@@ -16,12 +15,13 @@ fun loop() {
 
     messenger("HEAD", "", "Current game tick is ${Game.time} _________________________________________", COLOR_WHITE)
     // Initialisation and protect mainContext
-    if (mainContext == null) mainContext = MainContext()
+    if (mainContextGlob == null) mainContextGlob = MainContext()
 
-    val protectedMainContext = mainContext ?: return
+    val protectedMainContext = mainContextGlob ?: return
 
     // Start tick functions
     if (!protectedMainContext.initOnThisTick)   protectedMainContext.runInStartOfTick()
+    protectedMainContext.runNotEveryTick()
 
     // Testing functions
     testingFunctions(protectedMainContext)

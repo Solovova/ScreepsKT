@@ -1,5 +1,11 @@
 import constants.CacheCarrier
+import mainContext.MainContext
+import mainContext.getCacheRecordRoom
 import screeps.api.COLOR_GREEN
+import screeps.api.Game
+import screeps.api.size
+import screeps.api.*
+
 
 fun testingFunctions (mainContext : MainContext) {
     //Testing functions
@@ -48,7 +54,7 @@ fun testingFunctions (mainContext : MainContext) {
 //            messenger("TEST","____","testData is: ${cacheRecordRoom.testData}", COLOR_GREEN)
 //        }
 
-        val carrierAuto : CacheCarrier? = mainContext.getCacheRecordRoom("mainContainer0", "E54N37")
+        //val carrierAuto : CacheCarrier? = mainContext.getCacheRecordRoom("mainContainer0", fMainRoom)
         //if (carrierAuto!=null)
         //    messenger("TEST","E54N37","carrierAuto is: ${carrierAuto.needBody}", COLOR_GREEN)
     }
@@ -80,6 +86,16 @@ fun testingFunctions (mainContext : MainContext) {
             console.log(slaveRoom.have.toString())
         }
     }
+
+//    for (recordMainRoom in mainContext.mainRoomCollector.rooms) {
+//        val cs = recordMainRoom.value.room.find(FIND_CONSTRUCTION_SITES)
+//        for (csRecord in cs) csRecord.remove()
+//        for (recordSlaveRoom in recordMainRoom.value.slaveRooms) {
+//            val tRoom = recordSlaveRoom.value.room ?: continue
+//            val cs = tRoom.find(FIND_CONSTRUCTION_SITES)
+//            for (csRecord in cs) csRecord.remove()
+//        }
+//    }
 
 
 

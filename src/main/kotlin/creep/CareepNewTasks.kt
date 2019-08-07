@@ -6,7 +6,7 @@ import screeps.api.structures.StructureController
 import screeps.api.structures.StructureStorage
 import slaveRoom.SlaveRoom
 import kotlin.random.Random
-import MainContext
+import mainContext.MainContext
 import CreepTask
 import TypeOfTask
 import screeps.api.*
@@ -130,6 +130,23 @@ fun Creep.takeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext
             1 -> objForFilling = mainRoom.structureContainerNearSource[1]
             2 -> objForFilling = mainRoom.structureContainerNearController[0]
             3 -> objForFilling = mainRoom.structureContainer.values.filter { it.store.energy != 0 }.maxBy { it.store.energy}
+        }
+        if (objForFilling != null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Take, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
+            result = true
+        }
+    }
+    return result
+}
+
+fun Creep.slaveTakeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom, slaveRoom: SlaveRoom?): Boolean {
+    var result = false
+    if (creepCarry == 0 && slaveRoom != null) {
+        var objForFilling: Structure? = null
+        when (type) {
+            0 -> objForFilling = slaveRoom.structureContainerNearSource[0]
+            1 -> objForFilling = slaveRoom.structureContainerNearSource[1]
+            4 -> objForFilling = slaveRoom.structureContainer.values.filter { it.store.energy > 0}.minBy { this.pos.getRangeTo(it)}
         }
         if (objForFilling != null) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Take, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))

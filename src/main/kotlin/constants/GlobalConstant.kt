@@ -2,6 +2,9 @@ package constants
 
 class GlobalConstant {
     val dataCacheCarrierAuto: MutableMap<String, CacheCarrier> = mutableMapOf() //cashed
+    val runNotEveryTickPeriod: Int = 100
+    val clearProfit: Boolean = false
+
 
     fun toDynamic(): dynamic {
         val result: dynamic = object {}

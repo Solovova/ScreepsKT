@@ -1,3 +1,6 @@
+In future
+//ToDo Room snapshot for auto reconstruction
+
 //Main
 // 0 - universal +
 // 1 - harvester source 0
@@ -16,6 +19,13 @@
 // 1 - universal +
 // 2 - far carrier
 
+// 3 - reserve
+// 4 - explorer
+// 5 - harvester source 0
+// 6 - carrier source 0 -
+// 7 - harvester source 1
+// 8 - carrier source 1 -
+// 9 - builder
 
 //Queue priority
 //need0

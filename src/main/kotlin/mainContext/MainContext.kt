@@ -1,3 +1,6 @@
+package mainContext
+
+import Tasks
 import constants.Constants
 import creep.doTask
 import creep.newTask
@@ -6,7 +9,7 @@ import screeps.api.*
 import screeps.utils.isEmpty
 import screeps.utils.unsafe.delete
 
-//MainContext initial only then died
+//mainContext.MainContext initial only then died
 //in start of tick initial mainRoomCollector
 //in start of tick initial Constant and assign it need place
 
@@ -27,10 +30,14 @@ class MainContext {
 
     fun runInStartOfTick() {
         this.mainRoomCollector = MainRoomCollector(this, this.constants.mainRooms)
-        this.tasks.deleteTaskDiedCreep()
-        this.houseKeeping()
         this.mainRoomCollector.runInStartOfTick()
         for (creep in Game.creeps.values) creep.newTask(this)
+    }
+
+    fun runNotEveryTick() {
+        this.mainRoomCollector.runNotEveryTick()
+        this.tasks.deleteTaskDiedCreep()
+        this.houseKeeping()
     }
 
     fun runInEndOfTick() {
