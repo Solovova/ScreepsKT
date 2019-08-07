@@ -4,10 +4,13 @@ import Tasks
 import constants.Constants
 import creep.doTask
 import creep.newTask
+import mainRoom
 import mainRoom.MainRoomCollector
+import role
 import screeps.api.*
 import screeps.utils.isEmpty
 import screeps.utils.unsafe.delete
+import slaveRoom
 
 //mainContext.MainContext initial only then died
 //in start of tick initial mainRoomCollector
@@ -28,7 +31,14 @@ class MainContext {
     fun runInStartOfTick() {
         this.mainRoomCollector = MainRoomCollector(this, this.constants.mainRooms)
         this.mainRoomCollector.runInStartOfTick()
-        for (creep in Game.creeps.values) creep.newTask(this)
+        for (creep in Game.creeps.values) {
+            try {
+                creep.newTask(this)
+            }catch (e: Exception) {
+                messenger("ERROR", "CREEP New task","${creep.memory.mainRoom} ${creep.memory.slaveRoom} ${creep.memory.role} ${creep.id}", COLOR_RED)
+            }
+
+        }
     }
 
     fun runNotEveryTick() {
@@ -40,7 +50,13 @@ class MainContext {
     fun runInEndOfTick() {
         this.messengerShow()
         this.initOnThisTick = false
-        for (creep in Game.creeps.values) creep.doTask(this)
+        for (creep in Game.creeps.values) {
+            try {
+                creep.doTask(this)
+            }catch (e: Exception) {
+                messenger("ERROR", "CREEP Do task","${creep.memory.mainRoom} ${creep.memory.slaveRoom} ${creep.memory.role} ${creep.id}", COLOR_RED)
+            }
+        }
         this.tasks.toMemory()
         this.constants.toMemory()
     }

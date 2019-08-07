@@ -40,14 +40,13 @@ fun SlaveRoom.building() {
 
     //if (Math.round(Game.time/100)*100!=Game.time) return; //проверяем каждые 100 тиков
     if (this.room == null) return
-
     if (this.constant.model != 1) return  // Build by flag only in colonize room
 
     if(this.constructionSite.isNotEmpty()) return
+    if (this.buildStructure(COLOR_WHITE, COLOR_BROWN, STRUCTURE_SPAWN,1)) return
+
     val protectedStructureController: StructureController = this.structureController[0] ?: return
-    if (protectedStructureController.level == 1) {
-        if (this.buildStructure(COLOR_WHITE, COLOR_BROWN, STRUCTURE_SPAWN,1)) return
-    }
+
 
     if (protectedStructureController.level == 2) {
         if (this.room.energyCapacityAvailable!=550) {//строим extension 5

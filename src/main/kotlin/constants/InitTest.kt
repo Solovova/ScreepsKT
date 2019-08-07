@@ -1,9 +1,9 @@
 package constants
 
 fun Constants.initTest() {
-    this.initMainRoomConstantContainer( arrayOf("W3N4") )
-    this.getMainRoomConstant("W3N4").initSlaveRoomConstantContainer(arrayOf("W3N3","W3N2"))  //M0
+    this.initMainRoomConstantContainer( arrayOf("W5N3","W4N3","W7N3") )
+    this.getMainRoomConstant("W5N3").initSlaveRoomConstantContainer(arrayOf("W5N2"))
 
     s(0,0).autoBuildRoad = true
-    s(0,1).autoBuildRoad = true
+
 }

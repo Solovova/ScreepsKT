@@ -1,16 +1,13 @@
 package creep
 
 import mainRoom.MainRoom
-import screeps.api.structures.Structure
-import screeps.api.structures.StructureController
-import screeps.api.structures.StructureStorage
 import slaveRoom.SlaveRoom
 import kotlin.random.Random
 import mainContext.MainContext
 import CreepTask
 import TypeOfTask
 import screeps.api.*
-import screeps.api.structures.StructureContainer
+import screeps.api.structures.*
 import slaveRoom
 
 fun Creep.takeFromStorage(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
@@ -296,6 +293,9 @@ fun Creep.slaveRepairContainer(type: Int, creepCarry: Int, mainContext: MainCont
                 1 -> containerRepair = slaveRoom.structureContainerNearSource[1]
             }
 
+            //ToDo костиль
+            if (containerRepair?.id == "5d4b071ecc072524d9fbeceb") return false
+
             if (containerRepair != null) {
                 if (containerRepair.hits < (containerRepair.hitsMax - 10000)){
                     mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Repair, idObject0 = containerRepair.id, posObject0 = containerRepair.pos))
@@ -303,6 +303,25 @@ fun Creep.slaveRepairContainer(type: Int, creepCarry: Int, mainContext: MainCont
                 }
             }
 
+        }
+    }
+    return result
+}
+
+fun Creep.slaveTransferToFilling(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom, slaveRoom: SlaveRoom?): Boolean {
+    var result = false
+    if (creepCarry > 0 && slaveRoom != null) {
+        var objForFilling: Structure? = slaveRoom.room?.find(FIND_STRUCTURES)?.filter {
+            it.structureType == STRUCTURE_EXTENSION
+        }?.first { (it as StructureExtension).energy < it.energyCapacity }
+
+        if (objForFilling == null) objForFilling = slaveRoom.room?.find(FIND_STRUCTURES)?.filter {
+            it.structureType == STRUCTURE_SPAWN
+        }?.first { (it as StructureSpawn).energy < it.energyCapacity }
+
+        if (objForFilling != null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferTo, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
+            result = true
         }
     }
     return result

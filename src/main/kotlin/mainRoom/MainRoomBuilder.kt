@@ -39,14 +39,7 @@ fun MainRoom.building() {
     //7 COLOR_ORANGE    STRUCTURE_ROAD before storage
     //8 COLOR_BROWN     STRUCTURE_SPAWN
 
-    for (record in this.slaveRooms) {
-        if (record.value.constant.model == 1) record.value.building()
-        if (record.value.constant.model == 0 && record.value.constant.autoBuildRoad) {
-            val resultRoad = record.value.buildWaysInRoom()
-            console.log("Build road in slave: ${record.value.name} : $resultRoad")
-            if (!resultRoad) break
-        }
-    }
+
 
 
 

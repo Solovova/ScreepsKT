@@ -116,6 +116,7 @@ fun Creep.newTask(mainContext: MainContext) {
         if (!isTask) isTask = this.slaveGoToRoom(mainContext)
         if (!isTask) isTask = this.slaveHarvest(2, creepCarry,mainContext,slaveRoom)
         if (!isTask) isTask = this.slaveUpgradeNormalOrEmergency(0,creepCarry,mainContext,slaveRoom)
+        if (!isTask) isTask = this.slaveTransferToFilling(creepCarry, mainContext, mainRoom,slaveRoom)
         if (!isTask) isTask = this.slaveBuild(creepCarry,mainContext,slaveRoom)
         if (!isTask) isTask = this.slaveUpgradeNormalOrEmergency(1,creepCarry,mainContext,slaveRoom)
     }
@@ -164,12 +165,14 @@ fun Creep.newTask(mainContext: MainContext) {
     if (this.memory.role == 106 || this.memory.role == 1006) {
         if ((this.memory.role == 106) && this.ticksToLive<100) this.memory.role = this.memory.role + 1000
         if (!isTask) isTask = this.slaveTakeFromContainer(0,creepCarry,mainContext,mainRoom,slaveRoom)
+        if (!isTask) isTask = this.slaveBuild(creepCarry, mainContext, slaveRoom, 2)
         if (!isTask) isTask = this.transferToStorage(creepCarry,mainContext,mainRoom)
     }
 
     if (this.memory.role == 108 || this.memory.role == 1008) {
         if ((this.memory.role == 108) && this.ticksToLive<100) this.memory.role = this.memory.role + 1000
         if (!isTask) isTask = this.slaveTakeFromContainer(1,creepCarry,mainContext,mainRoom,slaveRoom)
+        if (!isTask) isTask = this.slaveBuild(creepCarry, mainContext, slaveRoom, 2)
         if (!isTask) isTask = this.transferToStorage(creepCarry,mainContext,mainRoom)
     }
 
@@ -308,6 +311,21 @@ fun Creep.endTask(mainContext: MainContext) {
         }
 
         TypeOfTask.TransferTo -> {
+            if (this.memory.role == 106 || this.memory.role == 1006 || this.memory.role == 108 || this.memory.role == 1008) {
+                val mainRoom: MainRoom = mainContext.mainRoomCollector.rooms[this.memory.mainRoom] ?: return
+                var slaveRoom: SlaveRoom?  = mainRoom.slaveRooms[this.memory.slaveRoom] ?: return
+                if (slaveRoom != null) {
+                    if (creepCarry > 0 && slaveRoom.constructionSite.isNotEmpty()) {
+                        val tConstructionSite = slaveRoom.getConstructionSite(this.pos)
+                        if (tConstructionSite != null)
+                            if (this.pos.inRangeTo(tConstructionSite.pos, 3)) {
+                                mainContext.tasks.deleteTask(this.id)
+                                return
+                            }
+                    }
+                }
+            }
+
             if (creepCarry == 0) {
                 mainContext.tasks.deleteTask(this.id)
                 return

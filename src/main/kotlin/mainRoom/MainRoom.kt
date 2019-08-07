@@ -321,7 +321,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
                 if (this.have[0] == 0 && this.room.energyAvailable < 800) result = arrayOf(MOVE, MOVE, WORK, CARRY)
                 else if (this.room.energyCapacityAvailable < 400) result = arrayOf(MOVE, MOVE, WORK, CARRY)
                 else if (this.room.energyCapacityAvailable < 800) result = arrayOf(MOVE, MOVE, WORK, WORK, CARRY, CARRY)
-                else result = arrayOf(MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY)
+                else result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,CARRY,CARRY,CARRY,CARRY)
             }
 
             1,3 ->  {
@@ -382,6 +382,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
     }
 
     private fun spawnCreep() {
+        if (!this.constant.creepSpawn) return
         for (spawn in this.structureSpawn.values) {
             if (this.queue.size == 0) return
             if (!spawn.isActive() || spawn.spawning != null) continue

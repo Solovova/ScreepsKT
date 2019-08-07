@@ -24,8 +24,8 @@ class Constants(parent: MainContext) {
 
 
     init {
-        this.initMain()
-        //this.initTest()
+        if (Game.rooms["E54N37"] != null) this.initMain()
+        else this.initTest()
     }
 
     fun initMainRoomConstantContainer(names: Array<String>) {

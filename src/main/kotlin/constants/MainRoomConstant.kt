@@ -7,10 +7,10 @@ class MainRoomConstant(parent: Constants) {
     var slaveRooms : Array<String> = arrayOf() //simple
     val slaveRoomConstantContainer: MutableMap<String,SlaveRoomConstant> = mutableMapOf() //cashed
     //Upgrader
-    var energyUpgradable : Int = 40000 //simple //how much energy must be in storage for start upgrade controller
+
 
     //Builder
-    var energyBuilder : Int = 20000 //simple //how much energy must be in storage for start building
+
     var note : String = ""
 
     var TowerLastTarget: String = ""        //cashed
@@ -19,6 +19,11 @@ class MainRoomConstant(parent: Constants) {
 
     var testCashed: Int = 0        //cashed
     var testUnCashed: Int = 0        //simple
+
+    //Creep commands
+    var energyBuilder : Int = 20000 //simple //how much energy must be in storage for start building
+    var energyUpgradable : Int = 40000 //simple //how much energy must be in storage for start upgrade controller
+    var creepSpawn: Boolean = true
 
     private fun getSlaveRoomConstant(slaveRoomName: String) : SlaveRoomConstant {
         val slaveRoomConstant:SlaveRoomConstant ? = this.slaveRoomConstantContainer[slaveRoomName]

@@ -237,6 +237,11 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
     }
 
     fun runNotEveryTick() {
+        if (this.constant.model == 1) this.building()
+        if (this.constant.model == 0 && this.constant.autoBuildRoad) {
+            val resultRoad = this.buildWaysInRoom()
+            console.log("Build road in slave: ${this.name} : $resultRoad")
+        }
     }
 
     fun runInStartOfTick() {
