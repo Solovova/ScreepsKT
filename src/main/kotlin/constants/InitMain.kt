@@ -13,24 +13,25 @@ fun Constants.initMain() {                         //M0       M1       M2       
 
 
 
-    m(0).note  = "O ready 2 labs ready"
-    m(1).note  = "Z ready 2 labs ready"
-    m(2).note  = "L ready 2 labs ready"
-    m(3).note  = "H ready 2 labs ready"
-    m(4).note  = "Z ready 2 labs ready"
-    m(5).note  = "L ready 2 labs ready"
-    m(6).note  = "H ready 2 labs ready"
-    m(7).note  = "O ready 2 move storage"
-    m(8).note  = "O wait 2 move tower storage road"
-    m(9).note  = "L wait 2 labs ready road"
-    m(10).note = "H wait 2 labs ready"
-    m(11).note = "O wait 2 labs ready"
+    m(0).note  = "ready 2"
+    m(1).note  = "ready 2"
+    m(2).note  = "ready 2"
+    m(3).note  = "ready 2"
+    m(4).note  = "ready 2"
+    m(5).note  = "ready 2"
+    m(6).note  = "ready 2"
+    m(7).note  = "ready 2 labs"
+    m(8).note  = "wait 2 labs"
+    m(9).note  = "wait 2"
+    m(10).note = "wait 2"
+    m(11).note = "wait 2"
     //E52N36 labs ready
     //E52N33 labs ready
     //E57N37 labs ready
 
 
     m(11).creepSpawn = false
+    m(7).energyUpgradable = 70000
 
 
     s(0,0).autoBuildRoad = true

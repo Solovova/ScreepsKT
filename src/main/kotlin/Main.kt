@@ -1,9 +1,11 @@
 import mainContext.MainContext
 import screeps.api.*
+import kotlin.math.roundToInt
 
 var mainContextGlob : MainContext? = null
 
 fun loop() {
+    val cpuStart = Game.cpu.getUsed()
 //    delete(Memory["rooms"])
 //    delete(Memory["account"])
 //    delete(Memory["mainRooms"])
@@ -30,4 +32,6 @@ fun loop() {
 
     // End tick functions
     protectedMainContext.runInEndOfTick()
+
+    console.log("CPU: ${(Game.cpu.getUsed() - cpuStart).roundToInt()}")
 }

@@ -8,6 +8,7 @@ import screeps.api.*
 
 
 fun testingFunctions (mainContext : MainContext) {
+    return
     //Testing functions
 //    for (room in mainContext.mainRoomCollector.rooms.values) console.log(room.name)
 //
