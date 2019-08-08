@@ -214,11 +214,18 @@ fun Creep.slaveHarvest(type: Int, creepCarry: Int, mainContext: MainContext, sla
     var result = false
     if (slaveRoom != null) {
         if (creepCarry == 0) {
+
+
             var tSource: Source? = null
             when (type) {
                 0 -> tSource = slaveRoom.source[0]
                 1 -> tSource = slaveRoom.source[1]
                 2 -> tSource = slaveRoom.source[Random.nextInt(slaveRoom.source.size)]
+            }
+
+            //ToDo костиль
+            if (slaveRoom.name == "E57N34") {
+                tSource = Game.getObjectById("59bbc5a12052a716c3ce9d1b")
             }
 
             if (tSource!=null) {

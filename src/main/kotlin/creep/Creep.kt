@@ -92,11 +92,11 @@ fun Creep.newTask(mainContext: MainContext) {
 
     if (this.memory.role == 8) {
         if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
-        //ToDo костиль
-        if (!isTask) isTask = this.takeDroppedEnergy(creepCarry,mainContext,mainRoom)
-        if (!isTask) isTask = this.takeFromContainer(3,creepCarry,mainContext,mainRoom)
-        //
+        //if (!isTask) isTask = this.takeDroppedEnergy(creepCarry,mainContext,mainRoom)   //ToDo костиль
+        //if (!isTask) isTask = this.takeFromContainer(3,creepCarry,mainContext,mainRoom) //ToDo костиль
+        //if (!isTask) isTask = this.transferToFilling(creepCarry, mainContext, mainRoom) //ToDo костиль
         if (!isTask) isTask = this.buildStructure(creepCarry, mainContext, mainRoom)
+        //if (!isTask) isTask = this.transferToStorage(creepCarry,mainContext,mainRoom) //ToDo костиль
     }
 
     if (this.memory.role == 9) {

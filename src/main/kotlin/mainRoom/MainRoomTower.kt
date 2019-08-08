@@ -51,7 +51,7 @@ fun MainRoom.runTower() {
 
     //3 Containers
     if (fTask == null){
-        val damagedContainers = this.room.find(FIND_STRUCTURES).filter { (it.structureType == STRUCTURE_CONTAINER)&&(it.hits<=230000) }
+        val damagedContainers = this.room.find(FIND_STRUCTURES).filter { (it.structureType == STRUCTURE_CONTAINER)&&(it.hits<=240000) }
         if(damagedContainers.isNotEmpty()) {
             fTask = "repair"
             fTarget = damagedContainers[0]
@@ -144,7 +144,7 @@ fun MainRoom.runTower() {
     if (fMaxTower > towers.size) fMaxTower = towers.size
 
     for ((counter, tower) in towers.withIndex()) {
-        if (counter>fMaxTower) break
+        if ((counter + 1)>fMaxTower) break
         when (fTask) {
             "attack" -> tower.attack(fTarget as Creep)
             "heal" -> tower.heal(fTarget as Creep)

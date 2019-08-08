@@ -26,6 +26,8 @@ class MainContext {
     init {
         this.runInStartOfTick()
         this.constants.fromMemory()
+
+        //this.directControlTaskClearInRoom("E57N34")
     }
 
     fun runInStartOfTick() {
