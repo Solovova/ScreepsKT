@@ -57,3 +57,30 @@ In future
 for (key in js("Object").keys(testMutable.asDynamic()).unsafeCast<Array<String>>())
                 console.log(key)
 
+//Flag color for in game commands
+
+//COLOR_WHITE - auto build Structure
+
+// 1 COLOR_RED       STRUCTURE_EXTENSION
+// 2 COLOR_PURPLE    STRUCTURE_CONTAINER near controller
+// 3 COLOR_BLUE      STRUCTURE_TOWER
+// 4 COLOR_CYAN      STRUCTURE_ROAD after tower
+// 5 COLOR_GREEN     STRUCTURE_STORAGE
+// 6 COLOR_YELLOW    STRUCTURE_CONTAINER near source
+// 7 COLOR_ORANGE    STRUCTURE_ROAD before storage
+// 8 COLOR_BROWN     STRUCTURE_SPAWN
+// 9 COLOR_GREY
+//10 COLOR_WHITE
+
+
+//COLOR_RED - snapshots of room
+// 1 COLOR_RED       - do snapshot of room
+// 2 COLOR_PURPLE    - restore snapshot of room only Structure
+// 3 COLOR_BLUE      - restore snapshot of room only Roads
+// 4 COLOR_CYAN      - restore snapshot of room only Wall and Ramparts
+// 5 COLOR_GREEN
+// 6 COLOR_YELLOW
+// 7 COLOR_ORANGE
+// 8 COLOR_BROWN
+// 9 COLOR_GREY
+//10 COLOR_WHITE

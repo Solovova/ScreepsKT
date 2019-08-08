@@ -136,6 +136,18 @@ fun Creep.takeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext
     return result
 }
 
+fun Creep.takeDroppedEnergy(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
+    var result = false
+    if (creepCarry == 0) {
+        val objDroppedEnergy: Resource? = mainRoom.room.find(FIND_DROPPED_ENERGY).minBy { this.pos.getRangeTo(it.pos) }
+        if (objDroppedEnergy != null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TakeDropped, idObject0 = objDroppedEnergy.id, posObject0 = objDroppedEnergy.pos))
+            result = true
+        }
+    }
+    return result
+}
+
 fun Creep.slaveTakeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom, slaveRoom: SlaveRoom?): Boolean {
     var result = false
     if (creepCarry == 0 && slaveRoom != null) {

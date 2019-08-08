@@ -16,7 +16,8 @@ enum class TypeOfTask {
     Upgrade,
     Claim,
     Reserve,
-    GoToPos
+    GoToPos,
+    TakeDropped
 }
 
 enum class TypeOfInteractionsObjects {

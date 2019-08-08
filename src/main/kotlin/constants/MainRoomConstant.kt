@@ -22,7 +22,7 @@ class MainRoomConstant(parent: Constants) {
 
     //Creep commands
     var energyBuilder : Int = 20000 //simple //how much energy must be in storage for start building
-    var energyUpgradable : Int = 40000 //simple //how much energy must be in storage for start upgrade controller
+    var energyUpgradable : Int = 50000 //simple //how much energy must be in storage for start upgrade controller
     var creepSpawn: Boolean = true
 
     private fun getSlaveRoomConstant(slaveRoomName: String) : SlaveRoomConstant {

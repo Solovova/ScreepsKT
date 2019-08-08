@@ -92,6 +92,10 @@ fun Creep.newTask(mainContext: MainContext) {
 
     if (this.memory.role == 8) {
         if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
+        //ToDo костиль
+        if (!isTask) isTask = this.takeDroppedEnergy(creepCarry,mainContext,mainRoom)
+        if (!isTask) isTask = this.takeFromContainer(3,creepCarry,mainContext,mainRoom)
+        //
         if (!isTask) isTask = this.buildStructure(creepCarry, mainContext, mainRoom)
     }
 
@@ -264,6 +268,14 @@ fun Creep.doTask(mainContext: MainContext) {
             }
         }
 
+        TypeOfTask.TakeDropped -> {
+            if (!task.come) this.doTaskGoTo(task, task.posObject0, 1)
+            if (task.come) {
+                val resource: Resource? = (Game.getObjectById(task.idObject0) as Resource?)
+                if (resource != null) this.pickup(resource)
+            }
+        }
+
         TypeOfTask.Reserve -> {
             if (!task.come) this.doTaskGoTo(task, task.posObject0, 1)
             if (task.come) {
@@ -308,6 +320,14 @@ fun Creep.endTask(mainContext: MainContext) {
                 if (structure.structureType == STRUCTURE_STORAGE
                         && (structure as StructureStorage).store.energy == 0) mainContext.tasks.deleteTask(this.id)
             }
+        }
+
+        TypeOfTask.TakeDropped -> {
+            if (creepCarry != 0) mainContext.tasks.deleteTask(this.id)
+
+            val resource: Resource? = (Game.getObjectById(task.idObject0) as Resource?)
+
+            if (resource == null) mainContext.tasks.deleteTask(this.id)
         }
 
         TypeOfTask.TransferTo -> {

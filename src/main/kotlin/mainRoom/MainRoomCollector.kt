@@ -7,6 +7,7 @@ import mainRoom
 import role
 import screeps.api.*
 import screeps.utils.toMap
+import screeps.utils.unsafe.delete
 import slaveRoom
 
 class MainRoomCollector(val parent: MainContext, names: Array<String>) {
@@ -57,6 +58,15 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
                 if ((carry - oldCarry) > 2) slaveRoom.profitPlus(carry - oldCarry)
                 Memory["profitCreep"][creep.id] = carry
             }
+        }
+
+        //clear
+        try {
+            for (key in js("Object").keys(Memory["profitCreep"]).unsafeCast<Array<String>>())
+                if (Game.getObjectById<Creep>(key) == null)
+                    delete(Memory["profitCreep"][key])
+        } catch (e: Exception) {
+            parent.messenger("ERROR", "Clear in creep profit", "", COLOR_RED)
         }
     }
 
