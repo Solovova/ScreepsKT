@@ -293,9 +293,6 @@ fun Creep.slaveRepairContainer(type: Int, creepCarry: Int, mainContext: MainCont
                 1 -> containerRepair = slaveRoom.structureContainerNearSource[1]
             }
 
-            //ToDo костиль
-            if (containerRepair?.id == "5d4b071ecc072524d9fbeceb") return false
-
             if (containerRepair != null) {
                 if (containerRepair.hits < (containerRepair.hitsMax - 10000)){
                     mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Repair, idObject0 = containerRepair.id, posObject0 = containerRepair.pos))
