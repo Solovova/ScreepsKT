@@ -2,7 +2,9 @@ package constants
 
 class GlobalConstant {
     val dataCacheCarrierAuto: MutableMap<String, CacheCarrier> = mutableMapOf() //cashed
-    val runNotEveryTickPeriod: Int = 100
+    val roomRunNotEveryTickTicksPauseMin: Int = 10
+    val roomRunNotEveryTickTicksPauseMax: Int = 20
+
     val clearProfit: Boolean = false
 
 

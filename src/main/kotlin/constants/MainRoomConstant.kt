@@ -17,13 +17,13 @@ class MainRoomConstant(parent: Constants) {
 
     var SentEnergyToRoom: String = ""       //simple
 
-    var testCashed: Int = 0        //cashed
-    var testUnCashed: Int = 0        //simple
-
     //Creep commands
     var energyBuilder : Int = 20000 //simple //how much energy must be in storage for start building
     var energyUpgradable : Int = 50000 //simple //how much energy must be in storage for start upgrade controller
     var creepSpawn: Boolean = true
+
+    //Room algorithm
+    var roomRunNotEveryTickNextTickRun: Int = 0
 
     private fun getSlaveRoomConstant(slaveRoomName: String) : SlaveRoomConstant {
         val slaveRoomConstant:SlaveRoomConstant ? = this.slaveRoomConstantContainer[slaveRoomName]
@@ -49,7 +49,7 @@ class MainRoomConstant(parent: Constants) {
     fun toDynamic(): dynamic {
         val result: dynamic = object {}
         result["TowerLastTarget"] = this.TowerLastTarget
-        result["testCashed"] = this.testCashed
+        result["roomRunNotEveryTickNextTickRun"] = this.roomRunNotEveryTickNextTickRun
 
         if (this.slaveRooms.isNotEmpty()) {
             result["slaveRoomConstantContainer"] = object {}
@@ -62,7 +62,7 @@ class MainRoomConstant(parent: Constants) {
     fun fromDynamic(d: dynamic) {
         if (d == null) return
         if (d["TowerLastTarget"] != null) this.TowerLastTarget = d["TowerLastTarget"] as String
-        if (d["testCashed"] != null) this.testCashed = d["testCashed"] as Int
+        if (d["roomRunNotEveryTickNextTickRun"] != null) this.roomRunNotEveryTickNextTickRun = d["roomRunNotEveryTickNextTickRun"] as Int
         if (d["slaveRoomConstantContainer"] != null)
             for (record in slaveRoomConstantContainer)
                 record.value.fromDynamic(d["slaveRoomConstantContainer"][record.key])

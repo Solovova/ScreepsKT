@@ -10,6 +10,7 @@ import constants.CacheCarrier
 import mainContext.getCacheRecordRoom
 import screeps.api.*
 import screeps.api.structures.*
+import kotlin.random.Random
 
 class MainRoom(val parent: MainRoomCollector, val name: String, private val describe: String, val constant: MainRoomConstant) {
     val room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
@@ -239,8 +240,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
 
     private fun buildQueue() {
         for (i in 0 until this.have.size) this.haveForQueue[i] = this.have[i]
-        val fPriorityOfRole = if (this.getEnergyInStorage() < 2000) arrayOf(0, 9, 1, 3, 2, 4, 14, 5, 20, 6, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
-        else arrayOf(0, 9, 5, 20, 1, 3, 2, 4, 14, 6, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
+        val fPriorityOfRole = if (this.getEnergyInStorage() < 2000) arrayOf(0, 9, 1, 3, 2, 4, 14, 5, 20, 7, 6, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
+        else arrayOf(0, 9, 5, 20, 1, 3, 2, 4, 14, 7, 6, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
 
         //Main 0..1
         for (priority in 0..1) {
@@ -518,11 +519,24 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
             }
         }
         this.building()
+
+        //Test
+        if (!this.setNextTickRun()) return
+
+    }
+
+    private fun setNextTickRun(): Boolean {
+        if (this.constant.roomRunNotEveryTickNextTickRun > Game.time) return false
+        this.constant.roomRunNotEveryTickNextTickRun = Game.time + Random.nextInt(parent.parent.constants.globalConstant.roomRunNotEveryTickTicksPauseMin,
+                parent.parent.constants.globalConstant.roomRunNotEveryTickTicksPauseMax)
+        parent.parent.messenger("TEST", this.name, "Main room not every tick run. Next tick: ${this.constant.roomRunNotEveryTickNextTickRun}", COLOR_GREEN)
+        return true
     }
 
     fun runInStartOfTick() {
         this.runTower()
         this.buildCreeps()
+        this.doSnapShot()
 
         for (room in this.slaveRooms.values) {
             try {

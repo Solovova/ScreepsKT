@@ -412,6 +412,8 @@ fun Creep.doTaskGoTo(task: CreepTask, pos: RoomPosition, range: Int) {
                 }
             }
 
-        if (this.fatigue ==0) this.moveTo(pos)
+        if (this.fatigue ==0) {
+            this.moveTo(pos)
+        }
     }
 }

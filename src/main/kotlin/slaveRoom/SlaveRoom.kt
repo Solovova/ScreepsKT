@@ -9,6 +9,7 @@ import mainRoom.QueueSpawnRecord
 import screeps.api.*
 import screeps.api.structures.*
 import kotlin.math.roundToInt
+import kotlin.random.Random
 
 class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, val constant: SlaveRoomConstant) {
     val room: Room? = Game.rooms[this.name]
@@ -242,6 +243,16 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             val resultRoad = this.buildWaysInRoom()
             console.log("Build road in slave: ${this.name} : $resultRoad")
         }
+
+        if (!this.setNextTickRun()) return
+    }
+
+    private fun setNextTickRun(): Boolean {
+        if (this.constant.roomRunNotEveryTickNextTickRun > Game.time) return false
+        this.constant.roomRunNotEveryTickNextTickRun = Game.time + Random.nextInt(parent.parent.parent.constants.globalConstant.roomRunNotEveryTickTicksPauseMin,
+                parent.parent.parent.constants.globalConstant.roomRunNotEveryTickTicksPauseMax)
+        parent.parent.parent.messenger("TEST", this.name, "Slave room not every tick run. Next tick: ${this.constant.roomRunNotEveryTickNextTickRun}", COLOR_GREEN)
+        return true
     }
 
     fun runInStartOfTick() {

@@ -8,6 +8,7 @@ import CreepTask
 import TypeOfTask
 import screeps.api.*
 import screeps.api.structures.*
+import screeps.utils.toMap
 import slaveRoom
 
 fun Creep.takeFromStorage(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
@@ -103,13 +104,17 @@ fun Creep.transferToContainer(type: Int, creepCarry: Int, mainContext: MainConte
     // 0 - Source 0, 1 - Source 1, 2 - Controller
     var result = false
     if (creepCarry > 0) {
-        var objForFilling: Structure? = null
+        var objForFilling: StructureContainer? = null
         when(type) {
             0 -> objForFilling = mainRoom.structureContainerNearSource[0]
             1 -> objForFilling = mainRoom.structureContainerNearSource[1]
             2 -> objForFilling = mainRoom.structureContainerNearController[0]
         }
+
+
         if (objForFilling != null) {
+            val canStore: Int = objForFilling.storeCapacity - objForFilling.store.toMap().map { it.value }.sum()
+            if (creepCarry > canStore) return false
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferTo, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
             result = true
         }
@@ -223,10 +228,9 @@ fun Creep.slaveHarvest(type: Int, creepCarry: Int, mainContext: MainContext, sla
                 2 -> tSource = slaveRoom.source[Random.nextInt(slaveRoom.source.size)]
             }
 
-            //ToDo костиль
-            if (slaveRoom.name == "E57N34") {
-                tSource = Game.getObjectById("59bbc5a12052a716c3ce9d1b")
-            }
+
+            if (slaveRoom.name == "E57N34")  tSource = Game.getObjectById("59bbc5a12052a716c3ce9d1b") //ToDo костиль
+            if (slaveRoom.name == "E51N33")  tSource = Game.getObjectById("59bbc52e2052a716c3ce91c0") //ToDo костиль
 
             if (tSource!=null) {
                 mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Harvest, idObject0 = tSource.id, posObject0 = tSource.pos))

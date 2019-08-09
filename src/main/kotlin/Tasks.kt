@@ -109,10 +109,9 @@ class CreepTask {
 //2. Assign new tasks
 //3. Do tasks
 
-class  Tasks(parent:MainContext) {
+class  Tasks(private val parent: MainContext) {
     // Все держим в памяти, в конце тика записываем в Memory если пропал объект восстанавливаем из памяти
     val tasks: MutableMap<String, CreepTask> = mutableMapOf() //id of creepsRole
-    val parent:MainContext = parent
 
     init {
         this.fromMemory()
@@ -121,6 +120,11 @@ class  Tasks(parent:MainContext) {
     fun add(idCreep: String, task: CreepTask) {
         if (task.posObject0!= null) parent.messenger("TASK", task.posObject0.roomName, "New task: $idCreep ${task.type}", COLOR_CYAN)
         tasks[idCreep] = task
+        try {
+            Game.getObjectById<Creep>(idCreep)?.say(task.type.toString())
+        }catch (e: Exception) {
+            parent.messenger("ERROR", idCreep , "Task say", COLOR_RED)
+        }
     }
 
     fun toMemory() {

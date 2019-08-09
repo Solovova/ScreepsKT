@@ -24,8 +24,9 @@ class MainContext {
     private val messengerMap : MutableMap<String,String> = mutableMapOf()
 
     init {
-        this.runInStartOfTick()
         this.constants.fromMemory()
+        this.runInStartOfTick()
+
 
         //this.directControlTaskClearInRoom("E57N34")
     }
@@ -91,7 +92,7 @@ class MainContext {
         }
 
         if (type == "TASK") return
-        //if (type == "TEST") return
+        if (type == "TEST") return
 
 
         val prefix: String = when(type) {
