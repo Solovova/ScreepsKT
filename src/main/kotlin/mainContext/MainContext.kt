@@ -97,6 +97,7 @@ class MainContext {
         val prefix: String = when(type) {
             "HEAD" -> "00"
             "ERROR" -> "05"
+            "INFO" -> "06"
             "QUEUE" -> "07"
             "PROFIT" -> "09"
             "TASK" -> "11"

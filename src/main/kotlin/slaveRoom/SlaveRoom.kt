@@ -216,6 +216,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
 
                 //5 Defender
                 if (this.constant.roomHostile) {
+                    parent.parent.parent.messenger("INFO",this.name,"Attacked tpe: ${this.constant.roomHostileType} num:${this.constant.roomHostileNum}", COLOR_RED)
                     if (this.constant.roomHostileNum > 1 ) {
                         if (this.room == null) this.need[0][4] = 1
                     }else {
