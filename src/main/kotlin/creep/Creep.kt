@@ -180,6 +180,16 @@ fun Creep.newTask(mainContext: MainContext) {
         if (!isTask) isTask = this.transferToStorage(creepCarry,mainContext,mainRoom)
     }
 
+    if (this.memory.role == 110) {
+        if (!isTask) isTask = this.slaveGoToRoom(mainContext)
+        if (!isTask) isTask = this.slaveAttakRanged(mainContext, slaveRoom)
+    }
+
+    if (this.memory.role == 111) {
+        if (!isTask) isTask = this.slaveGoToRoom(mainContext)
+        if (!isTask) isTask = this.slaveAttack(mainContext, slaveRoom)
+    }
+
 }
 
 fun Creep.doTask(mainContext: MainContext) {
@@ -288,6 +298,22 @@ fun Creep.doTask(mainContext: MainContext) {
             if (!task.come) this.doTaskGoTo(task, task.posObject0, 0)
         }
 
+        TypeOfTask.AttackRange -> {
+            val hostileCreep: Creep? = Game.getObjectById(task.idObject0)
+            if (hostileCreep != null)
+                if (this.pos.inRangeTo(hostileCreep.pos, 3))
+                    this.rangedAttack(hostileCreep)
+                else this.moveTo(hostileCreep)
+        }
+
+        TypeOfTask.AttackMile -> {
+            val hostileCreep: Creep? = Game.getObjectById(task.idObject0)
+            if (hostileCreep != null)
+                if (this.pos.inRangeTo(hostileCreep.pos, 1))
+                    this.attack(hostileCreep)
+                else this.moveTo(hostileCreep)
+        }
+
         else -> {
         }
     }
@@ -390,6 +416,16 @@ fun Creep.endTask(mainContext: MainContext) {
         TypeOfTask.GoToPos -> {
             if (task.posObject0 == null) mainContext.tasks.deleteTask(this.id)
             else if (this.pos.inRangeTo(task.posObject0,0)) mainContext.tasks.deleteTask(this.id)
+        }
+
+        TypeOfTask.AttackRange -> {
+            val hostileCreep: Creep? = Game.getObjectById(task.idObject0)
+            if (hostileCreep == null) mainContext.tasks.deleteTask(this.id)
+        }
+
+        TypeOfTask.AttackMile -> {
+            val hostileCreep: Creep? = Game.getObjectById(task.idObject0)
+            if (hostileCreep == null) mainContext.tasks.deleteTask(this.id)
         }
 
         else -> {

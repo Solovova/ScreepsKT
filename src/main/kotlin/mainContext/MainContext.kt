@@ -87,7 +87,6 @@ class MainContext {
                 COLOR_CYAN -> "cyan"
                 COLOR_GREY -> "grey"
                 else -> "white"
-
             }
         }
 

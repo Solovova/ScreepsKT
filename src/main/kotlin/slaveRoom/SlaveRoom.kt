@@ -108,7 +108,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
     }
 
     fun buildQueue(queue: MutableList<QueueSpawnRecord>, priority: Int) {
-        val fPriorityOfRole = arrayOf(0, 1 , 2 , 3,  4 , 5, 7, 9, 6, 8)
+        val fPriorityOfRole = arrayOf(10, 11, 4, 0, 1 , 2 , 3, 5, 7, 9, 6, 8)
         for (fRole in fPriorityOfRole) {
             var fNeed = this.need[0][fRole]
             if (priority >= 1) fNeed += this.need[1][fRole]
@@ -172,6 +172,14 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                 result = arrayOf(MOVE,MOVE,MOVE,MOVE,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
             }
 
+            110 -> {
+                result = arrayOf(TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK)
+            }
+
+            111 -> {
+                result = arrayOf(TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK)
+            }
+
         }
         return result
     }
@@ -192,6 +200,35 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
     fun needCorrection() {
         when (this.constant.model) {
             0 -> {
+                if (this.room!=null) {
+                    val hostileCreeps = this.room.find(FIND_HOSTILE_CREEPS)
+                    this.constant.roomHostile = hostileCreeps.isNotEmpty()
+                    var typeAttack: Int = 2 //ranged
+                    for (hostileCreep in hostileCreeps)
+                        if (hostileCreep.body.firstOrNull { it.type == ATTACK } != null) {
+                            typeAttack = 1
+                            break
+                        }
+                    this.constant.roomHostileType =typeAttack
+                    this.constant.roomHostileNum = hostileCreeps.size
+                }
+
+
+                //5 Defender
+                if (this.constant.roomHostile) {
+                    if (this.constant.roomHostileNum > 1 ) {
+                        if (this.room == null) this.need[0][4] = 1
+                    }else {
+                        if (this.constant.roomHostileType == 2)
+                            if (this.need[1][10] == 0) this.need[1][10] = 1
+                            else if (this.need[1][11] == 0) this.need[1][11] = 1
+                    }
+
+                    return
+                }
+
+
+
                 //
                 if (this.room!=null) {
                     if (this.room.find(FIND_STRUCTURES).any { it.structureType == STRUCTURE_POWER_BANK }) return
@@ -233,6 +270,8 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
 
 
 
+
+
             }
         }
     }
@@ -254,6 +293,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
     }
 
     fun runInStartOfTick() {
+        console.log("Slave run in start")
         if (this.constant.model != 1) this.profitShow()
         if (this.parent.parent.parent.constants.globalConstant.clearProfit) this.profitClear()
     }
@@ -274,7 +314,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
         val sDown : String = this.constant.profitDown.toString().padEnd(10)
         val sProfit : String = (this.constant.profitUp - this.constant.profitDown).toString().padEnd(10)
         val sTicks: String = (Game.time - this.constant.profitStart).toString().padEnd(8)
-        var sSources = this.source.size.toString()
+        val sSources = this.source.size.toString()
 
         parent.parent.parent.messenger("PROFIT", this.describe,
                 "Profit ----> ${this.name} Road: ${this.constant.roadBuild.toString().padEnd(5)} ($sProfitPT per. 1500 ticks) ticks: $sTicks  + $sUp  - $sDown  $sProfit ($sProfitPerTickPrevious sources: $sSources)", COLOR_WHITE)

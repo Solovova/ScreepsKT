@@ -13,6 +13,11 @@ class SlaveRoomConstant {
 
     //Room algorithm
     var roomRunNotEveryTickNextTickRun: Int = 0 //cashed
+    var roomHostile: Boolean = false
+    var roomHostileType: Int = 0 // 1 -  mile, 2 - ranged
+    var roomHostileNum: Int = 0
+
+
 
 
 
@@ -22,6 +27,11 @@ class SlaveRoomConstant {
         if (d["profitDown"] != null) this.profitDown = d["profitDown"] as Int
         if (d["profitStart"] != null) this.profitStart = d["profitStart"] as Int
         if (d["roadBuild"] != null) this.roadBuild = d["roadBuild"] as Boolean
+        if (d["roomHostile"] != null) this.roomHostile = d["roomHostile"] as Boolean
+        if (d["roomHostileType"] != null) this.roomHostileType = d["roomHostileType"] as Int
+        if (d["roomHostileNum"] != null) this.roomHostileNum = d["roomHostileNum"] as Int
+
+
 
         if (d["profitPerTickPrevious"] != null) this.profitPerTickPrevious = d["profitPerTickPrevious"] as Int
         if (d["roomRunNotEveryTickNextTickRun"] != null) this.roomRunNotEveryTickNextTickRun = d["roomRunNotEveryTickNextTickRun"] as Int
@@ -33,6 +43,11 @@ class SlaveRoomConstant {
         result["profitDown"] = this.profitDown
         result["profitStart"] = this.profitStart
         result["roadBuild"] = this.roadBuild
+        result["roomHostile"] = this.roomHostile
+        result["roomHostileType"] = this.roomHostileType
+        result["roomHostileNum"] = this.roomHostileNum
+
+
 
         result["profitPerTickPrevious"] = this.profitPerTickPrevious
         result["roomRunNotEveryTickNextTickRun"] = this.roomRunNotEveryTickNextTickRun

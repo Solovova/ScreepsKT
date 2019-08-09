@@ -17,7 +17,9 @@ enum class TypeOfTask {
     Claim,
     Reserve,
     GoToPos,
-    TakeDropped
+    TakeDropped,
+    AttackRange,
+    AttackMile
 }
 
 enum class TypeOfInteractionsObjects {

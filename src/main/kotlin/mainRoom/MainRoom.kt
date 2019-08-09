@@ -534,10 +534,6 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
     }
 
     fun runInStartOfTick() {
-        this.runTower()
-        this.buildCreeps()
-        this.doSnapShot()
-
         for (room in this.slaveRooms.values) {
             try {
                 room.runInStartOfTick()
@@ -545,5 +541,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
                 parent.parent.messenger("ERROR", "Slave room in start", room.name, COLOR_RED)
             }
         }
+        this.runTower()
+        this.buildCreeps()
+        this.doSnapShot()
     }
 }

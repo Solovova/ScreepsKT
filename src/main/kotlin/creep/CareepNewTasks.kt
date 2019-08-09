@@ -350,3 +350,27 @@ fun Creep.slaveTransferToFilling(creepCarry: Int, mainContext: MainContext, main
     }
     return result
 }
+
+fun Creep.slaveAttakRanged(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+    var result = false
+    if (slaveRoom?.room != null) {
+        val hostileCreep : Creep? =  slaveRoom.room.find(FIND_HOSTILE_CREEPS).firstOrNull()
+        if (hostileCreep != null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.AttackRange, idObject0 = hostileCreep.id, posObject0 = hostileCreep.pos))
+            result = true
+        }
+    }
+    return result
+}
+
+fun Creep.slaveAttack(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+    var result = false
+    if (slaveRoom?.room != null) {
+        val hostileCreep : Creep? =  slaveRoom.room.find(FIND_HOSTILE_CREEPS).firstOrNull()
+        if (hostileCreep != null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.AttackMile, idObject0 = hostileCreep.id, posObject0 = hostileCreep.pos))
+            result = true
+        }
+    }
+    return result
+}

@@ -26,6 +26,7 @@ In future
 // 7 - harvester source 1
 // 8 - carrier source 1 -
 // 9 - builder
+//10 - defender ranged
 
 //Queue priority
 //need0
