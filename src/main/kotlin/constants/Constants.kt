@@ -15,13 +15,10 @@ import screeps.utils.unsafe.delete
 //SlaveRoom.constant.cashed  - cashed
 
 
-class Constants(parent: MainContext) {
+class Constants(val parent: MainContext) {
     val globalConstant: GlobalConstant = GlobalConstant()  //cashed
     var mainRooms: Array<String> = arrayOf() //simple
     val mainRoomConstantContainer: MutableMap<String, MainRoomConstant> = mutableMapOf() //cashed
-    val parent:MainContext = parent
-
-
 
     init {
         if (Game.rooms["E54N37"] != null) this.initMain()
@@ -55,7 +52,7 @@ class Constants(parent: MainContext) {
         return mainRoomConstant.s(indexSlave)
     }
 
-    fun toDynamic(): dynamic {
+    private fun toDynamic(): dynamic {
         val result: dynamic = object {}
         result["globalConstant"] = this.globalConstant.toDynamic()
         result["mainRoomConstantContainer"] = object {}
@@ -70,7 +67,7 @@ class Constants(parent: MainContext) {
         Memory["global"] = d
     }
 
-    fun fromDynamic(d: dynamic) {
+    private fun fromDynamic(d: dynamic) {
         if (d["mainRoomConstantContainer"] != null)
             for (record in mainRoomConstantContainer)
                 record.value.fromDynamic(d["mainRoomConstantContainer"][record.key])

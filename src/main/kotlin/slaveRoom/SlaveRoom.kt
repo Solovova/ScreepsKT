@@ -239,10 +239,8 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
 
     fun runNotEveryTick() {
         if (this.constant.model == 1) this.building()
-        if (this.constant.model == 0 && this.constant.autoBuildRoad) {
-            val resultRoad = this.buildWaysInRoom()
-            console.log("Build road in slave: ${this.name} : $resultRoad")
-        }
+        if (this.constant.model == 0 && this.constant.autoBuildRoad)
+            this.constant.roadBuild = this.buildWaysInRoom()
 
         if (!this.setNextTickRun()) return
     }
@@ -261,21 +259,32 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
     }
 
     private fun profitShow() {
-        val sProfitPT:String = (((this.constant.profitUp - this.constant.profitDown).toDouble() /
+        if ( ((Game.time.toDouble() / 1500.0).toInt() * 1500) == Game.time) {
+            this.constant.profitPerTickPrevious =  this.constant.profitUp - this.constant.profitDown
+            this.profitClear()
+
+        }
+        var sProfitPT = "0"
+        if (this.constant.profitStart != Game.time)
+            sProfitPT = (((this.constant.profitUp - this.constant.profitDown).toDouble() /
                 (Game.time - this.constant.profitStart).toDouble()) * 1500.0 ).roundToInt().toString().padStart(10)
+
+        val sProfitPerTickPrevious = this.constant.profitPerTickPrevious.toString().padStart(10)
         val sUp : String = this.constant.profitUp.toString().padEnd(10)
         val sDown : String = this.constant.profitDown.toString().padEnd(10)
         val sProfit : String = (this.constant.profitUp - this.constant.profitDown).toString().padEnd(10)
         val sTicks: String = (Game.time - this.constant.profitStart).toString().padEnd(8)
+        var sSources = this.source.size.toString()
 
         parent.parent.parent.messenger("PROFIT", this.describe,
-                "Profit ----> ${this.name}  ($sProfitPT per. 1500 ticks) ticks: $sTicks  + $sUp  - $sDown  $sProfit", COLOR_WHITE)
+                "Profit ----> ${this.name} Road: ${this.constant.roadBuild.toString().padEnd(5)} ($sProfitPT per. 1500 ticks) ticks: $sTicks  + $sUp  - $sDown  $sProfit ($sProfitPerTickPrevious sources: $sSources)", COLOR_WHITE)
     }
 
     private fun profitClear() {
-        constant.profitUp = 0
-        constant.profitDown = 0
-        constant.profitStart = Game.time
+        this.constant.profitUp = 0
+        this.constant.profitDown = 0
+        this.constant.profitStart = Game.time
+        console.log("clear")
     }
 
     fun profitMinus(role: Int) {
