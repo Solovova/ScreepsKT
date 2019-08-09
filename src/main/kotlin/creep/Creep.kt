@@ -86,6 +86,7 @@ fun Creep.newTask(mainContext: MainContext) {
     }
 
     if (this.memory.role == 7) {
+        if (!isTask) isTask = this.signRoom(mainContext,mainRoom)
         if (!isTask) isTask = this.takeFromContainer(2,creepCarry,mainContext,mainRoom)
         if (!isTask) isTask = this.upgradeNormalOrEmergency(0,creepCarry,mainContext,mainRoom)
     }
@@ -132,15 +133,17 @@ fun Creep.newTask(mainContext: MainContext) {
 
     if (this.memory.role == 103) {
         if (!isTask) isTask = this.slaveGoToRoom(mainContext)
+        if (!isTask) isTask = this.slaveSignRoom(mainContext,slaveRoom)
         if (!isTask) isTask = this.slaveReserve(mainContext,slaveRoom)
     }
 
     if (this.memory.role == 104) {
-        if (!isTask) isTask = this.GoToPoint(mainContext, RoomPosition(25,25,this.memory.slaveRoom))
+        if (!isTask) isTask = this.goToPoint(mainContext, RoomPosition(25,25,this.memory.slaveRoom))
     }
 
     if (this.memory.role == 105 || this.memory.role == 1105) {
         if ((this.memory.role == 105) && this.ticksToLive < 200) this.memory.role = this.memory.role + 1000
+        if (!isTask) isTask = this.slaveGoToPosOfContainer(0, mainContext, slaveRoom)
         if (!isTask) isTask = this.slaveHarvest(0, creepCarry, mainContext, slaveRoom)
         if (!isTask) isTask = this.slaveBuild(creepCarry, mainContext, slaveRoom, 2)
         if (!isTask) if (slaveRoom != null && slaveRoom.structureContainerNearSource[0] == null)
@@ -158,6 +161,7 @@ fun Creep.newTask(mainContext: MainContext) {
 
     if (this.memory.role == 107 || this.memory.role == 1107) {
         if ((this.memory.role == 107) && this.ticksToLive < 200) this.memory.role = this.memory.role + 1000
+        if (!isTask) isTask = this.slaveGoToPosOfContainer(1, mainContext, slaveRoom)
         if (!isTask) isTask = this.slaveHarvest(1, creepCarry, mainContext, slaveRoom)
         if (!isTask) isTask = this.slaveBuild(creepCarry, mainContext, slaveRoom, 2)
         if (!isTask) if (slaveRoom != null && slaveRoom.structureContainerNearSource[0] == null)
@@ -182,7 +186,7 @@ fun Creep.newTask(mainContext: MainContext) {
 
     if (this.memory.role == 110) {
         if (!isTask) isTask = this.slaveGoToRoom(mainContext)
-        if (!isTask) isTask = this.slaveAttakRanged(mainContext, slaveRoom)
+        if (!isTask) isTask = this.slaveAttackRanged(mainContext, slaveRoom)
     }
 
     if (this.memory.role == 111) {
@@ -314,6 +318,25 @@ fun Creep.doTask(mainContext: MainContext) {
                 else this.moveTo(hostileCreep)
         }
 
+        TypeOfTask.SignRoom -> {
+            if (!task.come) this.doTaskGoTo(task, task.posObject0, 1)
+            if (task.come) {
+                val structureController: StructureController? = (Game.getObjectById(task.idObject0) as StructureController?)
+                if (structureController != null) this.signController(structureController, mainRoom.describe)
+            }
+        }
+
+        TypeOfTask.SignSlaveRoom -> {
+            if (!task.come) this.doTaskGoTo(task, task.posObject0, 1)
+            if (task.come) {
+                val structureController: StructureController? = (Game.getObjectById(task.idObject0) as StructureController?)
+                val slaveRoom: SlaveRoom? = mainRoom.slaveRooms[this.memory.slaveRoom]
+                if (structureController != null && slaveRoom!=null) this.signController(structureController, slaveRoom.describe)
+            }
+        }
+
+
+
         else -> {
         }
     }
@@ -324,7 +347,6 @@ fun Creep.endTask(mainContext: MainContext) {
     val task: CreepTask = mainContext.tasks.tasks[this.id] ?: return
 
     val creepCarry: Int = this.carry.toMap().map { it.value }.sum()
-
 
 
     when (task.type) {
@@ -427,6 +449,45 @@ fun Creep.endTask(mainContext: MainContext) {
             val hostileCreep: Creep? = Game.getObjectById(task.idObject0)
             if (hostileCreep == null) mainContext.tasks.deleteTask(this.id)
         }
+
+        TypeOfTask.SignRoom -> {
+            val structureController: StructureController? = (Game.getObjectById(task.idObject0) as StructureController?)
+            if (structureController == null) mainContext.tasks.deleteTask(this.id)
+            if (structureController != null) {
+                val sign = structureController.sign
+                val mainRoom: MainRoom? = mainContext.mainRoomCollector.rooms[this.memory.mainRoom]
+                if (mainRoom == null) mainContext.tasks.deleteTask(this.id)
+                else {
+                    var needSign = false
+                    if (sign != null && sign.text != mainRoom.describe) needSign = true
+                    if (sign == null) needSign = true
+                    if (!needSign) mainContext.tasks.deleteTask(this.id)
+                }
+            }
+        }
+
+        TypeOfTask.SignSlaveRoom -> {
+            val structureController: StructureController? = (Game.getObjectById(task.idObject0) as StructureController?)
+            if (structureController == null) mainContext.tasks.deleteTask(this.id)
+            if (structureController != null) {
+                val sign = structureController.sign
+                val mainRoom: MainRoom? = mainContext.mainRoomCollector.rooms[this.memory.mainRoom]
+                if (mainRoom == null) mainContext.tasks.deleteTask(this.id)
+                else {
+                    val slaveRoom: SlaveRoom? = mainRoom.slaveRooms[this.memory.slaveRoom]
+                    if (slaveRoom == null) mainContext.tasks.deleteTask(this.id)
+                    else {
+                        var needSign = false
+                        if (sign != null && sign.text != slaveRoom.describe) needSign = true
+                        if (sign == null) needSign = true
+                        if (!needSign) mainContext.tasks.deleteTask(this.id)
+                    }
+                }
+            }
+        }
+
+
+
 
         else -> {
         }

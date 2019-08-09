@@ -12,7 +12,7 @@ import screeps.api.*
 import screeps.api.structures.*
 import kotlin.random.Random
 
-class MainRoom(val parent: MainRoomCollector, val name: String, private val describe: String, val constant: MainRoomConstant) {
+class MainRoom(val parent: MainRoomCollector, val name: String, val describe: String, val constant: MainRoomConstant) {
     val room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
     val slaveRooms: MutableMap<String, SlaveRoom> = mutableMapOf()
 
@@ -351,6 +351,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
 
             5 -> {
                 if (this.room.energyCapacityAvailable>=5000) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                if (this.room.energyCapacityAvailable>=1300) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
                 else result = arrayOf(MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
             }
 
@@ -544,5 +545,65 @@ class MainRoom(val parent: MainRoomCollector, val name: String, private val desc
         this.runTower()
         this.buildCreeps()
         this.doSnapShot()
+        this.messageAboutUpgrade()
+    }
+
+    private fun messageAboutUpgrade() {
+        if (this.constructionSite.isNotEmpty()) return
+        val controller: StructureController? = this.structureController[0]
+        if (controller != null) {
+            val answer: String = this.missingStructures()
+            if (answer!="")
+                parent.parent.messenger("INFO","Room: ${this.describe}  ${this.name}",answer, COLOR_RED)
+        }
+
+    }
+
+    private fun missingStructures():String {
+        if (this.constructionSite.isNotEmpty()) return ""
+        val controller: StructureController = this.structureController[0] ?: return ""
+
+
+        if (controller.level == 2) {
+            if (this.room.energyCapacityAvailable != 550) return " Missing extension"
+        }
+
+        if (controller.level == 3) {
+            if (this.room.energyCapacityAvailable != 800) return " Missing extension"
+            if (this.structureTower.size!=1) return " Missing tower"
+        }
+
+        if (controller.level == 4) {
+            if (this.room.energyCapacityAvailable != 1300) return " Missing extension"
+            if (this.structureTower.size!=1) return " Missing tower"
+            if (this.structureSpawn.isNotEmpty() && !this.structureContainerNearSource.containsKey(0)) return " Missing container near source 0"
+            if (this.structureSpawn.size > 1 && !this.structureContainerNearSource.containsKey(1)) return " Missing container near source 1"
+            if (!this.structureContainerNearController.containsKey(0)) return " Missing container near controller"
+            if (!this.structureStorage.containsKey(0)) return " Missing storage"
+        }
+
+        if (controller.level == 5) {
+            if (this.room.energyCapacityAvailable != 1800) return " Missing extension"
+            if (this.structureTower.size!=2) return " Missing tower"
+            if (this.structureSpawn.isNotEmpty() && !this.structureContainerNearSource.containsKey(0)) return " Missing container near source 0"
+            if (this.structureSpawn.size > 1 && !this.structureContainerNearSource.containsKey(1)) return " Missing container near source 1"
+            if (!this.structureContainerNearController.containsKey(0)) return " Missing container near controller"
+            if (!this.structureStorage.containsKey(0)) return " Missing storage"
+        }
+
+        if (controller.level == 6) {
+            if (this.room.energyCapacityAvailable != 2300) return " Missing extension"
+        }
+
+        if (controller.level == 7) {
+            if (this.room.energyCapacityAvailable != 3100) return " Missing extension"
+        }
+
+        if (controller.level == 8) {
+            if (this.room.energyCapacityAvailable != 10850) return " Missing extension"
+        }
+        return ""
     }
 }
+
+

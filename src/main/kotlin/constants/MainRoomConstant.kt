@@ -34,6 +34,10 @@ class MainRoomConstant(parent: Constants) {
     }
 
     fun s(index: Int) : SlaveRoomConstant {
+        if (index>this.slaveRooms.size) {
+            parent.parent.messenger("ERROR", "$index", "initialization S out of range slave room", COLOR_RED)
+            return SlaveRoomConstant()
+        }
         return this.getSlaveRoomConstant(this.slaveRooms[index])
     }
 

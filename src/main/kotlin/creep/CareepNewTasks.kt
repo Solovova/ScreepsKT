@@ -113,8 +113,8 @@ fun Creep.transferToContainer(type: Int, creepCarry: Int, mainContext: MainConte
 
 
         if (objForFilling != null) {
-            val canStore: Int = objForFilling.storeCapacity - objForFilling.store.toMap().map { it.value }.sum()
-            if (creepCarry > canStore) return false
+            //val canStore: Int = objForFilling.storeCapacity - objForFilling.store.toMap().map { it.value }.sum()
+            //if (creepCarry > canStore) return false
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferTo, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
             result = true
         }
@@ -138,6 +138,43 @@ fun Creep.takeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext
             result = true
         }
     }
+    return result
+}
+
+fun Creep.signRoom(mainContext: MainContext, mainRoom: MainRoom): Boolean {
+    var result = false
+    val structureController: StructureController? = mainRoom.structureController[0]
+    if (structureController != null) {
+        val sign = structureController.sign
+        var needSign = false
+        if (sign != null && sign.text != mainRoom.describe) needSign = true
+        if (sign == null) needSign = true
+
+        if (needSign){
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.SignRoom, idObject0 = structureController.id, posObject0 = structureController.pos))
+            result = true
+        }
+    }
+    return result
+}
+
+fun Creep.slaveSignRoom(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+    var result = false
+    if (slaveRoom != null) {
+        val structureController: StructureController? = slaveRoom.structureController[0]
+        if (structureController != null) {
+            val sign = structureController.sign
+            var needSign = false
+            if (sign != null && sign.text != slaveRoom.describe) needSign = true
+            if (sign == null) needSign = true
+
+            if (needSign){
+                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.SignSlaveRoom, idObject0 = structureController.id, posObject0 = structureController.pos))
+                result = true
+            }
+        }
+    }
+
     return result
 }
 
@@ -179,7 +216,7 @@ fun Creep.slaveGoToRoom(mainContext: MainContext): Boolean {
     return result
 }
 
-fun Creep.GoToPoint(mainContext: MainContext, pos: RoomPosition): Boolean {
+fun Creep.goToPoint(mainContext: MainContext, pos: RoomPosition): Boolean {
     var result = false
     if (this.pos != pos) {
         mainContext.tasks.add(this.id, CreepTask(TypeOfTask.GoToPos, idObject0 = this.memory.slaveRoom, posObject0 = pos))
@@ -209,6 +246,21 @@ fun Creep.slaveReserve(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean
         if (structureController != null && !structureController.my) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Reserve, idObject0 = structureController.id, posObject0 = structureController.pos))
             result = true
+        }
+    }
+    return result
+}
+
+fun Creep.slaveGoToPosOfContainer(type: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+    //type 0 - source 0, 1 - source 1, 2 - random
+    var result = false
+    if (slaveRoom != null) {
+        val tContainer: StructureContainer? = slaveRoom.structureContainerNearSource[type]
+        if (tContainer != null) {
+            if (!this.pos.inRangeTo(tContainer.pos,0)) {
+                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.GoToPos, idObject0 = tContainer.id, posObject0 = tContainer.pos))
+                result = true
+            }
         }
     }
     return result
@@ -351,7 +403,7 @@ fun Creep.slaveTransferToFilling(creepCarry: Int, mainContext: MainContext, main
     return result
 }
 
-fun Creep.slaveAttakRanged(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+fun Creep.slaveAttackRanged(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
     var result = false
     if (slaveRoom?.room != null) {
         val hostileCreep : Creep? =  slaveRoom.room.find(FIND_HOSTILE_CREEPS).firstOrNull()

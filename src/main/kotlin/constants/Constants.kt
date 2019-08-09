@@ -44,10 +44,18 @@ class Constants(val parent: MainContext) {
     }
 
     fun m(index: Int) : MainRoomConstant {
+        if (index>this.mainRooms.size) {
+            parent.messenger("ERROR", "$index", "initialization M out of range main room", COLOR_RED)
+            return MainRoomConstant(this)
+        }
         return this.getMainRoomConstant(this.mainRooms[index])
     }
 
     fun s(indexMain: Int, indexSlave: Int) : SlaveRoomConstant {
+        if (indexMain>this.mainRooms.size) {
+            parent.messenger("ERROR", "$indexSlave", "initialization S out of range main room", COLOR_RED)
+            return SlaveRoomConstant()
+        }
         val mainRoomConstant:MainRoomConstant = this.getMainRoomConstant(this.mainRooms[indexMain])
         return mainRoomConstant.s(indexSlave)
     }

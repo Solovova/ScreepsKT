@@ -16,7 +16,7 @@ fun MainRoom.doSnapShot() {
     }
     if (Memory["snapShots"] == null) Memory["snapShots"] = object {}
     Memory["snapShots"][this.name] = d
-    parent.parent.messenger("TEST", this.name, "Snapshot successful", COLOR_GREEN)
+    parent.parent.messenger("INFO", this.name, "Snapshot successful", COLOR_GREEN)
 
 
 }

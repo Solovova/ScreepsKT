@@ -6,6 +6,7 @@ import constants.constantSlaveRoomInit
 import mainContext.getCacheRecordRoom
 import mainRoom.MainRoom
 import mainRoom.QueueSpawnRecord
+import mainRoom.doSnapShot
 import screeps.api.*
 import screeps.api.structures.*
 import kotlin.math.roundToInt
@@ -220,9 +221,8 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                     if (this.constant.roomHostileNum > 1 ) {
                         if (this.room == null) this.need[0][4] = 1
                     }else {
-                        if (this.constant.roomHostileType == 2)
-                            if (this.need[1][10] == 0) this.need[1][10] = 1
-                            else if (this.need[1][11] == 0) this.need[1][11] = 1
+                        if (this.constant.roomHostileType == 2) this.need[1][10] = 1
+                        else this.need[1][11] = 1
                     }
 
                     return
@@ -246,7 +246,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                 val protectedStructureController: StructureController? = this.structureController[0]
                 if (protectedStructureController != null) {
                     val reservation = protectedStructureController.reservation
-                    if (reservation != null && reservation.ticksToEnd < 1000) this.need[0][3] = 1
+                    if (reservation != null && reservation.ticksToEnd < 2200) this.need[0][3] = 1
                     if (reservation == null ) this.need[0][3] = 1
                 }
 
@@ -294,7 +294,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
     }
 
     fun runInStartOfTick() {
-        console.log("Slave run in start")
+        this.doSnapShot()
         if (this.constant.model != 1) this.profitShow()
         if (this.parent.parent.parent.constants.globalConstant.clearProfit) this.profitClear()
     }

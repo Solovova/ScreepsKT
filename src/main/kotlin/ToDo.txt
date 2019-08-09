@@ -84,4 +84,4 @@ for (key in js("Object").keys(testMutable.asDynamic()).unsafeCast<Array<String>>
 // 7 COLOR_ORANGE
 // 8 COLOR_BROWN
 // 9 COLOR_GREY
-//10 COLOR_WHITE
+//10 COLOR_WHITE     - ignore this position

@@ -19,7 +19,9 @@ enum class TypeOfTask {
     GoToPos,
     TakeDropped,
     AttackRange,
-    AttackMile
+    AttackMile,
+    SignRoom,
+    SignSlaveRoom
 }
 
 enum class TypeOfInteractionsObjects {
