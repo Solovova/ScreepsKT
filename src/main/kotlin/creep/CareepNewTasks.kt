@@ -6,6 +6,7 @@ import kotlin.random.Random
 import mainContext.MainContext
 import CreepTask
 import TypeOfTask
+import role
 import screeps.api.*
 import screeps.api.structures.*
 import screeps.utils.toMap
@@ -45,6 +46,7 @@ fun Creep.harvestFromSource(type: Int, creepCarry: Int, mainContext: MainContext
             1 -> tSource = mainRoom.source[1]
             2 -> tSource = mainRoom.getSourceForHarvest(this.pos, mainContext)
         }
+        if (mainRoom.name == "E57N34" && this.memory.role == 0)  tSource = Game.getObjectById("59bbc5a12052a716c3ce9d1b") //ToDo костиль
         if (tSource != null) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Harvest, idObject0 = tSource.id, posObject0 = tSource.pos))
             result = true

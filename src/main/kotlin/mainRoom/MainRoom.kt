@@ -193,34 +193,33 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 //2 Upgrader
                 if (this.constant.SentEnergyToRoom == "") {
                     if (this.room.energyCapacityAvailable>=1800) {
-                        this.need[1][6]=1
                         this.need[1][7]=1
-                        this.need[2][6]=2
                         this.need[2][7]=3
                     }else{
-                        this.need[1][6]=2
                         this.need[1][7]=2
-                        this.need[2][6]=1
                         this.need[2][7]=2
                     }
                 }else{
-                    this.need[1][6]=0
                     this.need[1][7]=0
-                    this.need[2][6]=0
                     this.need[2][7]=0
                 }
 
                 if (this.getEnergyInStorage()<this.constant.energyUpgradable) {
-                    this.need[1][6]=0
                     this.need[1][7]=0
-                    this.need[2][6]=0
                     this.need[2][7]=0
                 }
+
+                //carrier
+
+                if (this.have[7] <= 3) this.need[1][6]=this.have[7]
+                else this.need[1][6]=this.have[7]-1
+
+
 
                 //2.1 Small upgrader
                 if (this.need[0][6] == 0 && this.need[1][6] == 0 && this.need[2][6] == 0 &&
                         this.need[0][7] == 0 && this.need[1][7] == 0 && this.need[2][7] == 0 &&
-                        this.have[6] == 0 && this.have[7] == 0 && this.getTicksToDowngrade() < 20000)
+                        this.have[6] == 0 && this.have[7] == 0 && this.getTicksToDowngrade() < 10000)
                     this.need[0][13]=1
 
                 //8 Builder
@@ -240,8 +239,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
     private fun buildQueue() {
         for (i in 0 until this.have.size) this.haveForQueue[i] = this.have[i]
-        val fPriorityOfRole = if (this.getEnergyInStorage() < 2000) arrayOf(0, 9, 1, 3, 2, 4, 14, 5, 20, 7, 6, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
-        else arrayOf(0, 9, 5, 20, 1, 3, 2, 4, 14, 7, 6, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
+        val fPriorityOfRole = if (this.getEnergyInStorage() < 2000) arrayOf(0, 9, 1, 3, 2, 4, 14, 5, 20, 6, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
+        else arrayOf(0, 9, 5, 20, 1, 3, 2, 4, 14, 6, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
 
         //Main 0..1
         for (priority in 0..1) {

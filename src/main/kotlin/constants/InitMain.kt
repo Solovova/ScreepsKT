@@ -10,6 +10,8 @@ fun Constants.initMain() {                         //M0       M1       M2       
     this.getMainRoomConstant("E54N39").initSlaveRoomConstantContainer(arrayOf("E54N38"))            //M6
     this.getMainRoomConstant("E51N39").initSlaveRoomConstantContainer(arrayOf("E51N38"))            //M7
     this.getMainRoomConstant("E59N38").initSlaveRoomConstantContainer(arrayOf("E59N37","E59N39","E58N39","E57N39"))            //M10
+    this.getMainRoomConstant("E57N34").initSlaveRoomConstantContainer(arrayOf("E57N33","E57N32"))            //M10
+
 
 
 
@@ -43,4 +45,6 @@ fun Constants.initMain() {                         //M0       M1       M2       
     s(1,1).model = 1 //to Storage 123/135
     s(1,2).model = 1 //to tower   0/45
 
+    s(11,1).model = 1
+    s(11,0).autoBuildRoad = true
 }

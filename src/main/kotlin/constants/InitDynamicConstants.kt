@@ -102,5 +102,12 @@ fun constantSlaveRoomInit(slaveRoom: SlaveRoom) {
         arrayCopy(slaveRoom.need[2], arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     }
 
+    if (slaveRoom.parent.name == "E57N34" && slaveRoom.name == "E57N32") {
+        //0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9
+        arrayCopy(slaveRoom.need[0], arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+        arrayCopy(slaveRoom.need[1], arrayOf(0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+        arrayCopy(slaveRoom.need[2], arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    }
+
 
 }
