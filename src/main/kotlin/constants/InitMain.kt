@@ -10,8 +10,8 @@ fun Constants.initMain() {                         //M0       M1       M2       
     this.getMainRoomConstant("E53N39").initSlaveRoomConstantContainer(arrayOf("E52N39"))            //M4
     this.getMainRoomConstant("E54N39").initSlaveRoomConstantContainer(arrayOf("E54N38"))            //M6
     this.getMainRoomConstant("E51N39").initSlaveRoomConstantContainer(arrayOf("E51N38"))            //M7
-    this.getMainRoomConstant("E59N38").initSlaveRoomConstantContainer(arrayOf("E59N37","E59N39","E58N39"))            //M10
-    this.getMainRoomConstant("E57N34").initSlaveRoomConstantContainer(arrayOf("E57N33","E57N32"))            //M10
+    this.getMainRoomConstant("E59N38").initSlaveRoomConstantContainer(arrayOf("E59N37","E59N39"))            //M10
+    this.getMainRoomConstant("E57N34").initSlaveRoomConstantContainer(arrayOf("E57N33"))            //M11
 
     m(0).note  = "ready 2"
     m(1).note  = "ready 2"
@@ -37,15 +37,11 @@ fun Constants.initMain() {                         //M0       M1       M2       
     m(21).note = "wait 2"
 
 
-    m(16).creepSpawn = false  //fast
-    m(17).creepSpawn = false  //fast
     m(19).creepSpawn = false  //long
 
     m(0).sentEnergyToRoom = "1"
     m(4).sentEnergyToRoom = "1"
     m(6).sentEnergyToRoom = "1"
 
-    s(1,1).model = 1 //to tower   0/45
-    s(10,2).model = 1 //to tower   7/45
-    s(11,1).model = 1
+    s(1,1).model = 1 //to tower   88/135
 }
