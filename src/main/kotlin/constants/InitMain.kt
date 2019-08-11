@@ -41,6 +41,10 @@ fun Constants.initMain() {                         //M0       M1       M2       
     m(17).creepSpawn = false  //fast
     m(19).creepSpawn = false  //long
 
+    m(0).sentEnergyToRoom = "1"
+    m(4).sentEnergyToRoom = "1"
+    m(6).sentEnergyToRoom = "1"
+
     s(1,1).model = 1 //to tower   0/45
     s(10,2).model = 1 //to tower   7/45
     s(11,1).model = 1

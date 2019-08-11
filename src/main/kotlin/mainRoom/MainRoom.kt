@@ -272,7 +272,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 if ((this.have[5]==0)&&(this.getEnergyInStorage()<=2000))  this.need[0][0]=2
 
                 //2 Upgrader
-                if (this.constant.SentEnergyToRoom == "") {
+                if (this.constant.sentEnergyToRoom == "") {
                     if (this.room.energyCapacityAvailable>=1800) {
                         this.need[1][7]=1
                         this.need[2][7]=3

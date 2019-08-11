@@ -31,12 +31,12 @@ fun MainRoom.runTower() {
     if (fTask == null) {
         if (hostile.isNotEmpty()) {
             fTask = "attack"
-            if (this.constant.TowerLastTarget == hostile[0].id && hostile.size >= 2) fTarget = hostile[1]
+            if (this.constant.towerLastTarget == hostile[0].id && hostile.size >= 2) fTarget = hostile[1]
             else fTarget = hostile[0]
 
-            this.constant.TowerLastTarget = fTarget.id
+            this.constant.towerLastTarget = fTarget.id
         } else {
-            this.constant.TowerLastTarget = ""
+            this.constant.towerLastTarget = ""
         }
     }
 

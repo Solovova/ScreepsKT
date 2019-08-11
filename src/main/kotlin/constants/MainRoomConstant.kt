@@ -13,9 +13,9 @@ class MainRoomConstant(parent: Constants) {
 
     var note : String = ""
 
-    var TowerLastTarget: String = ""        //cashed
+    var towerLastTarget: String = ""        //cashed
 
-    var SentEnergyToRoom: String = ""       //simple
+    var sentEnergyToRoom: String = ""       //simple
 
     //Creep commands
     var energyBuilder : Int = 20000 //simple //how much energy must be in storage for start building
@@ -53,7 +53,7 @@ class MainRoomConstant(parent: Constants) {
 
     fun toDynamic(): dynamic {
         val result: dynamic = object {}
-        result["TowerLastTarget"] = this.TowerLastTarget
+        result["towerLastTarget"] = this.towerLastTarget
         result["roomRunNotEveryTickNextTickRun"] = this.roomRunNotEveryTickNextTickRun
         result["levelOfRoom"] = this.levelOfRoom
 
@@ -68,7 +68,7 @@ class MainRoomConstant(parent: Constants) {
 
     fun fromDynamic(d: dynamic) {
         if (d == null) return
-        if (d["TowerLastTarget"] != null) this.TowerLastTarget = d["TowerLastTarget"] as String
+        if (d["towerLastTarget"] != null) this.towerLastTarget = d["towerLastTarget"] as String
         if (d["roomRunNotEveryTickNextTickRun"] != null) this.roomRunNotEveryTickNextTickRun = d["roomRunNotEveryTickNextTickRun"] as Int
         if (d["levelOfRoom"] != null) this.levelOfRoom = d["levelOfRoom"] as Int
         if (d["slaveRoomConstantContainer"] != null)
