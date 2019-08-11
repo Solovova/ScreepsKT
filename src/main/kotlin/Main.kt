@@ -33,5 +33,14 @@ fun loop() {
     // End tick functions
     protectedMainContext.runInEndOfTick()
 
+    console.log("Construction sites: ${Game.constructionSites.size}")
+//    val countCS: MutableMap<String,Int> = mutableMapOf()
+//    for (cs in Game.constructionSites.values)
+//        if (countCS[cs.pos.roomName] == null) countCS[cs.pos.roomName] = 1
+//        else countCS[cs.pos.roomName] = (countCS[cs.pos.roomName] as Int)+1
+//    for (valCS in countCS) console.log("${valCS.key}  ${valCS.value}")
+
+
     console.log("CPU: ${(Game.cpu.getUsed() - cpuStart).roundToInt()}")
+
 }

@@ -129,7 +129,75 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             return _structureStorage ?: throw AssertionError("Error get StructureStorage")
         }
 
-    fun buildCreeps() {
+    //StructureLink
+    private var _structureLink: Map<String, StructureLink>? = null
+    val structureLink: Map<String, StructureLink>
+        get() {
+            if (this._structureLink == null)
+                _structureLink = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_LINK }.associate { it.id to it as StructureLink}
+            return _structureLink ?: throw AssertionError("Error get StructureLink")
+        }
+
+    //StructureLinkNearSource
+    private var _structureLinkNearSource: Map<Int, StructureLink>? = null
+    val structureLinkNearSource: Map<Int, StructureLink>
+        get() {
+            if (this._structureLinkNearSource == null) {
+                val resultLink = mutableMapOf<Int, StructureLink>()
+                for (sourceRec in this.source)
+                    for (link in this.structureLink.values)
+                        if (!resultLink.containsValue(link) && sourceRec.value.pos.inRangeTo(link.pos, 2))
+                            resultLink[sourceRec.key] = link
+                _structureLinkNearSource = resultLink
+            }
+            return _structureLinkNearSource ?: throw AssertionError("Error get StructureLinkNearSource")
+        }
+
+    //StructureLinkNearController
+    private var _structureLinkNearController: Map<Int, StructureLink>? = null
+    val structureLinkNearController: Map<Int, StructureLink>
+        get() {
+            if (this._structureLinkNearController == null) {
+                val resultLink = mutableMapOf<Int, StructureLink>()
+                for (link in this.structureLink.values) {
+                    val protectStructureController: StructureController? = this.structureController[0]
+                    if (protectStructureController != null && !this.structureLinkNearSource.containsValue(link) && protectStructureController.pos.inRangeTo(link.pos, 3))
+                        resultLink[0] = link
+                }
+                _structureLinkNearController = resultLink
+            }
+            return _structureLinkNearController ?: throw AssertionError("Error get StructureLinkNearController")
+        }
+
+    //StructureLinkNearStorage
+    private var _structureLinkNearStorage: Map<Int, StructureLink>? = null
+    val structureLinkNearStorage: Map<Int, StructureLink>
+        get() {
+            if (this._structureLinkNearStorage == null) {
+                val resultLink = mutableMapOf<Int, StructureLink>()
+                for (link in this.structureLink.values) {
+                    val protectStructureStorage: StructureStorage? = this.structureStorage[0]
+                    if (protectStructureStorage != null
+                            && !this.structureLinkNearSource.containsValue(link)
+                            && !this.structureLinkNearController.containsValue(link)
+                            && protectStructureStorage.pos.inRangeTo(link.pos, 3))
+                        resultLink[0] = link
+                }
+                _structureLinkNearStorage = resultLink
+            }
+            return _structureLinkNearStorage ?: throw AssertionError("Error get StructureLinkNearStorage")
+        }
+
+    //StructureTerminal
+    private var _structureTerminal: Map<Int, StructureTerminal>? = null
+    val structureTerminal: Map<Int, StructureTerminal>
+        get() {
+            if (this._structureTerminal == null)
+                _structureTerminal = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_TERMINAL }.withIndex().associate { it.index to it.value as StructureTerminal}
+            return _structureTerminal ?: throw AssertionError("Error get StructureTerminal")
+        }
+
+    private fun buildCreeps() {
         this.needCorrection()
         for (slaveRoomRecord in this.slaveRooms) slaveRoomRecord.value.needCorrection()
         this.buildQueue()
@@ -139,7 +207,20 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     }
 
     private fun needCorrection() {
-        when (this.getLevelOfRoom()){
+        //start work this level of room
+        val nowLevelOfRoom: Int = this.getLevelOfRoom()
+        console.log("Level of room was: ${this.constant.levelOfRoom} now: $nowLevelOfRoom")
+        if (nowLevelOfRoom < this.constant.levelOfRoom) {
+            if (this.need[0][5] ==0) this.need[0][5] = 1 //filler
+            if (this.need[1][5] ==0) this.need[1][5] = 1 //filler
+            this.need[0][8]=2
+            this.restoreSnapShot()
+            return
+        }else this.constant.levelOfRoom = nowLevelOfRoom
+
+        //end work this level of room
+
+        when (this.constant.levelOfRoom){
             0 -> {
                 when {
                     this.room.energyCapacityAvailable >= 800 ->
@@ -167,7 +248,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                     if (this.need[1][3] == 0) this.need[1][3] = 1
             }
 
-            1 -> {
+            1,2 -> {
                 //1 harvester ,carrier ,filler , small harvester-filler, small filler
                 //1.1 harvester ,carrier
                 val carrierAuto0: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer0",this)
@@ -482,6 +563,14 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     //0 - only role 0 creep
     //1 - Storage, 3 container, energy >300+20*50 1300
     private fun getLevelOfRoom(): Int {
+        if (this.room.energyCapacityAvailable >= 1800
+                && this.structureLinkNearSource.size == this.source.size
+                && this.structureContainerNearController.size == 1
+                && this.structureStorage.size == 1
+                && this.structureTerminal.size == 1
+                && this.structureLinkNearStorage.size == 1
+        ) return 2
+
         if (this.room.energyCapacityAvailable >= 1300 &&
                 this.structureContainerNearSource.size == this.source.size &&
                 this.structureContainerNearController.size == 1 &&
@@ -543,7 +632,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         }
         this.runTower()
         this.buildCreeps()
-        this.doSnapShot()
+        this.directControl()
+
         this.messageAboutUpgrade()
     }
 
@@ -575,23 +665,33 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         if (controller.level == 4) {
             if (this.room.energyCapacityAvailable != 1300) return " Missing extension"
             if (this.structureTower.size!=1) return " Missing tower"
-            if (this.structureSpawn.isNotEmpty() && !this.structureContainerNearSource.containsKey(0)) return " Missing container near source 0"
-            if (this.structureSpawn.size > 1 && !this.structureContainerNearSource.containsKey(1)) return " Missing container near source 1"
+            if (this.source.isNotEmpty() && !this.structureContainerNearSource.containsKey(0)) return " Missing container near source 0"
+            if (this.source.size > 1 && !this.structureContainerNearSource.containsKey(1)) return " Missing container near source 1"
             if (!this.structureContainerNearController.containsKey(0)) return " Missing container near controller"
             if (!this.structureStorage.containsKey(0)) return " Missing storage"
         }
 
         if (controller.level == 5) {
             if (this.room.energyCapacityAvailable != 1800) return " Missing extension"
-            if (this.structureTower.size!=2) return " Missing tower"
-            if (this.structureSpawn.isNotEmpty() && !this.structureContainerNearSource.containsKey(0)) return " Missing container near source 0"
-            if (this.structureSpawn.size > 1 && !this.structureContainerNearSource.containsKey(1)) return " Missing container near source 1"
+            if (this.structureTower.size!=1) return " Missing tower"
+            if (this.source.isNotEmpty() && !this.structureContainerNearSource.containsKey(0)) return " Missing container near source 0"
+            if (this.source.size > 1 && !this.structureContainerNearSource.containsKey(1)) return " Missing container near source 1"
             if (!this.structureContainerNearController.containsKey(0)) return " Missing container near controller"
             if (!this.structureStorage.containsKey(0)) return " Missing storage"
+
         }
 
         if (controller.level == 6) {
             if (this.room.energyCapacityAvailable != 2300) return " Missing extension"
+            if (this.structureTower.size!=2) return " Missing tower"
+            if (this.source.isNotEmpty() && !this.structureLinkNearSource.containsKey(0)) return " Missing link near source 0"
+            if (this.source.size > 1 && !this.structureLinkNearSource.containsKey(1)) return " Missing link near source 1"
+            if (this.structureContainerNearSource.containsKey(0)) return " Not need container near source 0"
+            if (this.structureContainerNearSource.containsKey(1)) return " Not need container near source 1"
+            if (!this.structureContainerNearController.containsKey(0)) return " Missing container near controller"
+            if (!this.structureStorage.containsKey(0)) return " Missing storage"
+            if (this.structureTerminal.size!=1) return " Missing terminal"
+            if (this.structureLinkNearStorage.size!=1) return " Missing link near storage"
         }
 
         if (controller.level == 7) {

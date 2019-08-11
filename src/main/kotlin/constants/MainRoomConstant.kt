@@ -24,6 +24,7 @@ class MainRoomConstant(parent: Constants) {
 
     //Room algorithm
     var roomRunNotEveryTickNextTickRun: Int = 0
+    var levelOfRoom: Int = 0 //cashed
 
     private fun getSlaveRoomConstant(slaveRoomName: String) : SlaveRoomConstant {
         val slaveRoomConstant:SlaveRoomConstant ? = this.slaveRoomConstantContainer[slaveRoomName]
@@ -54,6 +55,8 @@ class MainRoomConstant(parent: Constants) {
         val result: dynamic = object {}
         result["TowerLastTarget"] = this.TowerLastTarget
         result["roomRunNotEveryTickNextTickRun"] = this.roomRunNotEveryTickNextTickRun
+        result["levelOfRoom"] = this.levelOfRoom
+
 
         if (this.slaveRooms.isNotEmpty()) {
             result["slaveRoomConstantContainer"] = object {}
@@ -67,6 +70,7 @@ class MainRoomConstant(parent: Constants) {
         if (d == null) return
         if (d["TowerLastTarget"] != null) this.TowerLastTarget = d["TowerLastTarget"] as String
         if (d["roomRunNotEveryTickNextTickRun"] != null) this.roomRunNotEveryTickNextTickRun = d["roomRunNotEveryTickNextTickRun"] as Int
+        if (d["levelOfRoom"] != null) this.levelOfRoom = d["levelOfRoom"] as Int
         if (d["slaveRoomConstantContainer"] != null)
             for (record in slaveRoomConstantContainer)
                 record.value.fromDynamic(d["slaveRoomConstantContainer"][record.key])

@@ -79,7 +79,7 @@ for (key in js("Object").keys(testMutable.asDynamic()).unsafeCast<Array<String>>
 // 2 COLOR_PURPLE    - restore snapshot of room only Structure
 // 3 COLOR_BLUE      - restore snapshot of room only Roads
 // 4 COLOR_CYAN      - restore snapshot of room only Wall and Ramparts
-// 5 COLOR_GREEN
+// 5 COLOR_GREEN     - restore snapshot of room all
 // 6 COLOR_YELLOW
 // 7 COLOR_ORANGE
 // 8 COLOR_BROWN
