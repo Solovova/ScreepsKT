@@ -226,16 +226,16 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                     this.room.energyCapacityAvailable >= 800 ->
                         if (this.need[0][0] == 0) {
                             this.need[0][0] = 10
-                            if (this.source.size == 1) this.need[0][0] = this.need[0][0] % 2 + 1
+                            if (this.source.size == 1) this.need[0][0] = this.need[0][0] / 2 + 1
                         }
                     this.room.energyCapacityAvailable >= 400 ->
                         if (this.need[0][0] == 0) {
                             this.need[0][0] = 14
-                            if (this.source.size == 1) this.need[0][0] = this.need[0][0] % 2 + 1
+                            if (this.source.size == 1) this.need[0][0] = this.need[0][0] / 2 + 1
                         }
                     else -> if (this.need[0][0] == 0) {
                         this.need[0][0] = 16
-                        if (this.source.size == 1) this.need[0][0] = this.need[0][0] % 2 + 1
+                        if (this.source.size == 1) this.need[0][0] = this.need[0][0] / 2 + 1
                     }
                 }
 
