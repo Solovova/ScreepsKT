@@ -209,7 +209,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     private fun needCorrection() {
         //start work this level of room
         val nowLevelOfRoom: Int = this.getLevelOfRoom()
-        console.log("Level of room was: ${this.constant.levelOfRoom} now: $nowLevelOfRoom")
+        //console.log("Level of room was: ${this.constant.levelOfRoom} now: $nowLevelOfRoom")
         if (nowLevelOfRoom < this.constant.levelOfRoom) {
             if (this.need[0][5] ==0) this.need[0][5] = 1 //filler
             if (this.need[1][5] ==0) this.need[1][5] = 1 //filler
@@ -673,7 +673,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
         if (controller.level == 5) {
             if (this.room.energyCapacityAvailable != 1800) return " Missing extension"
-            if (this.structureTower.size!=1) return " Missing tower"
+            if (this.structureTower.size!=2) return " Missing tower"
             if (this.source.isNotEmpty() && !this.structureContainerNearSource.containsKey(0)) return " Missing container near source 0"
             if (this.source.size > 1 && !this.structureContainerNearSource.containsKey(1)) return " Missing container near source 1"
             if (!this.structureContainerNearController.containsKey(0)) return " Missing container near controller"
