@@ -112,6 +112,9 @@ fun Creep.newTask(mainContext: MainContext) {
         if (!isTask) isTask = this.upgradeNormalOrEmergency(0, creepCarry, mainContext, mainRoom)
     }
 
+    if (this.memory.role == 14) {
+    }
+
     if (this.memory.role == 100) {
         if (!isTask) isTask = this.slaveGoToRoom(mainContext)
         if (!isTask) isTask = this.slaveClaim(mainContext,slaveRoom)

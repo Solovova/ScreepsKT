@@ -283,6 +283,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             this.constant.roadBuild = this.buildWaysInRoom()
 
         if (!this.setNextTickRun()) return
+        this.restoreSnapShot()
     }
 
     private fun setNextTickRun(): Boolean {
@@ -294,7 +295,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
     }
 
     fun runInStartOfTick() {
-        this.doSnapShot()
+        this.directControl()
         if (this.constant.model != 1) this.profitShow()
         if (this.parent.parent.parent.constants.globalConstant.clearProfit) this.profitClear()
     }

@@ -5,7 +5,7 @@ import constants.Constants
 import creep.doTask
 import creep.newTask
 import mainRoom
-import mainRoom.MainRoomCollector
+import mainRoomCollector.MainRoomCollector
 import role
 import screeps.api.*
 import screeps.utils.isEmpty
@@ -17,7 +17,7 @@ import slaveRoom
 //in start of tick initial Constant and assign it need place
 
 class MainContext {
-    var mainRoomCollector: MainRoomCollector = MainRoomCollector(this, arrayOf())
+    var mainRoomCollector: MainRoomCollector = mainRoomCollector.MainRoomCollector(this, arrayOf())
     val tasks: Tasks = Tasks(this)
     val constants: Constants = Constants(this)
     var initOnThisTick: Boolean = true
@@ -32,7 +32,7 @@ class MainContext {
     }
 
     fun runInStartOfTick() {
-        this.mainRoomCollector = MainRoomCollector(this, this.constants.mainRooms)
+        this.mainRoomCollector = mainRoomCollector.MainRoomCollector(this, this.constants.mainRooms)
         this.mainRoomCollector.runInStartOfTick()
         for (creep in Game.creeps.values) {
             try {

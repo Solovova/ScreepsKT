@@ -124,6 +124,27 @@ fun Creep.transferToContainer(type: Int, creepCarry: Int, mainContext: MainConte
     return result
 }
 
+fun Creep.transferToLink(type: Int, creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
+    // 0 - Source 0, 1 - Source 1
+    var result = false
+    if (creepCarry > 0) {
+        var objForFilling: StructureLink? = null
+        when(type) {
+            0 -> objForFilling = mainRoom.structureLinkNearSource[0]
+            1 -> objForFilling = mainRoom.structureLinkNearSource[1]
+        }
+
+
+        if (objForFilling != null) {
+            //val canStore: Int = objForFilling.storeCapacity - objForFilling.store.toMap().map { it.value }.sum()
+            //if (creepCarry > canStore) return false
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferTo, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
+            result = true
+        }
+    }
+    return result
+}
+
 fun Creep.takeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
     // 0 - Source 0, 1 - Source 1, 2 - Controller, 3 - any container
     var result = false
@@ -134,6 +155,24 @@ fun Creep.takeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext
             1 -> objForFilling = mainRoom.structureContainerNearSource[1]
             2 -> objForFilling = mainRoom.structureContainerNearController[0]
             3 -> objForFilling = mainRoom.structureContainer.values.filter { it.store.energy != 0 }.maxBy { it.store.energy}
+        }
+        if (objForFilling != null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Take, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
+            result = true
+        }
+    }
+    return result
+}
+
+fun Creep.takeFromLink(type: Int, creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
+    // 0 - Source 0, 1 - Source 1, 2 - Storage
+    var result = false
+    if (creepCarry == 0) {
+        var objForFilling: StructureLink? = null
+        when (type) {
+            0 -> objForFilling = null
+            1 -> objForFilling = null
+            2 -> objForFilling = mainRoom.structureLinkNearStorage[0]
         }
         if (objForFilling != null) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Take, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))

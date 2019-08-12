@@ -19,12 +19,19 @@ class MainRoomConstant(parent: Constants) {
 
     //Creep commands
     var energyBuilder : Int = 20000 //simple //how much energy must be in storage for start building
-    var energyUpgradable : Int = 50000 //simple //how much energy must be in storage for start upgrade controller
+    var energyUpgradable : Int = 70000 //simple //how much energy must be in storage for start upgrade controller
     var creepSpawn: Boolean = true
 
     //Room algorithm
     var roomRunNotEveryTickNextTickRun: Int = 0
     var levelOfRoom: Int = 0 //cashed
+
+    var energyMinStorage: Int = 40000   //if sentEnergyToRoom != ""
+    var energyMaxStorage: Int = 200000  //fill Terminal to energyMaxTerminal but energy in Storage not low energyMinStorage
+    var energyMinTerminal: Int = 10000  //if sentEnergyToRoom == ""
+    var energyMaxTerminal: Int = 60000  //fill Terminal to energyMinTerminal but energy in Storage not low energyMinStorage
+                                        //if energyStorage>energyMaxStorage fill Terminal but not bigger then energyMaxTerminal
+
 
     private fun getSlaveRoomConstant(slaveRoomName: String) : SlaveRoomConstant {
         val slaveRoomConstant:SlaveRoomConstant ? = this.slaveRoomConstantContainer[slaveRoomName]

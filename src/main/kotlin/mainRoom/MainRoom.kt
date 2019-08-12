@@ -8,6 +8,7 @@ import constants.constantMainRoomInit
 import creep.getDescribeForQueue
 import constants.CacheCarrier
 import mainContext.getCacheRecordRoom
+import mainRoomCollector.MainRoomCollector
 import screeps.api.*
 import screeps.api.structures.*
 import kotlin.random.Random
@@ -272,17 +273,12 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 if ((this.have[5]==0)&&(this.getEnergyInStorage()<=2000))  this.need[0][0]=2
 
                 //2 Upgrader
-                if (this.constant.sentEnergyToRoom == "") {
-                    if (this.room.energyCapacityAvailable>=1800) {
-                        this.need[1][7]=1
-                        this.need[2][7]=3
-                    }else{
-                        this.need[1][7]=2
-                        this.need[2][7]=2
-                    }
-                }else{
-                    this.need[1][7]=0
-                    this.need[2][7]=0
+                if (this.room.energyCapacityAvailable >= 1800) {
+                    this.need[1][7] = 1
+                    this.need[2][7] = 3
+                } else {
+                    this.need[1][7] = 2
+                    this.need[2][7] = 2
                 }
 
                 if (this.getEnergyInStorage()<this.constant.energyUpgradable) {
@@ -308,6 +304,56 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                     this.need[1][8]=1
                 }
             }
+
+            3 -> {
+                //1 harvester ,carrier ,filler , small harvester-filler, small filler
+                //1.1 harvester ,carrier
+                if (this.structureLinkNearSource.containsKey(0))
+                    if (this.need[1][1] == 0) this.need[1][1] = 1
+
+                if (this.structureLinkNearSource.containsKey(1))
+                    if (this.need[1][3] == 0) this.need[1][3] = 1
+
+                //1.2 filler
+                if (this.need[0][5] ==0) this.need[0][5] = 1 //filler
+                if (this.need[1][5] ==0) this.need[1][5] = 1 //filler
+
+                //1.3 small filler
+                if ((this.have[5]==0)&&(this.getEnergyInStorage()>2000))  this.need[0][9]=1
+                if ((this.have[5]==0)&&(this.getEnergyInStorage()<=2000))  this.need[0][0]=2
+
+                //2 Upgrader
+                if (this.constant.sentEnergyToRoom == "") {
+                    this.need[1][7]=2
+                    this.need[2][7]=2
+                }else{
+                    this.need[1][7]=0
+                    this.need[2][7]=0
+                }
+
+                if (this.getEnergyInStorage()<this.constant.energyUpgradable) {
+                    this.need[1][7]=0
+                    this.need[2][7]=0
+                }
+
+                //carrier
+
+                this.need[1][6]=this.have[7]
+
+                //2.1 Small upgrader
+                if (this.need[0][6] == 0 && this.need[1][6] == 0 && this.need[2][6] == 0 &&
+                        this.need[0][7] == 0 && this.need[1][7] == 0 && this.need[2][7] == 0 &&
+                        this.have[6] == 0 && this.have[7] == 0 && this.getTicksToDowngrade() < 10000)
+                    this.need[0][13]=1
+
+                //8 Builder
+                if ((this.constructionSite.isNotEmpty()) && (this.getEnergyInStorage() > this.constant.energyBuilder)) {
+                    this.need[1][8]=1
+                }
+
+                //9 Logist
+                this.need[0][14]=1
+            }
         }
 
     }
@@ -321,7 +367,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     private fun buildQueue() {
         for (i in 0 until this.have.size) this.haveForQueue[i] = this.have[i]
         val fPriorityOfRole = if (this.getEnergyInStorage() < 2000) arrayOf(0, 9, 1, 3, 2, 4, 14, 5, 20, 6, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
-        else arrayOf(0, 9, 5, 20, 1, 3, 2, 4, 14, 6, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
+        else arrayOf(0, 9, 5, 14, 20, 1, 3, 2, 4, 14, 6, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
 
         //Main 0..1
         for (priority in 0..1) {
@@ -458,6 +504,10 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
             13 -> {
                 result = arrayOf(WORK, CARRY, MOVE)
+            }
+
+            14 -> {
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
             }
         }
         return result
