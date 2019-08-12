@@ -12,7 +12,7 @@ fun MainRoom.marketCreateBuyOrders() {
         if (this.getResourceInTerminal() + this.getResourceInStorage() < 300000){
             val order = orders.firstOrNull()
             if (order != null) {
-                if (order.remainingAmount < 100000) Game.market.extendOrder(order.id,100000)
+                if (order.remainingAmount < 50000) Game.market.extendOrder(order.id,50000)
             }
         }
         return

@@ -343,7 +343,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
                 //carrier
 
-                this.need[1][6]=this.have[7]
+                if (this.have[7]>3) this.need[1][6]=this.have[7] -1
+                else this.need[1][6]=this.have[7]
 
                 //2.1 Small upgrader
                 if (this.need[0][6] == 0 && this.need[1][6] == 0 && this.need[2][6] == 0 &&
@@ -506,6 +507,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
             7 -> {
                 if (this.room.energyCapacityAvailable<1800) result = arrayOf(MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY)
+                else if (this.room.energyCapacityAvailable<2300) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY)
                 else if (this.room.energyCapacityAvailable<3000) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY)
                 else if (this.room.energyCapacityAvailable<=5600) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
                 else result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
