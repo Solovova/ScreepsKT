@@ -11,7 +11,13 @@ fun Constants.initMain() {                         //M0       M1       M2       
     this.getMainRoomConstant("E54N39").initSlaveRoomConstantContainer(arrayOf("E54N38"))            //M6
     this.getMainRoomConstant("E51N39").initSlaveRoomConstantContainer(arrayOf("E51N38"))            //M7
     this.getMainRoomConstant("E59N38").initSlaveRoomConstantContainer(arrayOf("E59N37","E59N39"))            //M10
-    this.getMainRoomConstant("E57N34").initSlaveRoomConstantContainer(arrayOf("E57N33"))            //M11
+    this.getMainRoomConstant("E57N34").initSlaveRoomConstantContainer(arrayOf("E57N33","E56N33"))            //M11
+    this.getMainRoomConstant("E51N33").initSlaveRoomConstantContainer(arrayOf("E51N34"))            //M12
+    this.getMainRoomConstant("E58N37").initSlaveRoomConstantContainer(arrayOf("E58N38"))            //M14
+    this.getMainRoomConstant("E52N36").initSlaveRoomConstantContainer(arrayOf("E51N36","E53N36"))            //M15
+    this.getMainRoomConstant("E57N32").initSlaveRoomConstantContainer(arrayOf("E56N32"))            //M16
+
+
 
     m(0).note  = "ready 2"
     m(1).note  = "ready 2"
@@ -39,9 +45,20 @@ fun Constants.initMain() {                         //M0       M1       M2       
 
     m(19).creepSpawn = false  //long
 
-    m(0).sentEnergyToRoom = "1"
-    m(4).sentEnergyToRoom = "1"
-    m(6).sentEnergyToRoom = "1"
+//    m(0).sentEnergyToRoom = "1"
+//    m(3).sentEnergyToRoom = "1"
+//    m(4).sentEnergyToRoom = "1"
+//    m(6).sentEnergyToRoom = "1"
+
+
 
     s(1,1).model = 1 //to tower   88/135
+
+    s(11,1).autoBuildRoad = true
+    s(12,0).autoBuildRoad = true
+    s(14,0).autoBuildRoad = true
+    s(15,0).autoBuildRoad = true
+    s(15,1).autoBuildRoad = true
+    s(16,0).autoBuildRoad = true
+
 }
