@@ -25,8 +25,10 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
 
     private fun creepsCalculate() {
         for (creep in Game.creeps.values) {
-            if (creep.carry.toMap().map { it.value }.sum() == 0 && creep.ticksToLive < 100 &&
-                    creep.memory.role < 1000) creep.suicide()
+            if (creep.carry.toMap().map { it.value }.sum() == 0
+                    && creep.ticksToLive < 100
+                    && creep.memory.role < 1000
+                    && creep.memory.role != 14) creep.suicide()
 
             // Main rooms
             if (creep.memory.role in 0..99) {

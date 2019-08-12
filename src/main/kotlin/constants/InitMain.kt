@@ -15,7 +15,7 @@ fun Constants.initMain() {                         //M0       M1       M2       
     this.getMainRoomConstant("E51N33").initSlaveRoomConstantContainer(arrayOf("E51N34"))            //M12
     this.getMainRoomConstant("E58N37").initSlaveRoomConstantContainer(arrayOf("E58N38"))            //M14
     this.getMainRoomConstant("E52N36").initSlaveRoomConstantContainer(arrayOf("E51N36","E53N36"))            //M15
-    this.getMainRoomConstant("E57N32").initSlaveRoomConstantContainer(arrayOf("E56N32"))            //M16
+    this.getMainRoomConstant("E57N32").initSlaveRoomConstantContainer(arrayOf("E56N32","E56N31"))            //M16
 
 
 
@@ -45,20 +45,18 @@ fun Constants.initMain() {                         //M0       M1       M2       
 
     m(19).creepSpawn = false  //long
 
-//    m(0).sentEnergyToRoom = "1"
-//    m(3).sentEnergyToRoom = "1"
-//    m(4).sentEnergyToRoom = "1"
-//    m(6).sentEnergyToRoom = "1"
+    m(3).sentEnergyToRoom = "E54N37"
+    m(4).sentEnergyToRoom = "E54N37"
+    m(6).sentEnergyToRoom = "E54N37"
 
 
 
     s(1,1).model = 1 //to tower   88/135
 
-    s(11,1).autoBuildRoad = true
-    s(12,0).autoBuildRoad = true
-    s(14,0).autoBuildRoad = true
     s(15,0).autoBuildRoad = true
     s(15,1).autoBuildRoad = true
     s(16,0).autoBuildRoad = true
+    s(16,1).autoBuildRoad = true
+
 
 }

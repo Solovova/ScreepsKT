@@ -6,6 +6,7 @@ import mainRoom.MainRoom
 import slaveRoom.SlaveRoom
 import TypeOfTask
 import mainRoom
+import mainRoom.setLogistTask
 import role
 import screeps.api.*
 import screeps.api.structures.*
@@ -121,9 +122,9 @@ fun Creep.newTask(mainContext: MainContext) {
         if (!isTask) isTask = this.upgradeNormalOrEmergency(0, creepCarry, mainContext, mainRoom)
     }
 
-    if (this.memory.role == 14) {
-        if (!isTask) isTask = this.takeFromLink(2,creepCarry, mainContext, mainRoom)
-        if (!isTask) isTask = this.transferToStorage(creepCarry, mainContext, mainRoom)
+    if (this.memory.role == 14 || this.memory.role == 1014) {
+        if (this.memory.role == 14 && this.ticksToLive<44) this.memory.role = this.memory.role + 1000
+        if (!isTask) mainRoom.setLogistTask(this)
     }
 
     if (this.memory.role == 100) {
@@ -349,6 +350,30 @@ fun Creep.doTask(mainContext: MainContext) {
             }
         }
 
+        TypeOfTask.Transport -> {
+            val posGo: RoomPosition = (if (task.take) task.posObject1 else task.posObject0)
+                    ?: return
+            if (!task.come) this.doTaskGoTo(task, posGo, 1)
+            if (task.come) {
+                if (!task.take) {
+                    val structure: Structure? = (Game.getObjectById(task.idObject0) as Structure?)
+                    if (structure != null) {
+                        if (task.quantity == 0) this.withdraw(structure, task.resource)
+                        else this.withdraw(structure, task.resource, task.quantity)
+                    }
+                    task.take = true
+                    task.come = false
+                }else{
+                    val structure: Structure? = (Game.getObjectById(task.idObject1) as Structure?)
+                    if (structure != null) {
+                        if (task.quantity == 0) this.transfer(structure, task.resource)
+                        else this.transfer(structure, task.resource, task.quantity)
+                    }
+                }
+
+            }
+        }
+
 
 
         else -> {
@@ -500,8 +525,9 @@ fun Creep.endTask(mainContext: MainContext) {
             }
         }
 
-
-
+        TypeOfTask.Transport -> {
+            if (creepCarry == 0 && task.take) mainContext.tasks.deleteTask(this.id)
+        }
 
         else -> {
         }

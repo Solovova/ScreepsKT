@@ -5,4 +5,7 @@ fun Constants.initTest() {
     this.getMainRoomConstant("W5N3").initSlaveRoomConstantContainer(arrayOf("W5N2"))
 
     s(0,0).autoBuildRoad = true
+    m(1).sentEnergyToRoom="W5N3"
+    m(2).sentEnergyToRoom="W5N3"
+
 }

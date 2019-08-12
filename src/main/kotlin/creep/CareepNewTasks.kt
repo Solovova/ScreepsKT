@@ -9,14 +9,13 @@ import TypeOfTask
 import role
 import screeps.api.*
 import screeps.api.structures.*
-import screeps.utils.toMap
 import slaveRoom
 
 fun Creep.takeFromStorage(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
     var result = false
     if (creepCarry == 0) {
         val tStorage: StructureStorage? = mainRoom.structureStorage[0]
-        if (tStorage!=null && mainRoom.getEnergyInStorage() > 0) {
+        if (tStorage!=null && mainRoom.getResourceInStorage() > 0) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Take, idObject0 = tStorage.id, posObject0 = tStorage.pos, resource = RESOURCE_ENERGY))
             result = true
         }
@@ -159,26 +158,6 @@ fun Creep.takeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext
         if (objForFilling != null) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Take, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
             result = true
-        }
-    }
-    return result
-}
-
-fun Creep.takeFromLink(type: Int, creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
-    // 0 - Source 0, 1 - Source 1, 2 - Storage
-    var result = false
-    if (creepCarry == 0) {
-        var objForFilling: StructureLink? = null
-        when (type) {
-            0 -> objForFilling = null
-            1 -> objForFilling = null
-            2 -> objForFilling = mainRoom.structureLinkNearStorage[0]
-        }
-        if (objForFilling != null) {
-            if (objForFilling.energy != 0) {
-                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Take, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
-                result = true
-            }
         }
     }
     return result

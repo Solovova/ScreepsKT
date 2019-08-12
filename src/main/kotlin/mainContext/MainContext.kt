@@ -17,7 +17,7 @@ import slaveRoom
 //in start of tick initial Constant and assign it need place
 
 class MainContext {
-    var mainRoomCollector: MainRoomCollector = mainRoomCollector.MainRoomCollector(this, arrayOf())
+    var mainRoomCollector: MainRoomCollector = MainRoomCollector(this, arrayOf())
     val tasks: Tasks = Tasks(this)
     val constants: Constants = Constants(this)
     var initOnThisTick: Boolean = true
@@ -32,7 +32,7 @@ class MainContext {
     }
 
     fun runInStartOfTick() {
-        this.mainRoomCollector = mainRoomCollector.MainRoomCollector(this, this.constants.mainRooms)
+        this.mainRoomCollector = MainRoomCollector(this, this.constants.mainRooms)
         this.mainRoomCollector.runInStartOfTick()
         for (creep in Game.creeps.values) {
             try {
