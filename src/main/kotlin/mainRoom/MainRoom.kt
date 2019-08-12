@@ -495,7 +495,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
             5 -> {
                 if (this.room.energyCapacityAvailable>=5000) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
-                if (this.room.energyCapacityAvailable>=1300) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                else if (this.room.energyCapacityAvailable>=1300) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
                 else result = arrayOf(MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
             }
 
