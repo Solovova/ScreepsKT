@@ -35,6 +35,7 @@ class MainContext {
 
         this.mainRoomCollector = MainRoomCollector(this, this.constants.mainRooms)
         this.mainRoomCollector.runInStartOfTick()
+        //Game.market.cancelOrder("5d51e1b249ede365f75260fd")
         for (creep in Game.creeps.values) {
             try {
                 creep.newTask(this)
