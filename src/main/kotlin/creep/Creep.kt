@@ -51,14 +51,23 @@ fun Creep.newTask(mainContext: MainContext) {
         if ((this.memory.role == 1) && this.ticksToLive<100) this.memory.role = this.memory.role + 1000
 
         if (!isTask) isTask = this.harvestFromSource(0,creepCarry,mainContext,mainRoom)
-        if (!isTask) isTask = this.transferToContainer(0,creepCarry,mainContext,mainRoom)
+
+        if (!isTask) isTask =
+                if (mainRoom.constant.levelOfRoom < 2)
+                    this.transferToContainer(0, creepCarry, mainContext, mainRoom)
+                else
+                    this.transferToLink(0,creepCarry,mainContext,mainRoom)
     }
 
     if (this.memory.role == 3 || this.memory.role == 1003) {
         if ((this.memory.role == 3) && this.ticksToLive<100) this.memory.role = this.memory.role + 1000
 
         if (!isTask) isTask = this.harvestFromSource(1,creepCarry,mainContext,mainRoom)
-        if (!isTask) isTask = this.transferToContainer(1,creepCarry,mainContext,mainRoom)
+        if (!isTask) isTask =
+                if (mainRoom.constant.levelOfRoom < 2)
+                    this.transferToContainer(1, creepCarry, mainContext, mainRoom)
+                else
+                    this.transferToLink(1,creepCarry,mainContext,mainRoom)
     }
 
 
@@ -113,6 +122,8 @@ fun Creep.newTask(mainContext: MainContext) {
     }
 
     if (this.memory.role == 14) {
+        if (!isTask) isTask = this.takeFromLink(2,creepCarry, mainContext, mainRoom)
+        if (!isTask) isTask = this.transferToStorage(creepCarry, mainContext, mainRoom)
     }
 
     if (this.memory.role == 100) {

@@ -175,8 +175,10 @@ fun Creep.takeFromLink(type: Int, creepCarry: Int, mainContext: MainContext, mai
             2 -> objForFilling = mainRoom.structureLinkNearStorage[0]
         }
         if (objForFilling != null) {
-            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Take, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
-            result = true
+            if (objForFilling.energy != 0) {
+                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Take, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
+                result = true
+            }
         }
     }
     return result
