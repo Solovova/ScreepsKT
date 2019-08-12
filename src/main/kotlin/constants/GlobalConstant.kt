@@ -5,8 +5,11 @@ class GlobalConstant {
     val roomRunNotEveryTickTicksPauseMin: Int = 10
     val roomRunNotEveryTickTicksPauseMax: Int = 20
 
+
     val clearProfit: Boolean = false
 
+    //INFO
+    val showProfitWhenLessWhen: Int = 6000
 
     fun toDynamic(): dynamic {
         val result: dynamic = object {}

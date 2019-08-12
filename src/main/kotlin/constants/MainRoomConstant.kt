@@ -33,6 +33,9 @@ class MainRoomConstant(parent: Constants) {
     var energyMinTerminal: Int = 10000
     var energyMaxTerminal: Int = 60000
 
+    //Market
+    var marketBuyEnergy: Boolean = false
+
 
 
     private fun getSlaveRoomConstant(slaveRoomName: String) : SlaveRoomConstant {

@@ -32,6 +32,7 @@ class MainContext {
     }
 
     fun runInStartOfTick() {
+
         this.mainRoomCollector = MainRoomCollector(this, this.constants.mainRooms)
         this.mainRoomCollector.runInStartOfTick()
         for (creep in Game.creeps.values) {
@@ -42,6 +43,8 @@ class MainContext {
             }
 
         }
+
+        this.ordersMyDelete()
     }
 
     fun runNotEveryTick() {

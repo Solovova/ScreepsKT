@@ -12,7 +12,7 @@ fun MainRoomCollector.terminalSent() {
     for (roomFrom in this.rooms.values) {
         if (roomFrom.constant.sentEnergyToRoom == "") continue
         val roomTo: MainRoom = this.rooms[roomFrom.constant.sentEnergyToRoom] ?: continue
-        if (roomTo.getResourceInTerminal()<20000 && roomFrom.getResourceInTerminal() > 40000) {
+        if (roomTo.getResourceInTerminal()<20000 && roomFrom.getResourceInTerminal() > 30000) {
             val terminalFrom:StructureTerminal = roomFrom.structureTerminal[0] ?: continue
             val terminalTo:StructureTerminal = roomTo.structureTerminal[0] ?: continue
             if (terminalFrom.cooldown == 0 && terminalTo.cooldown == 0)

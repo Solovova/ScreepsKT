@@ -306,6 +306,9 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             this.profitClear()
 
         }
+
+        if (this.constant.profitPerTickPrevious > parent.parent.parent.constants.globalConstant.showProfitWhenLessWhen * this.source.size ) return
+
         var sProfitPT = "0"
         if (this.constant.profitStart != Game.time)
             sProfitPT = (((this.constant.profitUp - this.constant.profitDown).toDouble() /

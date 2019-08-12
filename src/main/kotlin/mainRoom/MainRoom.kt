@@ -325,11 +325,11 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 //2 Upgrader
                 if (this.constant.sentEnergyToRoom == "") {
                     if (this.getResourceInStorage() > this.constant.energyForceUpgrade ) {
-                        this.need[1][7]=3
-                        this.need[2][7]=3
-                    }else{
                         this.need[1][7]=2
                         this.need[2][7]=2
+                    }else{
+                        this.need[1][7]=2
+                        this.need[2][7]=1
                     }
                 }else{
                     this.need[1][7]=0
@@ -432,7 +432,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
     private fun showQueue() {
         //ToDo show creepsRole who mainRoom.building
-        var showText = "(${this.describe}):".padEnd(8)
+        var showText = "lvl: ${this.constant.levelOfRoom} (${this.describe}):".padEnd(8)
         var textSpawning  = ""
 
         for (spawn in this.structureSpawn) {
@@ -506,7 +506,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
             7 -> {
                 if (this.room.energyCapacityAvailable<1800) result = arrayOf(MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY)
-                else if (this.room.energyCapacityAvailable<3000) result = arrayOf(WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE)
+                else if (this.room.energyCapacityAvailable<3000) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY)
                 else if (this.room.energyCapacityAvailable<=5600) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
                 else result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
             }
@@ -678,6 +678,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
         //Test
         if (!this.setNextTickRun()) return
+        this.marketCreateBuyOrders()
 
     }
 
