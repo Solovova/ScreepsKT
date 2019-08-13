@@ -35,7 +35,6 @@ class MainContext {
 
         this.mainRoomCollector = MainRoomCollector(this, this.constants.mainRooms)
         this.mainRoomCollector.runInStartOfTick()
-        //Game.market.cancelOrder("5d51e1b249ede365f75260fd")
         for (creep in Game.creeps.values) {
             try {
                 creep.newTask(this)
@@ -100,8 +99,8 @@ class MainContext {
 
         val prefix: String = when(type) {
             "HEAD" -> "00"
-            "ERROR" -> "05"
-            "INFO" -> "06"
+            "ERROR" -> "95"
+            "INFO" -> "94"
             "QUEUE" -> "07"
             "PROFIT" -> "09"
             "TASK" -> "11"

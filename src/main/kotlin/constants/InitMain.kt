@@ -11,7 +11,7 @@ fun Constants.initMain() {                         //M0       M1       M2       
     this.getMainRoomConstant("E54N39").initSlaveRoomConstantContainer(arrayOf("E54N38"))                                //M6
     this.getMainRoomConstant("E51N39").initSlaveRoomConstantContainer(arrayOf("E51N38"))                                //M7
     this.getMainRoomConstant("E59N38").initSlaveRoomConstantContainer(arrayOf("E59N37","E59N39"))                       //M10
-    this.getMainRoomConstant("E57N34").initSlaveRoomConstantContainer(arrayOf("E57N33","E56N33","E57N35"))              //M11
+    this.getMainRoomConstant("E57N34").initSlaveRoomConstantContainer(arrayOf("E57N33","E56N33"))              //M11
     this.getMainRoomConstant("E51N33").initSlaveRoomConstantContainer(arrayOf("E51N34"))                                //M12
     this.getMainRoomConstant("E58N37").initSlaveRoomConstantContainer(arrayOf("E58N38"))                                //M14
     this.getMainRoomConstant("E52N36").initSlaveRoomConstantContainer(arrayOf("E51N36","E53N36"))                       //M15
@@ -23,8 +23,6 @@ fun Constants.initMain() {                         //M0       M1       M2       
 //    m(4).sentEnergyToRoom = "E54N37"
 //    m(6).sentEnergyToRoom = "E54N37"
 
-    m(19).creepSpawn = false
-    s(11,2).model = 1
 
     m(0).marketBuyEnergy = true
     m(4).marketBuyEnergy = true
@@ -33,6 +31,4 @@ fun Constants.initMain() {                         //M0       M1       M2       
 
 
 
-    s(16,1).autoBuildRoad = true
-    s(16,2).autoBuildRoad = true
 }
