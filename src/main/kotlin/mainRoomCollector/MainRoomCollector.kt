@@ -65,7 +65,7 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
                 val slaveRoom: SlaveRoom = mainRoom.slaveRooms[creep.memory.slaveRoom] ?: continue
 
                 val carry: Int = creep.carry.energy
-                var oldCarry:Int = 0
+                var oldCarry = 0
                 if (Memory["profitCreep"][creep.id] != null)
                     oldCarry = Memory["profitCreep"][creep.id] as Int
 

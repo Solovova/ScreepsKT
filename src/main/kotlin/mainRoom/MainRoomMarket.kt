@@ -20,7 +20,7 @@ fun MainRoom.marketCreateBuyOrders() {
     if (!this.constant.marketBuyEnergy) return
 
     //this.marketClearNonActive()
-    val priceEnergy: Double = 0.010
+    val priceEnergy = 0.010
     if ((this.getResourceInTerminal() + this.getResourceInStorage()) < 300000) {
         //val orders: Array<Market.Order> = Game.market.getAllOrders { it.roomName == this.name && it.resourceType == RESOURCE_ENERGY }
         val orders = Game.market.orders.toMap().filter { it.value.roomName == this.name && it.value.resourceType == RESOURCE_ENERGY }

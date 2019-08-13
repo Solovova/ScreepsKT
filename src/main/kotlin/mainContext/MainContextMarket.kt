@@ -27,7 +27,7 @@ fun createBuyOrders() {
     //Game.market.createOrder(ORDER_BUY, RESOURCE_ENERGY,0.012,100000,)
 }
 
-fun MainContext.GetArrayOfMarket(fMineral: ResourceConstant,fRoomName: String,fTypeOrder: OrderConstant = ORDER_BUY){
+fun MainContext.getArrayOfMarket(fMineral: ResourceConstant,fRoomName: String,fTypeOrder: OrderConstant = ORDER_BUY){
 //    val fPriceMineral: Double = 0.03
 //    val orders: Array<Market.Order> = Game.market.getAllOrders {it.resourceType == fMineral &&
 //            it.type == fTypeOrder}

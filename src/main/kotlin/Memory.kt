@@ -1,5 +1,4 @@
 import screeps.api.CreepMemory
-import screeps.api.RoomMemory
 
 import screeps.utils.memory.memory
 

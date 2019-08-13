@@ -6,7 +6,7 @@ import screeps.api.*
 import screeps.api.structures.Structure
 
 fun SlaveRoom.buildWayByPath(inPath : Array<RoomPosition>):Boolean {
-    var builden: Int = 0
+    var builden = 0
     for (record in inPath.reversedArray()) {
         if (record.x == 0 || record.x == 49 || record.y == 0 || record.y == 49) continue
         val room: Room = Game.rooms[record.roomName] ?: return false

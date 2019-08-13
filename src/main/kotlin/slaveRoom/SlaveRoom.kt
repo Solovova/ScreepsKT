@@ -7,7 +7,6 @@ import mainContext.getCacheRecordRoom
 import mainContext.messenger
 import mainRoom.MainRoom
 import mainRoom.QueueSpawnRecord
-import mainRoom.doSnapShot
 import screeps.api.*
 import screeps.api.structures.*
 import screeps.utils.toMap

@@ -2,8 +2,6 @@ package mainRoom
 
 import screeps.api.*
 import screeps.api.structures.StructureController
-import slaveRoom.buildWaysInRoom
-import slaveRoom.building
 
 fun MainRoom.buildStructure(fPrimeColor: ColorConstant, fSecondaryColor: ColorConstant, fWhatBuild: BuildableStructureConstant, fCount: Int): Boolean {
     //return 1 если чтото нашли и строим 0 если ничего не нашли

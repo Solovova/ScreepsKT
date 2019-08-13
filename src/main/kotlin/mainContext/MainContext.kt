@@ -3,15 +3,7 @@ package mainContext
 import Tasks
 import battleGroup.BattleGroupContainer
 import constants.Constants
-import creep.doTask
-import creep.newTask
-import mainRoom
 import mainRoomCollector.MainRoomCollector
-import role
-import screeps.api.*
-import screeps.utils.isEmpty
-import screeps.utils.unsafe.delete
-import slaveRoom
 
 //mainContext.MainContext initial only then died
 //in start of tick initial mainRoomCollector
