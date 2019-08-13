@@ -76,7 +76,7 @@ fun Creep.transportMineralToStorage(mainContext: MainContext, mainRoom: MainRoom
         val container: StructureContainer? = mainRoom.structureContainerNearMineral[0]
         val storage: StructureStorage? = mainRoom.structureStorage[0]
         if (container != null && storage!=null) {
-            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Transport, idObject0 = container.id, posObject0 = container.pos, idObject1 = storage.id, posObject1 = storage.pos, resource = mainRoom.mineral.mineralType, quantity = this.carryCapacity))
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Transport, idObject0 = container.id, posObject0 = container.pos, idObject1 = storage.id, posObject1 = storage.pos, resource = mainRoom.mineral.mineralType))
             result = true
         }
     return result
@@ -493,6 +493,26 @@ fun Creep.slaveAttack(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean 
         if (hostileCreep != null) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.AttackMile, idObject0 = hostileCreep.id, posObject0 = hostileCreep.pos))
             result = true
+        }
+    }
+    return result
+}
+
+fun Creep.slaveEraser(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+    var result = false
+    if (slaveRoom?.room != null) {
+        val hostileCreep : Creep? =  slaveRoom.room.find(FIND_HOSTILE_CREEPS).minBy { it.pos.getRangeTo(this.pos) }
+        if (hostileCreep != null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.EraserAttack, idObject0 = hostileCreep.id, posObject0 = hostileCreep.pos))
+            result = true
+        }
+
+        if (!result) {
+            val keeperLair: StructureKeeperLair? = slaveRoom.structureKeeperLair.minBy { it.value.ticksToSpawn }?.value
+            if (keeperLair != null) {
+                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.EraserGoToKL, idObject0 = keeperLair.id, posObject0 = keeperLair.pos))
+                result = true
+            }
         }
     }
     return result

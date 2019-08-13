@@ -23,7 +23,9 @@ enum class TypeOfTask {
     AttackMile,
     SignRoom,
     SignSlaveRoom,
-    HarvestMineral
+    HarvestMineral,
+    EraserAttack,
+    EraserGoToKL
 }
 
 enum class TypeOfInteractionsObjects {

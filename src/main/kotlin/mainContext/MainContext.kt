@@ -1,6 +1,7 @@
 package mainContext
 
 import Tasks
+import battleGroup.BattleGroupContainer
 import constants.Constants
 import creep.doTask
 import creep.newTask
@@ -22,9 +23,11 @@ class MainContext {
     val constants: Constants = Constants(this)
     var initOnThisTick: Boolean = true
     val messengerMap : MutableMap<String,String> = mutableMapOf()
+    val battleGroupContainer: BattleGroupContainer
 
     init {
         this.constants.fromMemory()
+        this.battleGroupContainer = BattleGroupContainer(this)
         this.runInStartOfTick()
 
 

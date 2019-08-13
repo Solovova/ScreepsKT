@@ -10,6 +10,7 @@ import mainRoom.QueueSpawnRecord
 import mainRoom.doSnapShot
 import screeps.api.*
 import screeps.api.structures.*
+import screeps.utils.toMap
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -105,12 +106,33 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             return _structureStorage ?: throw AssertionError("Error get StructureStorage")
         }
 
+    //StructureKeeperLair
+    private var _structureKeeperLair: Map<Int, StructureKeeperLair>? = null
+    val structureKeeperLair: Map<Int, StructureKeeperLair>
+        get() {
+            if (this.room == null)
+                _structureKeeperLair = mapOf()
+            else
+                if (this._structureKeeperLair == null){
+                    _structureKeeperLair = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_KEEPER_LAIR }.sortedWith(Comparator<Structure>{ a, b ->
+                        when {
+                            a.id > b.id -> 1
+                            a.id < b.id -> -1
+                            else -> 0
+                        }}).withIndex().associate { it.index to (it.value as StructureKeeperLair)}
+                }
+            return _structureKeeperLair ?: throw AssertionError("Error get StructureKeeperLair")
+        }
+
     init {
         constantSlaveRoomInit(this)
+        if (this.constant.model == 0 && this.room != null) {
+            if (this.source.size == 3) this.constant.model = 2
+        }
     }
 
     fun buildQueue(queue: MutableList<QueueSpawnRecord>, priority: Int) {
-        val fPriorityOfRole = arrayOf(10, 11, 4, 0, 1 , 2 , 3, 5, 7, 9, 6, 8)
+        val fPriorityOfRole = arrayOf(10, 11, 15, 4, 0, 1 , 2 , 3, 5, 7, 9, 6, 8)
         for (fRole in fPriorityOfRole) {
             var fNeed = this.need[0][fRole]
             if (priority >= 1) fNeed += this.need[1][fRole]
@@ -182,6 +204,10 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                 result = arrayOf(TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK)
             }
 
+            115 -> {
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,HEAL,HEAL)
+                //[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,HEAL]
+            }
         }
         return result
     }
@@ -205,7 +231,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                 if (this.room!=null) {
                     val hostileCreeps = this.room.find(FIND_HOSTILE_CREEPS)
                     this.constant.roomHostile = hostileCreeps.isNotEmpty()
-                    var typeAttack: Int = 2 //ranged
+                    var typeAttack = 2 //ranged
                     for (hostileCreep in hostileCreeps)
                         if (hostileCreep.body.firstOrNull { it.type == ATTACK } != null) {
                             typeAttack = 1
@@ -269,22 +295,21 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                 //4 Builder 109
                 if (this.constructionSite.size > 2 && this.need[1][9] == 0 &&
                         this.structureContainerNearSource.size == this.source.size) this.need[1][9] = 2
-
-
-
-
-
+            }
+            2 -> {
+                this.need[1][15] = 1
             }
         }
     }
 
     fun runNotEveryTick() {
         if (this.constant.model == 1) this.building()
-        if (this.constant.model == 0 && this.constant.autoBuildRoad)
+        if ((this.constant.model == 0 || this.constant.model == 2) && this.constant.autoBuildRoad)
             this.constant.roadBuild = this.buildWaysInRoom()
 
         if (!this.setNextTickRun()) return
         this.restoreSnapShot()
+        this.needCleanerCalculate()
     }
 
     private fun setNextTickRun(): Boolean {
@@ -339,6 +364,19 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
 
     fun profitPlus(put: Int) {
         this.constant.profitUp += put
+    }
+
+    private fun needClean(store: StoreDefinition?, resource: ResourceConstant):Boolean {
+        if (store == null) return false
+        return (store[resource] ?: 0) != (store.toMap().map { it.value }.sum())
+    }
+
+    fun needCleanerCalculate() {
+        var result = false
+        if (!result) result = needClean(this.structureContainerNearSource[0]?.store, RESOURCE_ENERGY)
+        if (!result) result = needClean(this.structureContainerNearSource[1]?.store, RESOURCE_ENERGY)
+        if (!result) result = needClean(this.structureContainerNearSource[2]?.store, RESOURCE_ENERGY)
+        this.constant.needCleaner = result
     }
 }
 

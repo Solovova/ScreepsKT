@@ -21,6 +21,10 @@ class Constants(val parent: MainContext) {
     var mainRooms: Array<String> = arrayOf() //simple
     val mainRoomConstantContainer: MutableMap<String, MainRoomConstant> = mutableMapOf() //cashed
 
+    var battleGroups: Array<String> = arrayOf() //cashed
+    val battleGroupConstantContainer: MutableMap<String, BattleGroupConstant> = mutableMapOf() //cashed
+    val battleGroupContainerConstant: BattleGroupContainerConstant = BattleGroupContainerConstant() //cashed
+
     init {
         if (Game.rooms["E54N37"] != null) this.initMain()
         else this.initTest()
@@ -67,6 +71,12 @@ class Constants(val parent: MainContext) {
         result["mainRoomConstantContainer"] = object {}
         for (record in this.mainRoomConstantContainer)
                 result["mainRoomConstantContainer"][record.key] = record.value.toDynamic()
+
+        result["battleGroups"] = battleGroups
+        result["battleGroupConstantContainer"] = object {}
+        for (record in this.battleGroupConstantContainer)
+            result["battleGroupConstantContainer"][record.key] = record.value.toDynamic()
+        result["battleGroupContainerConstant"] = this.battleGroupContainerConstant.toDynamic()
         return result
     }
 
@@ -83,6 +93,20 @@ class Constants(val parent: MainContext) {
 
         if (d["globalConstant"] != null)
             globalConstant.fromDynamic(d["globalConstant"] )
+
+        if ((d["battleGroups"] != null))
+            this.battleGroups = d["battleGroups"] as Array<String>
+
+        console.log(this.battleGroups)
+
+        for (record in this.battleGroups) {
+            this.battleGroupConstantContainer[record] = BattleGroupConstant()
+            if (d["battleGroupConstantContainer"] != null && d["battleGroupConstantContainer"][record] != null)
+                this.battleGroupConstantContainer[record]?.fromDynamic(d["battleGroupConstantContainer"][record])
+        }
+
+        if (d["battleGroupContainerConstant"] != null)
+            battleGroupContainerConstant.fromDynamic(d["battleGroupContainerConstant"] )
     }
 
     fun fromMemory() {

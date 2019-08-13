@@ -54,7 +54,7 @@ fun Creep.endTask(mainContext: MainContext) {
         TypeOfTask.TransferTo -> {
             if (this.memory.role == 106 || this.memory.role == 1006 || this.memory.role == 108 || this.memory.role == 1008) {
                 val mainRoom: MainRoom = mainContext.mainRoomCollector.rooms[this.memory.mainRoom] ?: return
-                var slaveRoom: SlaveRoom?  = mainRoom.slaveRooms[this.memory.slaveRoom] ?: return
+                val slaveRoom: SlaveRoom?  = mainRoom.slaveRooms[this.memory.slaveRoom] ?: return
                 if (slaveRoom != null) {
                     if (creepCarry > 0 && slaveRoom.constructionSite.isNotEmpty()) {
                         val tConstructionSite = slaveRoom.getConstructionSite(this.pos)
@@ -161,6 +161,30 @@ fun Creep.endTask(mainContext: MainContext) {
 
         TypeOfTask.Transport -> {
             if (creepCarry == 0 && task.take) mainContext.tasks.deleteTask(this.id)
+        }
+
+        TypeOfTask.EraserAttack -> {
+            val hostileCreep: Creep? = Game.getObjectById(task.idObject0)
+            if (hostileCreep == null) mainContext.tasks.deleteTask(this.id)
+        }
+
+        TypeOfTask.EraserGoToKL -> {
+            val structureKeeperLair: StructureKeeperLair? = Game.getObjectById(task.idObject0)
+
+            if (structureKeeperLair == null) {
+                mainContext.tasks.deleteTask(this.id);return}
+
+            if (this.pos.inRangeTo(structureKeeperLair.pos,1)) {
+                mainContext.tasks.deleteTask(this.id); return}
+
+            val mainRoom: MainRoom? = mainContext.mainRoomCollector.rooms[this.memory.mainRoom]
+            if (mainRoom == null) {mainContext.tasks.deleteTask(this.id); return}
+
+            val slaveRoom: SlaveRoom? = mainRoom.slaveRooms[this.memory.slaveRoom]
+            if (slaveRoom == null) {mainContext.tasks.deleteTask(this.id); return}
+
+            val hostileCreep : Creep? =  slaveRoom.room?.find(FIND_HOSTILE_CREEPS)?.firstOrNull()
+            if (hostileCreep != null) {mainContext.tasks.deleteTask(this.id); return}
         }
 
         else -> {

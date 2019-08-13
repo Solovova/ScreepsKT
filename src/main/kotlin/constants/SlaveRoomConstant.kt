@@ -16,6 +16,7 @@ class SlaveRoomConstant {
     var roomHostile: Boolean = false
     var roomHostileType: Int = 0 // 1 -  mile, 2 - ranged
     var roomHostileNum: Int = 0
+    var needCleaner: Boolean = false
 
 
 
@@ -30,6 +31,8 @@ class SlaveRoomConstant {
         if (d["roomHostile"] != null) this.roomHostile = d["roomHostile"] as Boolean
         if (d["roomHostileType"] != null) this.roomHostileType = d["roomHostileType"] as Int
         if (d["roomHostileNum"] != null) this.roomHostileNum = d["roomHostileNum"] as Int
+        if (d["needCleaner"] != null) this.needCleaner = d["needCleaner"] as Boolean
+
 
 
 
@@ -46,6 +49,8 @@ class SlaveRoomConstant {
         result["roomHostile"] = this.roomHostile
         result["roomHostileType"] = this.roomHostileType
         result["roomHostileNum"] = this.roomHostileNum
+        result["needCleaner"] = this.needCleaner
+
 
 
 

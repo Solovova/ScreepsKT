@@ -19,17 +19,17 @@ fun Creep.getDescribeForQueue(mainContext: MainContext):String {
     return "(" +(slaveRoom?.describe ?: "" ).padEnd(7) + this.memory.role.toString().padEnd(3) +")"
 }
 
-fun Creep.newTask(mainContext: MainContext) {
+fun Creep.newTask(mainContext: MainContext):Boolean {
 
-    if (this.spawning) return
-    val mainRoom: MainRoom = mainContext.mainRoomCollector.rooms[this.memory.mainRoom] ?: return
+    if (this.spawning) return false
+    val mainRoom: MainRoom = mainContext.mainRoomCollector.rooms[this.memory.mainRoom] ?: return false
     var slaveRoom: SlaveRoom? = null
     if (this.memory.role in 100..199 || this.memory.role in 1100..1199) {
-        slaveRoom = mainRoom.slaveRooms[this.memory.slaveRoom] ?: return
+        slaveRoom = mainRoom.slaveRooms[this.memory.slaveRoom] ?: return false
     }
 
     this.endTask(mainContext)
-    if (mainContext.tasks.isTaskForCreep(this)) return
+    if (mainContext.tasks.isTaskForCreep(this)) return false
 
     var isTask = false
     val creepCarry: Int = this.carry.toMap().map { it.value }.sum()
@@ -215,6 +215,13 @@ fun Creep.newTask(mainContext: MainContext) {
         if (!isTask) isTask = this.slaveGoToRoom(mainContext)
         if (!isTask) isTask = this.slaveAttack(mainContext, slaveRoom)
     }
+
+    if (this.memory.role == 115) {
+        if (!isTask) isTask = this.slaveGoToRoom(mainContext)
+        if (!isTask) isTask = this.slaveEraser(mainContext, slaveRoom)
+    }
+
+    return isTask
 
 }
 

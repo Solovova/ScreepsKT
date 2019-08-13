@@ -16,8 +16,8 @@ fun Constants.initMain() {                         //M0       M1       M2       
     this.getMainRoomConstant("E58N37").initSlaveRoomConstantContainer(arrayOf("E58N38"))                                //M14
     this.getMainRoomConstant("E52N36").initSlaveRoomConstantContainer(arrayOf("E51N36","E53N36"))                       //M15
     this.getMainRoomConstant("E57N32").initSlaveRoomConstantContainer(arrayOf("E56N32","E56N31","E57N31"))              //M16
-    this.getMainRoomConstant("E57N39").initSlaveRoomConstantContainer(arrayOf("E59N39"))              //M18
-    this.getMainRoomConstant("E57N35").initSlaveRoomConstantContainer(arrayOf("E58N35"))              //M19
+    this.getMainRoomConstant("E57N39").initSlaveRoomConstantContainer(arrayOf("E56N39","E57N38"))              //M18
+    this.getMainRoomConstant("E57N35").initSlaveRoomConstantContainer(arrayOf("E58N35","E59N35"))              //M19
     this.getMainRoomConstant("E57N37").initSlaveRoomConstantContainer(arrayOf("E57N36"))                                //M20
 
 
@@ -27,10 +27,14 @@ fun Constants.initMain() {                         //M0       M1       M2       
 
 
     m(0).marketBuyEnergy = true
+    m(3).marketBuyEnergy = true
     m(4).marketBuyEnergy = true
     m(6).marketBuyEnergy = true
-    s(19,0).autoBuildRoad = true
+    m(7).marketBuyEnergy = true
+
     s(18,0).autoBuildRoad = true
+    s(18,1).autoBuildRoad = true
+
 
 
 

@@ -30,6 +30,9 @@ In future
 // 8 - carrier source 1 -
 // 9 - builder
 //10 - defender ranged
+//11 - defender mile
+model 2
+//15 - eraser
 
 //Queue priority
 //need0

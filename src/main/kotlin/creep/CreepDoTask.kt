@@ -179,6 +179,35 @@ fun Creep.doTask(mainContext: MainContext) {
             }
         }
 
+        TypeOfTask.EraserAttack -> {
+            val hostileCreep: Creep? = Game.getObjectById(task.idObject0)
+            if (hostileCreep != null)
+                if (this.pos.inRangeTo(hostileCreep.pos, 1)) {
+                    this.heal(this)
+                    this.attack(hostileCreep)
+                } else {
+                    if (this.pos.getRangeTo(hostileCreep) in 4..10 && this.hits < this.hitsMax) {
+                        this.heal(this)
+                    } else {
+                        this.heal(this)
+                        this.moveTo(hostileCreep)
+                    }
+                }
+        }
+
+        TypeOfTask.EraserGoToKL -> {
+            val structureKeeperLair: StructureKeeperLair? = Game.getObjectById(task.idObject0)
+            if (structureKeeperLair != null)
+                if (!this.pos.inRangeTo(structureKeeperLair.pos, 1)) {
+                    if (this.pos.getRangeTo(structureKeeperLair) in 4..10 && this.hits < this.hitsMax) {
+                        this.heal(this)
+                    } else {
+                        this.heal(this)
+                        this.moveTo(structureKeeperLair)
+                    }
+                }
+        }
+
 
 
         else -> {

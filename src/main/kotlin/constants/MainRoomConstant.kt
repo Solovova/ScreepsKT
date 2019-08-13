@@ -3,8 +3,7 @@ package constants
 import mainContext.messenger
 import screeps.api.COLOR_RED
 
-class MainRoomConstant(parent: Constants) {
-    val parent: Constants = parent
+class MainRoomConstant(val parent: Constants) {
     var slaveRooms : Array<String> = arrayOf() //simple
     val slaveRoomConstantContainer: MutableMap<String,SlaveRoomConstant> = mutableMapOf() //cashed
     //Upgrader
@@ -23,6 +22,7 @@ class MainRoomConstant(parent: Constants) {
     var energyUpgradable : Int = 70000 //simple //how much energy must be in storage for start upgrade controller
     var energyForceUpgrade: Int = 100000 //simple //how much energy must be in storage for start upgrade controller
     var creepSpawn: Boolean = true
+    var needCleaner: Boolean = false //cashed
 
     //Room algorithm
     var roomRunNotEveryTickNextTickRun: Int = 0
@@ -72,6 +72,8 @@ class MainRoomConstant(parent: Constants) {
         result["towerLastTarget"] = this.towerLastTarget
         result["roomRunNotEveryTickNextTickRun"] = this.roomRunNotEveryTickNextTickRun
         result["levelOfRoom"] = this.levelOfRoom
+        result["needCleaner"] = this.needCleaner
+
 
 
         if (this.slaveRooms.isNotEmpty()) {
@@ -87,6 +89,8 @@ class MainRoomConstant(parent: Constants) {
         if (d["towerLastTarget"] != null) this.towerLastTarget = d["towerLastTarget"] as String
         if (d["roomRunNotEveryTickNextTickRun"] != null) this.roomRunNotEveryTickNextTickRun = d["roomRunNotEveryTickNextTickRun"] as Int
         if (d["levelOfRoom"] != null) this.levelOfRoom = d["levelOfRoom"] as Int
+        if (d["needCleaner"] != null) this.needCleaner = d["needCleaner"] as Boolean
+
         if (d["slaveRoomConstantContainer"] != null)
             for (record in slaveRoomConstantContainer)
                 record.value.fromDynamic(d["slaveRoomConstantContainer"][record.key])

@@ -17,7 +17,8 @@ fun MainRoom.doSnapShot() {
     parent.parent.messenger("INFO", this.name, "Snapshot successful", COLOR_GREEN)
 }
 
-fun MainRoom.restoreSnapShot() {
+fun MainRoom.restoreSnapShot(){
+    if (this.room.find(FIND_CONSTRUCTION_SITES).isNotEmpty()) return
     if (Memory["snapShots"] == null || Memory["snapShots"][this.name] == null){
         parent.parent.messenger("INFO", this.name, "Snapshot not present", COLOR_RED)
         return

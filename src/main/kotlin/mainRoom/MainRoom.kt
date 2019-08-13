@@ -613,6 +613,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         //Test
         if (!this.setNextTickRun()) return
         this.marketCreateBuyOrders()
+        this.needCleanerCalculate()
     }
 
     private fun messageAboutUpgrade() {
@@ -664,14 +665,14 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             if (this.structureTower.size!=2) return " Missing tower"
             if (this.source.isNotEmpty() && !this.structureLinkNearSource.containsKey(0)) return " Missing link near source 0"
             if (this.source.size > 1 && !this.structureLinkNearSource.containsKey(1)) return " Missing link near source 1"
-            if (this.structureContainerNearSource.containsKey(0)) return " Not need container near source 0"
-            if (this.structureContainerNearSource.containsKey(1)) return " Not need container near source 1"
             if (!this.structureContainerNearController.containsKey(0)) return " Missing container near controller"
             if (!this.structureStorage.containsKey(0)) return " Missing storage"
             if (this.structureTerminal.size!=1) return " Missing terminal"
             if (this.structureLinkNearStorage.size!=1) return " Missing link near storage"
+            if (this.structureContainerNearSource.containsKey(0)) return " Not need container near source 0"
+            if (this.structureContainerNearSource.containsKey(1)) return " Not need container near source 1"
             if (this.structureExtractor.size!=1) return " Missing extractor"
-            if (this.structureContainerNearMineral.size!=1) return " Missing container near minaral"
+            if (this.structureContainerNearMineral.size!=1) return " Missing container near mineral"
 
         }
 
@@ -705,6 +706,21 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         if (terminal != null)
             for (record in terminal.store.toMap()) this.resTerminal[record.key] = (this.resTerminal[record.key] ?: 0) + record.value
 
+    }
+
+    private fun needClean(store: StoreDefinition?, resource: ResourceConstant):Boolean {
+        if (store == null) return false
+        return (store[resource] ?: 0) != (store.toMap().map { it.value }.sum())
+    }
+
+    fun needCleanerCalculate() {
+        var result = false
+        if (!result) result = needClean(this.structureContainerNearSource[0]?.store, RESOURCE_ENERGY)
+        if (!result) result = needClean(this.structureContainerNearSource[1]?.store, RESOURCE_ENERGY)
+        if (!result) result = needClean(this.structureContainerNearSource[2]?.store, RESOURCE_ENERGY)
+        if (!result) result = needClean(this.structureContainerNearController[0]?.store, RESOURCE_ENERGY)
+        if (!result) result = needClean(this.structureContainerNearMineral[0]?.store, this.mineral.mineralType)
+        this.constant.needCleaner = result
     }
 }
 
