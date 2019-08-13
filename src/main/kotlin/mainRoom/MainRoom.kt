@@ -277,8 +277,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
     private fun buildQueue() {
         for (i in 0 until this.have.size) this.haveForQueue[i] = this.have[i]
-        val fPriorityOfRole = if (this.getResourceInStorage() < 2000) arrayOf(0, 9, 1,  3, 2, 4, 14, 5,  6, 7, 10,  8, 11, 12, 13, 15, 16)
-        else  arrayOf(0, 9, 5, 14, 1, 3,  2, 4, 6,  7, 10,  8, 11, 12, 13, 15, 16)
+        val fPriorityOfRole = if (this.getResourceInStorage() < 2000) arrayOf(0, 9, 1,  3, 2, 4, 14, 5,  6, 7, 10,  8, 11, 12, 13, 15, 16, 17)
+        else  arrayOf(0, 9, 5, 14, 1, 3,  2, 4, 6,  7, 10,  8, 11, 12, 13, 15, 16, 17)
 
         //Main 0..1
         for (priority in 0..1) {
@@ -428,6 +428,10 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
             16 -> {
                 result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+            }
+
+            17 -> {
+                result = arrayOf(MOVE,CARRY)
             }
 
 
@@ -706,6 +710,13 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         if (terminal != null)
             for (record in terminal.store.toMap()) this.resTerminal[record.key] = (this.resTerminal[record.key] ?: 0) + record.value
 
+    }
+
+    fun needCleanWhat(store: StoreDefinition?, resource: ResourceConstant):ResourceConstant? {
+        if (store == null) return null
+        for (record in store.keys)
+            if (store[record] != null && store[record]!= 0 && record != resource) return record
+        return null
     }
 
     private fun needClean(store: StoreDefinition?, resource: ResourceConstant):Boolean {

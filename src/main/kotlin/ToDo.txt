@@ -14,9 +14,9 @@ In future
 // 9 - small filler
 //13 - small upgrader
 //14 - logist
-//16 - mineral extractor
-//17 - mineral carrier
-
+//15 - mineral extractor
+//16 - mineral carrier
+//17 - cleaner
 //Slave
 // 0 - colonizer +
 // 1 - universal +
@@ -31,6 +31,7 @@ In future
 // 9 - builder
 //10 - defender ranged
 //11 - defender mile
+//17 - cleaner -
 model 2
 //15 - eraser
 

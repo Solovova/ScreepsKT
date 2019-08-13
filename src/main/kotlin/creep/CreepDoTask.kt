@@ -110,6 +110,10 @@ fun Creep.doTask(mainContext: MainContext) {
             }
         }
 
+        TypeOfTask.Drop -> {
+            this.drop(task.resource)
+        }
+
         TypeOfTask.Reserve -> {
             if (!task.come) this.doTaskGoTo(task, task.posObject0, 1)
             if (task.come) {

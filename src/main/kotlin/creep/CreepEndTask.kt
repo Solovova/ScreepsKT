@@ -51,6 +51,10 @@ fun Creep.endTask(mainContext: MainContext) {
             if (resource == null) mainContext.tasks.deleteTask(this.id)
         }
 
+        TypeOfTask.Drop -> {
+            if (creepCarry == 0) mainContext.tasks.deleteTask(this.id)
+        }
+
         TypeOfTask.TransferTo -> {
             if (this.memory.role == 106 || this.memory.role == 1006 || this.memory.role == 108 || this.memory.role == 1008) {
                 val mainRoom: MainRoom = mainContext.mainRoomCollector.rooms[this.memory.mainRoom] ?: return

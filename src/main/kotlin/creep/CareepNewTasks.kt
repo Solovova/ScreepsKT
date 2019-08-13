@@ -108,6 +108,62 @@ fun Creep.buildStructure(creepCarry: Int, mainContext: MainContext, mainRoom: Ma
     return result
 }
 
+fun Creep.clean(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
+    var result = false
+    if (creepCarry == 0) {
+        var clean: ResourceConstant? = null
+        var container: StructureContainer? = null
+
+        if (clean == null) {
+            clean = mainRoom.needCleanWhat(mainRoom.structureContainerNearSource[0]?.store, RESOURCE_ENERGY)
+            if (clean!=null) container = mainRoom.structureContainerNearSource[0]
+        }
+
+        if (clean == null) {
+            clean = mainRoom.needCleanWhat(mainRoom.structureContainerNearSource[1]?.store, RESOURCE_ENERGY)
+            if (clean!=null) container = mainRoom.structureContainerNearSource[1]
+        }
+        if (clean == null) {
+            clean = mainRoom.needCleanWhat(mainRoom.structureContainerNearSource[2]?.store, RESOURCE_ENERGY)
+            if (clean!=null) container = mainRoom.structureContainerNearSource[2]
+        }
+        if (clean == null) {
+            clean = mainRoom.needCleanWhat(mainRoom.structureContainerNearController[0]?.store, RESOURCE_ENERGY)
+            if (clean!=null) container = mainRoom.structureContainerNearController[0]
+        }
+        if (clean == null) {
+            clean = mainRoom.needCleanWhat(mainRoom.structureContainerNearMineral[0]?.store, mainRoom.mineral.mineralType)
+            if (clean!=null) container = mainRoom.structureContainerNearMineral[0]
+        }
+
+        if (clean != null && container != null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Take, idObject0 = container.id, posObject0 = container.pos, resource = clean))
+            result = true
+        }
+    }
+    return result
+}
+
+fun Creep.drop(creepCarry: Int, mainContext: MainContext): Boolean {
+    var result = false
+    if (creepCarry != 0) {
+        var drop: ResourceConstant? = null
+        for (record in this.carry.keys)
+            if (this.carry[record] != 0) {
+                drop = record
+                break
+            }
+
+        if (drop != null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Drop, idObject0 = this.id, posObject0 = this.pos, resource = drop))
+            result = true
+        }
+    }
+    return result
+}
+
+
+
 fun Creep.upgradeNormalOrEmergency(type: Int, creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
     //0 - normal, 1 - emergency
     var result = false

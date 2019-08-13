@@ -133,6 +133,14 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
         if (!isTask) isTask = this.transportMineralToStorage(mainContext,mainRoom)
     }
 
+    if (this.memory.role == 17) {
+        if (!isTask) isTask = this.clean(creepCarry,mainContext,mainRoom)
+        if (!isTask) isTask = this.drop(creepCarry,mainContext)
+        mainRoom.needCleanerCalculate()
+    }
+
+
+
     if (this.memory.role == 100) {
         if (!isTask) isTask = this.slaveGoToRoom(mainContext)
         if (!isTask) isTask = this.slaveClaim(mainContext,slaveRoom)

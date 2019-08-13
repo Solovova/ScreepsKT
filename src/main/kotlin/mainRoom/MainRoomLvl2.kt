@@ -71,4 +71,7 @@ fun MainRoom.needCorrection2() {
 
     val container: StructureContainer? = this.structureContainerNearMineral[0]
     if (container != null && (container.store[this.mineral.mineralType] ?: 0) > 0) this.need[1][16] = 1
+
+    //11 cleaner
+    if (this.constant.needCleaner) this.need[2][17] = 1
 }
