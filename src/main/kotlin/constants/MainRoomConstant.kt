@@ -1,5 +1,6 @@
 package constants
 
+import mainContext.messenger
 import screeps.api.COLOR_RED
 
 class MainRoomConstant(parent: Constants) {
@@ -15,7 +16,7 @@ class MainRoomConstant(parent: Constants) {
 
     var towerLastTarget: String = ""        //cashed
 
-    var sentEnergyToRoom: String = ""       //simple
+
 
     //Creep commands
     var energyBuilder : Int = 20000 //simple //how much energy must be in storage for start building
@@ -27,7 +28,7 @@ class MainRoomConstant(parent: Constants) {
     var roomRunNotEveryTickNextTickRun: Int = 0
     var levelOfRoom: Int = 0 //cashed
 
-
+    var sentEnergyToRoom: String = ""       //simple
     var energyMinStorage: Int = 30000
     var energyMaxStorage: Int = 500000
     var energyMinTerminal: Int = 10000
@@ -35,6 +36,9 @@ class MainRoomConstant(parent: Constants) {
 
     //Market
     var marketBuyEnergy: Boolean = false
+
+    //Mineral
+    var mineralMaxInRoom: Int = 200000
 
 
 

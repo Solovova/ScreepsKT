@@ -1,7 +1,6 @@
 package slaveRoom
 
-import mainRoom.MainRoom
-import mainRoom.doSnapShot
+import mainContext.messenger
 import screeps.api.*
 
 fun SlaveRoom.doSnapShot() {

@@ -36,7 +36,6 @@ fun MainContext.getCacheRecordRoom(type: String, mainRoom: MainRoom, slaveRoom: 
         if (!ret.incomplete)
             Memory["path"] = ret.path
             carrierAuto = this.getCarrierAuto(ret, mainRoom, slaveRoom = slaveRoom)
-        if (carrierAuto == null) carrierAuto = CacheCarrier()
         this.constants.globalConstant.dataCacheCarrierAuto[keyRecord] = carrierAuto
     }
     return this.constants.globalConstant.dataCacheCarrierAuto[keyRecord]

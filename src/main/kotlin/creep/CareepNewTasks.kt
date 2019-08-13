@@ -9,6 +9,7 @@ import TypeOfTask
 import role
 import screeps.api.*
 import screeps.api.structures.*
+import screeps.utils.toMap
 import slaveRoom
 
 fun Creep.takeFromStorage(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
@@ -36,7 +37,7 @@ fun Creep.transferToStorage(creepCarry: Int, mainContext: MainContext, mainRoom:
 }
 
 fun Creep.harvestFromSource(type: Int, creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
-    //0 - Source 0, 1 - Source 1, 2 - free source, 3 - random source
+    //0 - Source 0, 1 - Source 1, 2 - free source, 3 - random source, 4 - mineral
     var result = false
     if (creepCarry == 0) {
         var tSource: Source? = null
@@ -53,6 +54,35 @@ fun Creep.harvestFromSource(type: Int, creepCarry: Int, mainContext: MainContext
     }
     return result
 }
+
+fun Creep.harvestFromMineral(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
+    var result = false
+    if (creepCarry == 0) {
+        val extractor: StructureExtractor? = mainRoom.structureExtractor[0]
+        val container: StructureContainer? = mainRoom.structureContainerNearMineral[0]
+        if (extractor != null
+                && container!=null
+                && extractor.cooldown == 0
+                && container.store.toMap().map { it.value }.sum() < (container.storeCapacity - 30)) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.HarvestMineral, idObject0 = mainRoom.mineral.id, posObject0 = mainRoom.mineral.pos))
+            result = true
+        }
+    }
+    return result
+}
+
+fun Creep.transportMineralToStorage(mainContext: MainContext, mainRoom: MainRoom): Boolean {
+    var result = false
+        val container: StructureContainer? = mainRoom.structureContainerNearMineral[0]
+        val storage: StructureStorage? = mainRoom.structureStorage[0]
+        if (container != null && storage!=null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Transport, idObject0 = container.id, posObject0 = container.pos, idObject1 = storage.id, posObject1 = storage.pos, resource = mainRoom.mineral.mineralType, quantity = this.carryCapacity))
+            result = true
+        }
+    return result
+}
+
+
 
 fun Creep.transferToFilling(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
     var result = false
@@ -212,7 +242,7 @@ fun Creep.takeDroppedEnergy(creepCarry: Int, mainContext: MainContext, mainRoom:
     return result
 }
 
-fun Creep.slaveTakeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom, slaveRoom: SlaveRoom?): Boolean {
+fun Creep.slaveTakeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
     var result = false
     if (creepCarry == 0 && slaveRoom != null) {
         var objForFilling: Structure? = null
@@ -244,6 +274,25 @@ fun Creep.goToPoint(mainContext: MainContext, pos: RoomPosition): Boolean {
         mainContext.tasks.add(this.id, CreepTask(TypeOfTask.GoToPos, idObject0 = this.memory.slaveRoom, posObject0 = pos))
         result = true
     }
+    return result
+}
+
+fun Creep.gotoPosOfContainer(type: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
+    //type 0 - source 0, 1 - source 1, 2 - mineral
+    var result = false
+        var tContainer: StructureContainer? = null
+        when(type) {
+            0 ->tContainer = mainRoom.structureContainerNearSource[0]
+            1 ->tContainer = mainRoom.structureContainerNearSource[1]
+            2 ->tContainer = mainRoom.structureContainerNearMineral[0]
+        }
+
+        if (tContainer != null) {
+            if (!this.pos.inRangeTo(tContainer.pos,0)) {
+                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.GoToPos, idObject0 = tContainer.id, posObject0 = tContainer.pos))
+                result = true
+            }
+        }
     return result
 }
 
@@ -356,7 +405,7 @@ fun Creep.slaveBuild(creepCarry: Int, mainContext: MainContext, slaveRoom: Slave
     return result
 }
 
-fun Creep.slaveTransferToStorageOrContainer(type: Int, creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom, slaveRoom: SlaveRoom?): Boolean {
+fun Creep.slaveTransferToStorageOrContainer(type: Int, creepCarry: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
     //type 0 - cont 0, 1 - cont 1, 2 - any
     var result = false
     if (slaveRoom != null) {
@@ -402,7 +451,7 @@ fun Creep.slaveRepairContainer(type: Int, creepCarry: Int, mainContext: MainCont
     return result
 }
 
-fun Creep.slaveTransferToFilling(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom, slaveRoom: SlaveRoom?): Boolean {
+fun Creep.slaveTransferToFilling(creepCarry: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
     var result = false
     if (creepCarry > 0 && slaveRoom != null) {
         var objForFilling: Structure? = slaveRoom.room?.find(FIND_STRUCTURES)?.filter {

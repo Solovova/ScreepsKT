@@ -1,6 +1,7 @@
 package constants
 
 import mainContext.MainContext
+import mainContext.messenger
 import screeps.api.*
 import screeps.utils.unsafe.delete
 

@@ -1,4 +1,5 @@
 import mainContext.MainContext
+import mainContext.messenger
 import screeps.api.RoomPosition
 import screeps.api.*
 import screeps.api.Memory
@@ -21,7 +22,8 @@ enum class TypeOfTask {
     AttackRange,
     AttackMile,
     SignRoom,
-    SignSlaveRoom
+    SignSlaveRoom,
+    HarvestMineral
 }
 
 enum class TypeOfInteractionsObjects {

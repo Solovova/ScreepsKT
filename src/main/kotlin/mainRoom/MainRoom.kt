@@ -8,9 +8,11 @@ import constants.constantMainRoomInit
 import creep.getDescribeForQueue
 import constants.CacheCarrier
 import mainContext.getCacheRecordRoom
+import mainContext.messenger
 import mainRoomCollector.MainRoomCollector
 import screeps.api.*
 import screeps.api.structures.*
+import screeps.utils.toMap
 import kotlin.random.Random
 
 class MainRoom(val parent: MainRoomCollector, val name: String, val describe: String, val constant: MainRoomConstant) {
@@ -21,6 +23,10 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     val have  = Array(20) {0}
     private val haveForQueue = Array(20) {0}
     private val queue = mutableListOf<QueueSpawnRecord>()
+
+    //Cash data
+    val resStorage: MutableMap<ResourceConstant,Int> = mutableMapOf()  //Stored in Store + Logist
+    private val resTerminal: MutableMap<ResourceConstant,Int> = mutableMapOf()
 
     //StructureSpawn
     private var _structureSpawn: Map<String, StructureSpawn>? = null
@@ -132,7 +138,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
     //StructureLink
     private var _structureLink: Map<String, StructureLink>? = null
-    val structureLink: Map<String, StructureLink>
+    private val structureLink: Map<String, StructureLink>
         get() {
             if (this._structureLink == null)
                 _structureLink = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_LINK }.associate { it.id to it as StructureLink}
@@ -198,6 +204,39 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             return _structureTerminal ?: throw AssertionError("Error get StructureTerminal")
         }
 
+    //Mineral
+    private var _mineral: Mineral? = null
+    val mineral: Mineral
+        get() {
+            if (this._mineral == null)
+                _mineral = this.room.find(FIND_MINERALS).first()
+            return _mineral ?: throw AssertionError("Error get Mineral")
+        }
+
+    //StructureExtractor
+    private var _structureExtractor: Map<Int, StructureExtractor>? = null
+    val structureExtractor: Map<Int, StructureExtractor>
+        get() {
+            if (this._structureExtractor == null)
+                _structureExtractor = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_EXTRACTOR }.withIndex().associate { it.index to it.value as StructureExtractor}
+            return _structureExtractor ?: throw AssertionError("Error get StructureExtractor")
+        }
+
+    //StructureContainerNearMineral
+    private var _structureContainerNearMineral: Map<Int, StructureContainer>? = null
+    val structureContainerNearMineral: Map<Int, StructureContainer>
+        get() {
+            if (this._structureContainerNearMineral == null) {
+                val resultContainer = mutableMapOf<Int, StructureContainer>()
+                for (container in this.structureContainer.values) {
+                    if (!this.structureContainerNearSource.containsValue(container) && this.mineral.pos.inRangeTo(container.pos, 1))
+                        resultContainer[0] = container
+                }
+                _structureContainerNearMineral = resultContainer
+            }
+            return _structureContainerNearMineral ?: throw AssertionError("Error get StructureContainerNearMineral")
+        }
+
     private fun buildCreeps() {
         this.needCorrection()
         for (slaveRoomRecord in this.slaveRooms) slaveRoomRecord.value.needCorrection()
@@ -208,9 +247,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     }
 
     private fun needCorrection() {
-        //start work this level of room
         val nowLevelOfRoom: Int = this.getLevelOfRoom()
-        //console.log("Level of room was: ${this.constant.levelOfRoom} now: $nowLevelOfRoom")
         if (nowLevelOfRoom < this.constant.levelOfRoom) {
             if (this.need[0][5] ==0) this.need[0][5] = 1 //filler
             if (this.need[1][5] ==0) this.need[1][5] = 1 //filler
@@ -219,173 +256,29 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             return
         }else this.constant.levelOfRoom = nowLevelOfRoom
 
-        //end work this level of room
-
         when (this.constant.levelOfRoom){
-            0 -> {
-                when {
-                    this.room.energyCapacityAvailable >= 800 ->
-                        if (this.need[0][0] == 0) {
-                            this.need[0][0] = 10
-                            if (this.source.size == 1) this.need[0][0] = this.need[0][0] / 2 + 1
-                        }
-                    this.room.energyCapacityAvailable >= 400 ->
-                        if (this.need[0][0] == 0) {
-                            this.need[0][0] = 14
-                            if (this.source.size == 1) this.need[0][0] = this.need[0][0] / 2 + 1
-                        }
-                    else -> if (this.need[0][0] == 0) {
-                        this.need[0][0] = 16
-                        if (this.source.size == 1) this.need[0][0] = this.need[0][0] / 2 + 1
-                    }
-                }
-
-                if (this.source.containsKey(0) && this.structureContainerNearSource.containsKey(0)) {
-                    if (this.need[1][1] == 0) this.need[1][1] = 1
-                    //this.need[0][0] = this.need[0][0] - 2
-                }
-
-                if (this.source.containsKey(1) && this.structureContainerNearSource.containsKey(1))
-                    if (this.need[1][3] == 0) this.need[1][3] = 1
-            }
-
-            1 -> {
-                //1 harvester ,carrier ,filler , small harvester-filler, small filler
-                //1.1 harvester ,carrier
-                val carrierAuto0: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer0",this)
-                if (carrierAuto0!=null) {
-                    if (this.need[1][1] == 0) this.need[1][1] = 1
-                    if (this.need[1][2] == 0) this.need[1][2] = carrierAuto0.needCarriers
-                }
-
-                val carrierAuto1: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer1",this)
-                if (carrierAuto1!=null) {
-                    if (this.need[1][3] == 0) this.need[1][3] = 1
-                    if (this.need[1][4] == 0) this.need[1][4] = carrierAuto1.needCarriers
-                }
-
-                //1.2 filler
-                if (this.need[0][5] ==0) this.need[0][5] = 1 //filler
-                if (this.need[1][5] ==0) this.need[1][5] = 1 //filler
-
-                //1.3 small filler
-                if ((this.have[5]==0)&&(this.getResourceInStorage()>2000))  this.need[0][9]=1
-                if ((this.have[5]==0)&&(this.getResourceInStorage()<=2000))  this.need[0][0]=2
-
-                //2 Upgrader
-                if (this.room.energyCapacityAvailable >= 1800) {
-                    this.need[1][7] = 1
-                    this.need[2][7] = 3
-                } else {
-                    this.need[1][7] = 2
-                    this.need[2][7] = 2
-                }
-
-                if (this.getResourceInStorage()<this.constant.energyUpgradable) {
-                    this.need[1][7]=0
-                    this.need[2][7]=0
-                }
-
-                //carrier
-
-                if (this.have[7] <= 3) this.need[1][6]=this.have[7]
-                else this.need[1][6]=this.have[7]-1
-
-
-
-                //2.1 Small upgrader
-                if (this.need[0][6] == 0 && this.need[1][6] == 0 && this.need[2][6] == 0 &&
-                        this.need[0][7] == 0 && this.need[1][7] == 0 && this.need[2][7] == 0 &&
-                        this.have[6] == 0 && this.have[7] == 0 && this.getTicksToDowngrade() < 10000)
-                    this.need[0][13]=1
-
-                //8 Builder
-                if ((this.constructionSite.isNotEmpty()) && (this.getResourceInStorage() > this.constant.energyBuilder)) {
-                    this.need[1][8]=1
-                }
-            }
-
-            2 -> {
-                //1 harvester ,carrier ,filler , small harvester-filler, small filler
-                //1.1 harvester ,carrier
-                if (this.structureLinkNearSource.containsKey(0))
-                    if (this.need[1][1] == 0) this.need[1][1] = 1
-
-                if (this.structureLinkNearSource.containsKey(1))
-                    if (this.need[1][3] == 0) this.need[1][3] = 1
-
-                //1.2 filler
-                if (this.need[0][5] ==0) this.need[0][5] = 1 //filler
-                if (this.need[1][5] ==0) this.need[1][5] = 1 //filler
-
-                //1.3 small filler
-                if ((this.have[5]==0)&&(this.getResourceInStorage()>2000))  this.need[0][9]=1
-                if ((this.have[5]==0)&&(this.getResourceInStorage()<=2000))  this.need[0][0]=2
-
-                //2 Upgrader
-                if (this.constant.sentEnergyToRoom == "") {
-                    if (this.getResourceInStorage() > this.constant.energyForceUpgrade ) {
-                        this.need[1][7]=2
-                        this.need[2][7]=2
-                    }else{
-                        this.need[1][7]=2
-                        this.need[2][7]=1
-                    }
-                }else{
-                    this.need[1][7]=0
-                    this.need[2][7]=0
-                }
-
-                if (this.getResourceInStorage()<this.constant.energyUpgradable) {
-                    this.need[1][7]=0
-                    this.need[2][7]=0
-                }
-
-                //carrier
-
-                if (this.have[7]>3) this.need[1][6]=this.have[7] -1
-                else this.need[1][6]=this.have[7]
-
-                //2.1 Small upgrader
-                if (this.need[0][6] == 0 && this.need[1][6] == 0 && this.need[2][6] == 0 &&
-                        this.need[0][7] == 0 && this.need[1][7] == 0 && this.need[2][7] == 0 &&
-                        this.have[6] == 0 && this.have[7] == 0 && this.getTicksToDowngrade() < 10000)
-                    this.need[0][13]=1
-
-                //8 Builder
-                if ((this.constructionSite.isNotEmpty()) && (this.getResourceInStorage() > this.constant.energyBuilder)) {
-                    this.need[1][8]=1
-                }
-
-                //9 Logist
-                this.need[0][14]=1
-            }
+            0 -> this.needCorrection0()
+            1 -> this.needCorrection1()
+            2 -> this.needCorrection2()
         }
-
     }
 
     fun getResourceInStorage(resource: ResourceConstant = RESOURCE_ENERGY): Int {
-        var result: Int? = null
-        if (this.structureStorage.containsKey(0)) {
-            val store = this.structureStorage[0]?.store
-            if (store != null) result = store[resource]
-        }
-        return result ?: 0
+        return this.resStorage[resource] ?: 0
     }
 
     fun getResourceInTerminal(resource: ResourceConstant = RESOURCE_ENERGY): Int {
-        var result: Int? = null
-        if (this.structureTerminal.containsKey(0)) {
-            val store = this.structureTerminal[0]?.store
-            if (store != null) result = store[resource]
-        }
-        return result ?: 0
+        return this.resTerminal[resource] ?: 0
+    }
+
+    fun getResource(resource: ResourceConstant = RESOURCE_ENERGY): Int {
+        return (this.resTerminal[resource] ?: 0) + (this.resStorage[resource] ?: 0)
     }
 
     private fun buildQueue() {
         for (i in 0 until this.have.size) this.haveForQueue[i] = this.have[i]
-        val fPriorityOfRole = if (this.getResourceInStorage() < 2000) arrayOf(0, 9, 1, 3, 2, 4, 14, 5, 20, 6, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
-        else arrayOf(0, 9, 5, 14, 20, 1, 3, 2, 4, 14, 6, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18, 19, 21, 22, 23)
+        val fPriorityOfRole = if (this.getResourceInStorage() < 2000) arrayOf(0, 9, 1,  3, 2, 4, 14, 5,  6, 7, 10,  8, 11, 12, 13, 15, 16)
+        else  arrayOf(0, 9, 5, 14, 1, 3,  2, 4, 6,  7, 10,  8, 11, 12, 13, 15, 16)
 
         //Main 0..1
         for (priority in 0..1) {
@@ -528,6 +421,16 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             14 -> {
                 result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
             }
+
+            15 -> {
+                if (this.room.energyCapacityAvailable>=2300) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK)
+            }
+
+            16 -> {
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+            }
+
+
         }
         return result
     }
@@ -563,7 +466,6 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         }
     }
 
-    //ToDo test
     fun getSpawnOrExtensionForFiling(pos: RoomPosition, mainContext: MainContext): Structure? {
         data class StructureData (val need: Int, val priority: Int)
         val needs : MutableMap<Structure,StructureData> = mutableMapOf()
@@ -649,7 +551,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         return 0
     }
 
-    private fun getTicksToDowngrade(): Int {
+    fun getTicksToDowngrade(): Int {
         var result = 0
         val protectedStructureController = this.structureController[0]
         if (protectedStructureController != null) result = protectedStructureController.ticksToDowngrade
@@ -666,23 +568,11 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 slaveRooms[slaveName] = SlaveRoom(this, slaveName, "${this.describe}S$index", slaveRoomConstant)
             else parent.parent.messenger("ERROR", "${this.name} $slaveName", "initialization don't see constant", COLOR_RED)
         }
+
+        this.fillCash()
     }
 
-    fun runNotEveryTick() {
-        for (record in this.slaveRooms) {
-            try {
-                record.value.runNotEveryTick()
-            }catch (e: Exception) {
-                parent.parent.messenger("ERROR", "Slave not every tick", record.value.name, COLOR_RED)
-            }
-        }
-        this.building()
 
-        //Test
-        if (!this.setNextTickRun()) return
-        this.marketCreateBuyOrders()
-
-    }
 
     private fun setNextTickRun(): Boolean {
         if (this.constant.roomRunNotEveryTickNextTickRun > Game.time) return false
@@ -708,6 +598,21 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         this.directControl()
 
         this.messageAboutUpgrade()
+    }
+
+    fun runNotEveryTick() {
+        for (record in this.slaveRooms) {
+            try {
+                record.value.runNotEveryTick()
+            }catch (e: Exception) {
+                parent.parent.messenger("ERROR", "Slave not every tick", record.value.name, COLOR_RED)
+            }
+        }
+        this.building()
+
+        //Test
+        if (!this.setNextTickRun()) return
+        this.marketCreateBuyOrders()
     }
 
     private fun messageAboutUpgrade() {
@@ -765,6 +670,9 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             if (!this.structureStorage.containsKey(0)) return " Missing storage"
             if (this.structureTerminal.size!=1) return " Missing terminal"
             if (this.structureLinkNearStorage.size!=1) return " Missing link near storage"
+            if (this.structureExtractor.size!=1) return " Missing extractor"
+            if (this.structureContainerNearMineral.size!=1) return " Missing container near minaral"
+
         }
 
         if (controller.level == 7) {
@@ -778,26 +686,6 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     }
 
     private fun linkLogistick() {
-//        fLinkUpgrader = Game.getObjectById(objRoom.Links[3]);
-//        if (fLinkUpgrader != null){
-//            var indLinkFrom = [0,1];
-//            for (let i=0;i<indLinkFrom.length;i++){
-//
-//                fLinkFrom = Game.getObjectById(objRoom.Links[indLinkFrom[i]]);
-//
-//                if (!fLinkFrom) continue;
-//                //console.log('link:'+fLinkFrom.energy)
-//                if (fLinkUpgrader.energy>600) continue;
-//                if (fLinkFrom.energy<320) continue;
-//                if (fLinkFrom.cooldown!=0) continue;
-//                var fCanSend = 800 - fLinkUpgrader.energy;
-//                if (fCanSend>fLinkFrom.energy) fCanSend=fLinkFrom.energy;
-//                if (fCanSend<300) continue;
-//                fLinkFrom.transferEnergy(fLinkUpgrader,fCanSend);
-//                return;
-//            }
-//        }
-
         val fLinkTo: StructureLink = this.structureLinkNearStorage[0] ?: return
         if (fLinkTo.energy!=0) return
 
@@ -806,6 +694,17 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 link.transferEnergy(fLinkTo,link.energy)
                 break
             }
+    }
+
+    private fun fillCash() {
+        val store: StructureStorage? = this.structureStorage[0]
+        if (store != null)
+            for (record in store.store.toMap()) this.resStorage[record.key] = (this.resStorage[record.key] ?: 0) + record.value
+
+        val terminal: StructureTerminal? = this.structureTerminal[0]
+        if (terminal != null)
+            for (record in terminal.store.toMap()) this.resTerminal[record.key] = (this.resTerminal[record.key] ?: 0) + record.value
+
     }
 }
 

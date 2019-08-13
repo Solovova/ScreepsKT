@@ -4,6 +4,7 @@ import constants.CacheCarrier
 import constants.SlaveRoomConstant
 import constants.constantSlaveRoomInit
 import mainContext.getCacheRecordRoom
+import mainContext.messenger
 import mainRoom.MainRoom
 import mainRoom.QueueSpawnRecord
 import mainRoom.doSnapShot

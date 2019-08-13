@@ -14,6 +14,8 @@ In future
 // 9 - small filler
 //13 - small upgrader
 //14 - logist
+//16 - mineral extractor
+//17 - mineral carrier
 
 //Slave
 // 0 - colonizer +

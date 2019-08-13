@@ -3,6 +3,7 @@ package mainRoom
 import screeps.api.Creep
 import screeps.utils.toMap
 import CreepTask
+import mainContext.messenger
 import screeps.api.COLOR_RED
 import screeps.api.RESOURCE_ENERGY
 import kotlin.math.min
@@ -37,12 +38,6 @@ fun MainRoom.setLogistTask(creep: Creep) {
     if (carry > 0 && (carry == creep.carryCapacity || carry == needInTerminal02)) {
         parent.parent.tasks.add(creep.id, CreepTask(TypeOfTask.Transport, storage.id, storage.pos, terminal.id, terminal.pos, RESOURCE_ENERGY, carry))
         return
-    }else{
-        if (haveInStorage02 > 0){
-            //ToDo in future drop energy
-            parent.parent.messenger("ERROR",this.name, "Too many energy in room", COLOR_RED)
-            return
-        }
     }
 
     // 03 Storage > this.constant.energyMinStorage -> Terminal < this.constant.energyMinTerminal or this.constant.energyMaxTerminal if sent
@@ -65,14 +60,18 @@ fun MainRoom.setLogistTask(creep: Creep) {
     if (carry > 0) {
         parent.parent.tasks.add(creep.id, CreepTask(TypeOfTask.Transport, terminal.id, terminal.pos, storage.id, storage.pos, RESOURCE_ENERGY, carry))
         return
-    } else {
-        if (haveInTerminal04 > 0) {
-            //ToDo in future drop energy
-            parent.parent.messenger("ERROR", this.name, "Too many energy in room terminal", COLOR_RED)
-            return
-        }
     }
 
+    // 05 Drop in future //ToDo
+    val haveInTerminal05: Int = this.getResourceInTerminal() - this.constant.energyMaxTerminal
+    val haveInStore05: Int = this.getResourceInStorage() - this.constant.energyMaxStorage
+    if (haveInTerminal05>0 && haveInStore05 > 0)
+        parent.parent.messenger("INFO",this.name,"Too many energy", COLOR_RED)
 
+
+}
+
+fun MainRoom.logisticAddCarry(creep: Creep) {
+    for (res in creep.carry.toMap()) this.resStorage[res.key] = (this.resStorage[res.key] ?: 0) + res.value
 }
 

@@ -1,6 +1,8 @@
 package mainRoom
 
+import mainContext.messenger
 import screeps.api.*
+
 
 fun MainRoom.doSnapShot() {
     val structures = this.room.find(FIND_STRUCTURES)
