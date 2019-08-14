@@ -38,13 +38,25 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
             if (creep.memory.role in 0..99) {
                 val mainRoom: MainRoom = this.rooms[creep.memory.mainRoom] ?: continue
                 mainRoom.have[creep.memory.role]++
+
+                if (creep.memory.role == 10) mainRoom.constant.creepIdOfBigBuilder = creep.id
             }
 
             // Slave rooms
             if (creep.memory.role in 100..199) {
                 val mainRoom: MainRoom = this.rooms[creep.memory.mainRoom] ?: continue
                 val slaveRoom: SlaveRoom = mainRoom.slaveRooms[creep.memory.slaveRoom] ?: continue
+
+
+
                 slaveRoom.have[creep.memory.role-100]++
+
+                if (!slaveRoom.constant.roomHostile
+                        && (creep.memory.role == 107 || creep.memory.role == 105)
+                        && creep.hits < creep.hitsMax) creep.suicide()
+                //
+                if (creep.memory.role == 115 && slaveRoom.constant.creepIdEraser == "") slaveRoom.constant.creepIdEraser = creep.id
+                if (creep.memory.role == 1115) slaveRoom.constant.creepIdEraser = creep.id
             }
 
             // Logist add transfer
@@ -56,7 +68,7 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
     }
 
     private fun creepsCalculateProfit() {
-        if (Memory["profitCreep"] == null) Memory["profitCreep"] = object {}
+        if (Memory["profit"] == null) Memory["profit"] = object {}
 
         for (creep in Game.creeps.values) {
             if (creep.memory.role == 106 || creep.memory.role == 108 || creep.memory.role == 1106 || creep.memory.role == 1108) {
@@ -65,19 +77,19 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
 
                 val carry: Int = creep.carry.energy
                 var oldCarry = 0
-                if (Memory["profitCreep"][creep.id] != null)
-                    oldCarry = Memory["profitCreep"][creep.id] as Int
+                if (Memory["profit"][creep.id] != null)
+                    oldCarry = Memory["profit"][creep.id] as Int
 
                 if ((carry - oldCarry) > 2) slaveRoom.profitPlus(carry - oldCarry)
-                Memory["profitCreep"][creep.id] = carry
+                Memory["profit"][creep.id] = carry
             }
         }
 
         //clear
         try {
-            for (key in js("Object").keys(Memory["profitCreep"]).unsafeCast<Array<String>>())
+            for (key in js("Object").keys(Memory["profit"]).unsafeCast<Array<String>>())
                 if (Game.getObjectById<Creep>(key) == null)
-                    delete(Memory["profitCreep"][key])
+                    delete(Memory["profit"][key])
         } catch (e: Exception) {
             parent.messenger("ERROR", "Clear in creep profit", "", COLOR_RED)
         }

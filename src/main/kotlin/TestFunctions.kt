@@ -1,6 +1,10 @@
 import mainContext.MainContext
+import mainContext.directControlTaskClearInRoom
 import mainContext.messenger
+import mainRoom.doSnapShot
 import screeps.api.*
+import screeps.utils.unsafe.delete
+import slaveRoom.doSnapShot
 
 fun testingFunctions (mainContext : MainContext) {
 //    val mCash:MutableMap<ResourceConstant,Int> = mutableMapOf()
@@ -33,8 +37,18 @@ fun testingFunctions (mainContext : MainContext) {
 //    }
 
     for (mainRoom in mainContext.mainRoomCollector.rooms.values) {
+        //mainRoom.doSnapShot()
         if (mainRoom.constant.needCleaner) mainContext.messenger("INFO",mainRoom.name,"Main need clean", COLOR_RED)
-        for (slaveRoom in mainRoom.slaveRooms.values)
+        for (slaveRoom in mainRoom.slaveRooms.values){
+            //slaveRoom.doSnapShot()
             if (slaveRoom.constant.needCleaner) mainContext.messenger("INFO",slaveRoom.name,"Slave need clean", COLOR_RED)
+        }
+
     }
+
+    //mainContext.directControlTaskClearInRoom("W5N3")
+
+
+
+
 }

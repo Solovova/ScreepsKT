@@ -237,6 +237,15 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             return _structureContainerNearMineral ?: throw AssertionError("Error get StructureContainerNearMineral")
         }
 
+    //StructureLabs
+    private var _structureLab: Map<String, StructureLab>? = null
+    private val structureLab: Map<String, StructureLab>
+        get() {
+            if (this._structureLab == null)
+                _structureLab = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_LAB }.associate { it.id to it as StructureLab}
+            return _structureLab ?: throw AssertionError("Error get StructureLab")
+        }
+
     private fun buildCreeps() {
         this.needCorrection()
         for (slaveRoomRecord in this.slaveRooms) slaveRoomRecord.value.needCorrection()
@@ -412,6 +421,14 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
             9 -> {
                 result = arrayOf(CARRY, CARRY, MOVE)
+            }
+
+            10 -> {
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+            }
+
+            11 -> {
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
             }
 
             13 -> {
@@ -612,10 +629,11 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 parent.parent.messenger("ERROR", "Slave not every tick", record.value.name, COLOR_RED)
             }
         }
-        this.building()
 
-        //Test
+
         if (!this.setNextTickRun()) return
+        this.restoreSnapShot()
+        this.building()
         this.marketCreateBuyOrders()
         this.needCleanerCalculate()
         this.upgradeListForm()
@@ -678,11 +696,24 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             if (this.structureContainerNearSource.containsKey(1)) return " Not need container near source 1"
             if (this.structureExtractor.size!=1) return " Missing extractor"
             if (this.structureContainerNearMineral.size!=1) return " Missing container near mineral"
-
+            if (this.structureLab.size<3) return " Missing lab"
         }
 
         if (controller.level == 7) {
-            if (this.room.energyCapacityAvailable != 3100) return " Missing extension"
+            if (this.structureSpawn.size!=2) return " Missing spawn"
+            if (this.room.energyCapacityAvailable != 5600) return " Missing extension"
+            if (this.structureTower.size!=3) return " Missing tower"
+            if (this.source.isNotEmpty() && !this.structureLinkNearSource.containsKey(0)) return " Missing link near source 0"
+            if (this.source.size > 1 && !this.structureLinkNearSource.containsKey(1)) return " Missing link near source 1"
+            if (!this.structureContainerNearController.containsKey(0)) return " Missing container near controller"
+            if (!this.structureStorage.containsKey(0)) return " Missing storage"
+            if (this.structureTerminal.size!=1) return " Missing terminal"
+            if (this.structureLinkNearStorage.size!=1) return " Missing link near storage"
+            if (this.structureContainerNearSource.containsKey(0)) return " Not need container near source 0"
+            if (this.structureContainerNearSource.containsKey(1)) return " Not need container near source 1"
+            if (this.structureExtractor.size!=1) return " Missing extractor"
+            if (this.structureContainerNearMineral.size!=1) return " Missing container near mineral"
+            if (this.structureLab.size<6) return " Missing lab"
         }
 
         if (controller.level == 8) {
@@ -738,10 +769,10 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     fun upgradeListForm() {
         val upgradeList = this.room.find(FIND_STRUCTURES).filter {
             (it.structureType == STRUCTURE_WALL || it.structureType == STRUCTURE_RAMPART)
-                    && it.hits < (this.constant.upgradeWallHits - 100000)}.sortedByDescending { it.hits }
+                    && it.hits < (this.constant.upgradeDefenceHits - 50000)}.sortedByDescending { it.hits }
         this.constant.upgradeList.clear()
         for (record in upgradeList) {
-            this.constant.upgradeList[record.id] = this.constant.upgradeWallHits
+            this.constant.upgradeList[record.id] = this.constant.upgradeDefenceHits
             if (this.constant.upgradeList.size > 15) return
         }
     }

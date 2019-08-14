@@ -47,6 +47,31 @@ fun Creep.doTask(mainContext: MainContext) {
             }
         }
 
+        TypeOfTask.TransferToCreep -> {
+            val objForFilling: Creep? = Game.getObjectById(mainRoom.constant.creepIdOfBigBuilder)
+            if (objForFilling != null) {
+                if (this.pos.inRangeTo(objForFilling.pos,1))
+                    this.transfer(objForFilling, task.resource)
+                else this.moveTo(objForFilling.pos)
+            }
+        }
+
+        TypeOfTask.HealCreep -> {
+            if (this.hits < (this.hitsMax - 100)) this.heal(this)
+
+            val objForFilling: Creep? = Game.getObjectById(mainRoom.constant.creepIdOfBigBuilder)
+            if (objForFilling != null) {
+                if (this.pos.inRangeTo(objForFilling.pos,1))
+                    this.heal(objForFilling)
+                else {
+                    if (this.pos.inRangeTo(objForFilling.pos,3)) this.heal(objForFilling)
+                    this.moveTo(objForFilling.pos)
+                }
+            }
+        }
+
+
+
         TypeOfTask.Upgrade -> {
             if (!task.come) this.doTaskGoTo(task, task.posObject0, 3)
             if (task.come) {
@@ -60,6 +85,14 @@ fun Creep.doTask(mainContext: MainContext) {
             if (task.come) {
                 val building: ConstructionSite? = (Game.getObjectById(task.idObject0) as ConstructionSite?)
                 if (building != null) this.build(building)
+            }
+        }
+
+        TypeOfTask.UpgradeStructure -> {
+            if (!task.come) this.doTaskGoTo(task, task.posObject0, 3)
+            if (task.come) {
+                val building: Structure? = (Game.getObjectById(task.idObject0) as Structure?)
+                if (building != null) this.repair(building)
             }
         }
 

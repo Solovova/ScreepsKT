@@ -2,44 +2,35 @@ package slaveRoom
 
 import mainContext.messenger
 import screeps.api.*
+import snapshotDeserialize
+import snapshotSerialize
+import RecordOfStructurePosition
 
 fun SlaveRoom.doSnapShot() {
     if (this.room == null) return
-    val flagsIgnore = this.room.find(FIND_FLAGS).filter { it.color == COLOR_RED && it.secondaryColor == COLOR_WHITE }
-
-
     val structures = this.room.find(FIND_STRUCTURES)
-    val d: dynamic = object {}
-    var index = 0
-    for (structure in structures) {
-        if (flagsIgnore.firstOrNull {it.pos.x == structure.pos.x && it.pos.y == structure.pos.y} != null) continue
-        d[index] = object {}
-        d[index]["type"] = structure.structureType
-        d[index]["pos"] = structure.pos
-        index++
-    }
-    if (Memory["snapShots"] == null) Memory["snapShots"] = object {}
-    Memory["snapShots"][this.name] = d
-    parent.parent.parent.messenger("INFO", this.name, "Snapshot successful", COLOR_GREEN)
-
-    for (flagIgnore in flagsIgnore) flagIgnore.remove()
+    val flagsIgnore = this.room.find(FIND_FLAGS).filter { it.color == COLOR_RED && it.secondaryColor == COLOR_WHITE }
+    val structureFiltered = structures.filter {
+        for (flag in flagsIgnore)
+            if (it.pos.roomName == flag.pos.roomName && it.pos.x == flag.pos.x && it.pos.y == flag.pos.y)
+            return@filter false
+        return@filter true
+    }.toTypedArray()
+    for (flag in flagsIgnore) flag.remove()
+    if (Memory["snap"] == null) Memory["snap"] = object {}
+    Memory["snap"][this.name] = snapshotSerialize(structureFiltered)
 }
 
-fun SlaveRoom.restoreSnapShot() {
+fun SlaveRoom.restoreSnapShot(){
     if (this.room == null) return
-    if (Memory["snapShots"] == null || Memory["snapShots"][this.name] == null){
-        parent.parent.parent.messenger("INFO", this.name, "Snapshot slave room not present", COLOR_RED)
+    if (this.room.find(FIND_CONSTRUCTION_SITES).isNotEmpty()) return
+    if (Memory["snap"] == null || Memory["snap"][this.name] == null){
+        parent.parent.parent.messenger("INFO", this.name, "Slave snapshot not present", COLOR_RED)
         return
     }
-    val d: dynamic = Memory["snapShots"][this.name]
-    var index = 0
-    while (true) {
-        if (Memory["snapShots"][this.name][index] == null) break
-        val roomPosition = RoomPosition(d[index]["pos"]["x"] as Int,d[index]["pos"]["y"] as Int,d[index]["pos"]["roomName"] as String)
-        val structureType: StructureConstant = d[index]["type"].unsafeCast<StructureConstant>()
-        this.room.createConstructionSite(roomPosition,structureType)
-        index++
-    }
+    val d:Array<RecordOfStructurePosition> = snapshotDeserialize(Memory["snap"][this.name] as String,this.name)
+    for (record in d)
+        this.room.createConstructionSite(record.roomPosition,record.structureConstant)
 }
 
 fun SlaveRoom.directControl() {

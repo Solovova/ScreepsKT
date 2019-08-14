@@ -24,12 +24,13 @@ fun MainRoom.needCorrection2() {
 
     //2 Upgrader
     if (this.constant.sentEnergyToRoom == "") {
-        if (this.getResourceInStorage() > this.constant.energyForceUpgrade ) {
+        if ((this.getResourceInStorage() > this.constant.energyForceUpgrade)
+                && this.constructionSite.isEmpty()) {
             this.need[1][7]=2
             this.need[2][7]=2
         }else{
-            this.need[1][7]=2
-            this.need[2][7]=1
+            this.need[1][7]=1
+            this.need[2][7]=0
         }
     }else{
         this.need[1][7]=0
@@ -53,9 +54,20 @@ fun MainRoom.needCorrection2() {
         this.need[0][13]=1
 
     //8 Builder
-    if ((this.constructionSite.isNotEmpty()) && (this.getResourceInStorage() > this.constant.energyBuilder)) {
-        this.need[1][8]=1
+
+    if (this.constant.creepUseBigBuilder) {
+        if ((this.constructionSite.isNotEmpty() || this.constant.upgradeList.isNotEmpty())
+                && (this.getResourceInStorage() > (this.constant.energyBuilder + 50000))) {
+            this.need[1][10]=1
+            this.need[1][11]=this.have[10]
+        }
+    }else {
+        if ((this.constructionSite.isNotEmpty()) && (this.getResourceInStorage() > this.constant.energyBuilder)) {
+            if (this.constructionSite.size > 2) this.need[1][8]=2
+            else this.need[1][8]=1
+        }
     }
+
 
     //9 Logist
     this.need[0][14]=1

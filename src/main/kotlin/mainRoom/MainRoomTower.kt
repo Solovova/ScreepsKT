@@ -60,17 +60,15 @@ fun MainRoom.runTower() {
     }
 
     //3.1 STRUCTURE_RAMPART<5000
-//    if (fTask == null){
-//
-//        var DamagedContainers = Game.rooms[objRoom.Name].find(FIND_STRUCTURES, {
-//            filter: (structure) => (structure.structureType == STRUCTURE_RAMPART)&&(structure.hits<=5000)
-//        });
-//        if(DamagedContainers.length != 0) {
-//            fTask = 'repair';
-//            fTarget = DamagedContainers[0];
-//            fMaxTower = 1;
-//        }
-//    }
+    if (fTask == null){
+        val damagedRamparts =  this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_RAMPART && it.hits < 5000 }
+
+        if(damagedRamparts.isNotEmpty()) {
+            fTask = "repair"
+            fTarget = damagedRamparts[0]
+            fMaxTower = 1
+        }
+    }
 
     //4 Roads
     if (fTask == null){

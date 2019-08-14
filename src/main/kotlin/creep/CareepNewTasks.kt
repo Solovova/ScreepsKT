@@ -108,6 +108,34 @@ fun Creep.buildStructure(creepCarry: Int, mainContext: MainContext, mainRoom: Ma
     return result
 }
 
+fun Creep.buildBigStructure(mainContext: MainContext, mainRoom: MainRoom): Boolean {
+    var result = false
+    if (mainRoom.constructionSite.isNotEmpty()) {
+        val tConstructionSite = mainRoom.getConstructionSite(this.pos)
+        if (tConstructionSite != null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Build, idObject0 = tConstructionSite.id, posObject0 = tConstructionSite.pos))
+            result = true
+        }
+    }
+    if (!result) {
+        var structure: Structure? = null
+        var toHits = 0
+        for(record in mainRoom.constant.upgradeList){
+            val tmpStructure: Structure? = Game.getObjectById(record.key)
+            if (tmpStructure != null && tmpStructure.hits < record.value) {
+                structure = tmpStructure
+                toHits = record.value
+                break
+            }
+        }
+        if (structure != null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.UpgradeStructure, idObject0 = structure.id, posObject0 = structure.pos, quantity = toHits))
+            result = true
+        }
+    }
+    return result
+}
+
 fun Creep.clean(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
     var result = false
     if (creepCarry == 0) {
@@ -203,6 +231,18 @@ fun Creep.transferToContainer(type: Int, creepCarry: Int, mainContext: MainConte
             //val canStore: Int = objForFilling.storeCapacity - objForFilling.store.toMap().map { it.value }.sum()
             //if (creepCarry > canStore) return false
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferTo, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
+            result = true
+        }
+    }
+    return result
+}
+
+fun Creep.transferToBigBuilder(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
+    var result = false
+    if (creepCarry > 0) {
+        val objForFilling: Creep? = Game.getObjectById(mainRoom.constant.creepIdOfBigBuilder)
+        if (objForFilling != null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TransferToCreep, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
             result = true
         }
     }
@@ -545,6 +585,17 @@ fun Creep.slaveAttackRanged(mainContext: MainContext, slaveRoom: SlaveRoom?): Bo
 fun Creep.slaveAttack(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
     var result = false
     if (slaveRoom?.room != null) {
+        //ToDo костыль
+//        if (slaveRoom.name == "W5N2"){
+//            val structure: Structure? = Game.getObjectById("4158ccbdf12cc91")
+//            if (structure != null) {
+//                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.AttackMile, idObject0 = structure.id, posObject0 = structure.pos))
+//                return true
+//            }
+//        }
+
+
+
         val hostileCreep : Creep? =  slaveRoom.room.find(FIND_HOSTILE_CREEPS).firstOrNull()
         if (hostileCreep != null) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.AttackMile, idObject0 = hostileCreep.id, posObject0 = hostileCreep.pos))
@@ -573,3 +624,17 @@ fun Creep.slaveEraser(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean 
     }
     return result
 }
+
+fun Creep.slaveHealCreep(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+    var result = false
+    if (slaveRoom != null) {
+        val objForFilling: Creep? = Game.getObjectById(slaveRoom.constant.creepIdEraser)
+        if (objForFilling != null) {
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.HealCreep, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
+            result = true
+        }
+    }
+    return result
+}
+
+

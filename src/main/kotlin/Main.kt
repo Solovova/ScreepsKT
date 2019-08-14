@@ -1,11 +1,16 @@
 import mainContext.MainContext
 import mainContext.messenger
 import screeps.api.*
+import screeps.utils.unsafe.delete
 import kotlin.math.roundToInt
 
 var mainContextGlob : MainContext? = null
 
 fun loop() {
+//    delete(Memory["profitCreep"])
+//    delete(Memory["path"])
+    //delete(Memory["global"]["globalConstant"]["dataCacheCarrierAuto"]["dataCacheCarrierAuto"])
+//    delete(Memory["snapShots"])
     val cpuStart = Game.cpu.getUsed()
 //    delete(Memory["rooms"])
 //    delete(Memory["account"])

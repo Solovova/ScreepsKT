@@ -204,8 +204,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             }
 
             115 -> {
-                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,HEAL,HEAL)
-                //[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,HEAL]
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL)
             }
         }
         return result
@@ -227,7 +226,9 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
     fun needCorrection() {
         when (this.constant.model) {
             0 -> {
-                if (this.room!=null) {
+                //ToDo костыль
+                //if (this.name == "W5N2") this.need[1][11] = 1
+                if (this.room!=null && this.constant.model == 0) {
                     val hostileCreeps = this.room.find(FIND_HOSTILE_CREEPS)
                     this.constant.roomHostile = hostileCreeps.isNotEmpty()
                     var typeAttack = 2 //ranged
@@ -296,17 +297,17 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                         this.structureContainerNearSource.size == this.source.size) this.need[1][9] = 2
             }
             2 -> {
-                this.need[1][15] = 1
+                this.need[1][15] = 2
             }
         }
     }
 
     fun runNotEveryTick() {
+        if (!this.setNextTickRun()) return
         if (this.constant.model == 1) this.building()
         if ((this.constant.model == 0 || this.constant.model == 2) && this.constant.autoBuildRoad)
             this.constant.roadBuild = this.buildWaysInRoom()
 
-        if (!this.setNextTickRun()) return
         this.restoreSnapShot()
         this.needCleanerCalculate()
     }
@@ -327,19 +328,22 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
 
     private fun profitShow() {
         if ( ((Game.time.toDouble() / 1500.0).toInt() * 1500) == Game.time) {
-            this.constant.profitPerTickPrevious =  this.constant.profitUp - this.constant.profitDown
+            for (index in 4 downTo  1)
+                this.constant.profitPerTickPreviousArr[index] = this.constant.profitPerTickPreviousArr[index-1]
+            this.constant.profitPerTickPreviousArr[0] =  this.constant.profitUp - this.constant.profitDown
             this.profitClear()
-
         }
 
-        if (this.constant.profitPerTickPrevious > parent.parent.parent.constants.globalConstant.showProfitWhenLessWhen * this.source.size ) return
+        if (this.constant.profitPerTickPreviousArr[0] > parent.parent.parent.constants.globalConstant.showProfitWhenLessWhen * this.source.size ) return
+
 
         var sProfitPT = "0"
         if (this.constant.profitStart != Game.time)
             sProfitPT = (((this.constant.profitUp - this.constant.profitDown).toDouble() /
                 (Game.time - this.constant.profitStart).toDouble()) * 1500.0 ).roundToInt().toString().padStart(10)
 
-        val sProfitPerTickPrevious = this.constant.profitPerTickPrevious.toString().padStart(10)
+        var sProfitPerTickPrevious = ""
+        for (index in 0 .. 4) sProfitPerTickPrevious += this.constant.profitPerTickPreviousArr[index].toString().padStart(8) + ":"
         val sUp : String = this.constant.profitUp.toString().padEnd(10)
         val sDown : String = this.constant.profitDown.toString().padEnd(10)
         val sProfit : String = (this.constant.profitUp - this.constant.profitDown).toString().padEnd(10)

@@ -112,6 +112,15 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
         if (!isTask) isTask = this.transferToFilling(creepCarry, mainContext, mainRoom)
     }
 
+    if (this.memory.role == 10) {
+        if (!isTask) isTask = this.buildBigStructure(mainContext, mainRoom)
+    }
+
+    if (this.memory.role == 11) {
+        if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
+        if (!isTask) isTask = this.transferToBigBuilder(creepCarry,mainContext,mainRoom)
+    }
+
     if (this.memory.role == 13) {
         if (!isTask) isTask = this.takeFromStorage(creepCarry, mainContext, mainRoom)
         if (!isTask) isTask = this.takeFromContainer(3,creepCarry, mainContext, mainRoom)
@@ -227,6 +236,10 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
     if (this.memory.role == 115) {
         if (!isTask) isTask = this.slaveGoToRoom(mainContext)
         if (!isTask) isTask = this.slaveEraser(mainContext, slaveRoom)
+    }
+
+    if (this.memory.role == 116) {
+        if (!isTask) isTask = this.slaveHealCreep(mainContext,slaveRoom)
     }
 
     return isTask

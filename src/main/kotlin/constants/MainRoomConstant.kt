@@ -23,6 +23,8 @@ class MainRoomConstant(val parent: Constants) {
     var energyForceUpgrade: Int = 100000 //simple //how much energy must be in storage for start upgrade controller
     var creepSpawn: Boolean = true
     var needCleaner: Boolean = false //cashed
+    var creepIdOfBigBuilder: String = "" //simple
+    var creepUseBigBuilder: Boolean = false
 
 
     //Room algorithm
@@ -42,8 +44,7 @@ class MainRoomConstant(val parent: Constants) {
     var mineralMaxInRoom: Int = 200000
 
     //Wall and Ramparts upgrade
-    var upgradeWallHits: Int    = 3000000
-    var upgradeRampartHits: Int = 3000000
+    var upgradeDefenceHits: Int    = 200000
     var upgradeList: MutableMap<String,Int> = mutableMapOf() //cashed //id of wall or rampart, hits
 
 

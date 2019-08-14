@@ -15,7 +15,7 @@ class GlobalConstant {
     val clearProfit: Boolean = false
 
     //INFO
-    val showProfitWhenLessWhen: Int = 6000
+    val showProfitWhenLessWhen: Int = 60000
 
     fun toDynamic(): dynamic {
         val result: dynamic = object {}
@@ -23,15 +23,19 @@ class GlobalConstant {
         result["dataCacheCarrierAuto"] = object {}
         for (record in dataCacheCarrierAuto)
             result["dataCacheCarrierAuto"][record.key] = record.value.toDynamic()
+
+
         //--------------------
         return result
     }
 
     fun fromDynamic(d: dynamic) {
         //dataCacheCarrierAuto
-        if (d != null)
-            for (recordKey in js("Object").keys(d).unsafeCast<Array<String>>())
-                dataCacheCarrierAuto[recordKey] = CacheCarrier.initFromDynamic(d[recordKey])
+        if (d["dataCacheCarrierAuto"] != null)
+            for (recordKey in js("Object").keys(d["dataCacheCarrierAuto"]).unsafeCast<Array<String>>())
+                dataCacheCarrierAuto[recordKey] = CacheCarrier.initFromDynamic(d["dataCacheCarrierAuto"][recordKey])
+
+
 
     }
 }

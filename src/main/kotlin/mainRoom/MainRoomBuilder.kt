@@ -6,10 +6,10 @@ import screeps.api.structures.StructureController
 fun MainRoom.buildStructure(fPrimeColor: ColorConstant, fSecondaryColor: ColorConstant, fWhatBuild: BuildableStructureConstant, fCount: Int): Boolean {
     //return 1 если чтото нашли и строим 0 если ничего не нашли
     var findBuild = false
-    var fCount = fCount
+    var tmpCount = fCount
     val flags = this.room.find(FIND_FLAGS).filter { it.color == fPrimeColor && it.secondaryColor == fSecondaryColor }
-    if (flags.size < fCount) fCount = flags.size
-    for (i in 0 until fCount) {
+    if (flags.size < tmpCount) tmpCount = flags.size
+    for (i in 0 until tmpCount) {
         if (this.room.createConstructionSite(flags[i].pos, fWhatBuild) == OK) {
             flags[i].remove()
             findBuild = true
@@ -17,12 +17,6 @@ fun MainRoom.buildStructure(fPrimeColor: ColorConstant, fSecondaryColor: ColorCo
     }
     return findBuild
 }
-
-//T  ,   ,T
-//   ,Lin,
-//St ,   ,Sp
-//   ,   ,
-//Ter,   ,T
 
 fun MainRoom.building() {
     //10 color COLOR_WHITE
@@ -37,11 +31,6 @@ fun MainRoom.building() {
     //7 COLOR_ORANGE    STRUCTURE_ROAD before storage
     //8 COLOR_BROWN     STRUCTURE_SPAWN
 
-
-
-
-
-    //if (Math.round(Game.time/100)*100!=Game.time) return; //проверяем каждые 100 тиков
     if(this.constructionSite.isNotEmpty()) return
     val protectedStructureController: StructureController = this.structureController[0] ?: return
     if (protectedStructureController.level == 1) {

@@ -12,16 +12,19 @@ In future
 // 7 - upgrader
 // 8 - builder
 // 9 - small filler
+//10 - big builder
+//11 - carrier to big builder
 //13 - small upgrader
 //14 - logist
 //15 - mineral extractor
 //16 - mineral carrier
 //17 - cleaner
+
+
 //Slave
 // 0 - colonizer +
 // 1 - universal +
 // 2 - far carrier
-
 // 3 - reserve
 // 4 - explorer
 // 5 - harvester source 0
@@ -43,21 +46,6 @@ model 2
 //need2
 //slave2
 
-//ToDo auto harvesting in slave room,
-//Auto road
-//Account profit
-
-//E53N39 full  upgrade   from E54N37    in process
-//E52N37 full  upgrade   from E54N37    in process
-//E53N38 full  upgrade   from E54N37
-
-//E59N36 self upgrade                   in process
-//E52N37 self upgrade                   in process
-//E52N35 self upgrade                   in process
-//E52N38 self upgrade                   in process
-
-//ToDo slave room full auto
-//build road, when limit calculate next tick for check
 
 
 

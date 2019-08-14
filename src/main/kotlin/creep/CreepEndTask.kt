@@ -94,6 +94,30 @@ fun Creep.endTask(mainContext: MainContext) {
             if (filled) mainContext.tasks.deleteTask(this.id)
         }
 
+        TypeOfTask.TransferToCreep -> {
+            val mainRoom: MainRoom? = mainContext.mainRoomCollector.rooms[this.memory.mainRoom]
+            if (mainRoom == null) mainContext.tasks.deleteTask(this.id)
+            else {
+                val objForFilling: Creep? = Game.getObjectById(mainRoom.constant.creepIdOfBigBuilder)
+                if (objForFilling == null) mainContext.tasks.deleteTask(this.id)
+                else if (creepCarry == 0) mainContext.tasks.deleteTask(this.id)
+            }
+        }
+
+        TypeOfTask.HealCreep -> {
+            val mainRoom: MainRoom? = mainContext.mainRoomCollector.rooms[this.memory.mainRoom]
+            if (mainRoom == null) mainContext.tasks.deleteTask(this.id)
+            else {
+                val slaveRoom: SlaveRoom?  = mainRoom.slaveRooms[this.memory.slaveRoom]
+                if (slaveRoom == null) mainContext.tasks.deleteTask(this.id)
+                else{
+                    val objForFilling: Creep? = Game.getObjectById(slaveRoom.constant.creepIdEraser)
+                    if (objForFilling == null) mainContext.tasks.deleteTask(this.id)
+                }
+            }
+        }
+
+
         TypeOfTask.Upgrade -> {
             if (creepCarry == 0) mainContext.tasks.deleteTask(this.id)
         }
@@ -101,6 +125,12 @@ fun Creep.endTask(mainContext: MainContext) {
         TypeOfTask.Build -> {
             val building: ConstructionSite? = (Game.getObjectById(task.idObject0) as ConstructionSite?)
             if (creepCarry == 0 || building == null) mainContext.tasks.deleteTask(this.id)
+        }
+
+        TypeOfTask.UpgradeStructure -> {
+            val building: Structure? = (Game.getObjectById(task.idObject0) as Structure?)
+            if (building == null) mainContext.tasks.deleteTask(this.id)
+            if (building != null && building.hits > task.quantity) mainContext.tasks.deleteTask(this.id)
         }
 
         TypeOfTask.Repair -> {

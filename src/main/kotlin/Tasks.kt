@@ -25,31 +25,11 @@ enum class TypeOfTask {
     SignSlaveRoom,
     HarvestMineral,
     EraserAttack,
-    EraserGoToKL
+    EraserGoToKL,
+    UpgradeStructure,
+    TransferToCreep,
+    HealCreep
 }
-
-enum class TypeOfInteractionsObjects {
-    Source,
-    Container,
-    DroppedResource,
-    Tombstone,
-    Terminal,
-    Storage,
-    Extension,
-    Spawn,
-    Creep
-}
-
-//interface MemoryTask {
-//    task: TypeOfTask = TypeOfTask.goto
-//    idFrom: String = ""
-//    PosFrom: RoomPosition
-//    idTo: string;
-//    PosTo: RoomPosition;
-//    resource: string;
-//    quantity: number;
-//    come: boolean;
-//}
 
 class CreepTask {
     val type: TypeOfTask
