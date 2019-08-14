@@ -97,7 +97,6 @@ class Constants(val parent: MainContext) {
         if ((d["battleGroups"] != null))
             this.battleGroups = d["battleGroups"] as Array<String>
 
-        console.log(this.battleGroups)
 
         for (record in this.battleGroups) {
             this.battleGroupConstantContainer[record] = BattleGroupConstant()

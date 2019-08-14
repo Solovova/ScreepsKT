@@ -334,7 +334,6 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
 
     private fun showQueue() {
-        //ToDo show creepsRole who mainRoom.building
         var showText = "lvl: ${this.constant.levelOfRoom} (${this.describe}):".padEnd(8)
         var textSpawning  = ""
 
@@ -357,7 +356,16 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             showText += "$prefix ${record.role},"
         }
 
-        parent.parent.messenger("QUEUE", this.name, showText, COLOR_YELLOW, testBefore = "(${this.constant.note}".padEnd(30) + ")")
+        var testBefore: String = "(lvl: ${this.structureController[0]?.level} "
+        testBefore += "${this.structureController[0]?.progress}".padStart(9)
+        testBefore += "/ "
+        testBefore += "${this.structureController[0]?.progressTotal}".padStart(9)
+        testBefore += "  "
+        testBefore += "${(this.structureController[0]?.progressTotal ?: 0) - (this.structureController[0]?.progress ?: 0)}".padStart(9)
+        testBefore = testBefore.padEnd(40) + ")"
+
+        parent.parent.messenger("QUEUE", this.name, showText, COLOR_YELLOW,
+                testBefore = testBefore)
     }
 
     private fun getBodyRole(role: Int): Array<BodyPartConstant> {

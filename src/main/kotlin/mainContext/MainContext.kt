@@ -4,6 +4,7 @@ import Tasks
 import battleGroup.BattleGroupContainer
 import constants.Constants
 import mainRoomCollector.MainRoomCollector
+import screeps.api.ResourceConstant
 
 //mainContext.MainContext initial only then died
 //in start of tick initial mainRoomCollector
@@ -16,6 +17,7 @@ class MainContext {
     var initOnThisTick: Boolean = true
     val messengerMap : MutableMap<String,String> = mutableMapOf()
     val battleGroupContainer: BattleGroupContainer
+    val mineralInfo: MutableMap<ResourceConstant, MineralInfo> = mutableMapOf()
 
     init {
         this.constants.fromMemory()

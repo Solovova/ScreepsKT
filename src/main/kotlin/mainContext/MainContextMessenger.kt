@@ -1,5 +1,6 @@
 package mainContext
 
+import mainRoom.MainRoom
 import screeps.api.*
 
 fun MainContext.messenger(type: String, room: String, text: String, color: ColorConstant = COLOR_GREY,
@@ -16,6 +17,14 @@ fun MainContext.messenger(type: String, room: String, text: String, color: Color
             COLOR_CYAN -> "cyan"
             COLOR_GREY -> "grey"
             else -> "white"
+        }
+    }
+
+
+    val mainRoom: MainRoom? = this.mainRoomCollector.rooms[this.constants.mainRooms[0]]
+    if (mainRoom!= null) {
+        if (mainRoom.room.find(FIND_FLAGS).none { it.color == COLOR_BROWN && it.secondaryColor == COLOR_RED }) {
+            if (type == "QUEUE") return
         }
     }
 

@@ -32,6 +32,12 @@ fun Constants.initMain() {                         //M0       M1       M2       
     m(4).marketBuyEnergy = true
     m(6).marketBuyEnergy = true
     m(7).marketBuyEnergy = true
+    m(10).marketBuyEnergy = true
+    m(11).marketBuyEnergy = true
+
+
+
+
 
 
 

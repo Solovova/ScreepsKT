@@ -40,10 +40,8 @@ data class RecordOfStructurePosition(val structureConstant: StructureConstant, v
 fun snapshotDeserialize(str: String, name: String): Array<RecordOfStructurePosition> {
     var result:Array<RecordOfStructurePosition> = arrayOf()
     val elements = str.split(";")
-    console.log(elements.size)
     for (element in elements) {
         val struct = element.split(",")
-        console.log(struct.size)
         if (struct.size!=3) continue
         result += RecordOfStructurePosition( (zipStructure[struct[0]] ?: STRUCTURE_ROAD).unsafeCast<StructureConstant>(), RoomPosition(struct[1].toInt(),struct[2].toInt(),name))
     }
