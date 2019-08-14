@@ -24,6 +24,7 @@ class MainRoomConstant(val parent: Constants) {
     var creepSpawn: Boolean = true
     var needCleaner: Boolean = false //cashed
 
+
     //Room algorithm
     var roomRunNotEveryTickNextTickRun: Int = 0
     var levelOfRoom: Int = 0 //cashed
@@ -39,6 +40,11 @@ class MainRoomConstant(val parent: Constants) {
 
     //Mineral
     var mineralMaxInRoom: Int = 200000
+
+    //Wall and Ramparts upgrade
+    var upgradeWallHits: Int    = 3000000
+    var upgradeRampartHits: Int = 3000000
+    var upgradeList: MutableMap<String,Int> = mutableMapOf() //cashed //id of wall or rampart, hits
 
 
 
@@ -81,6 +87,13 @@ class MainRoomConstant(val parent: Constants) {
             for (record in this.slaveRoomConstantContainer)
                     result["slaveRoomConstantContainer"][record.key] = record.value.toDynamic()
         }
+
+        if (this.upgradeList.isNotEmpty()) {
+            result["upgradeList"] = object {}
+            for (record in this.upgradeList)
+                result["upgradeList"][record.key] = record.value
+        }
+
         return result
     }
 
@@ -94,5 +107,9 @@ class MainRoomConstant(val parent: Constants) {
         if (d["slaveRoomConstantContainer"] != null)
             for (record in slaveRoomConstantContainer)
                 record.value.fromDynamic(d["slaveRoomConstantContainer"][record.key])
+
+        if (d["upgradeList"] != null)
+            for (record in js("Object").keys(d["upgradeList"]).unsafeCast<Array<String>>() )
+                this.upgradeList[record] = d["upgradeList"][record] as Int
     }
 }

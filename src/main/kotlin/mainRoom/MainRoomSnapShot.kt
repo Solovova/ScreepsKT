@@ -2,7 +2,8 @@ package mainRoom
 
 import mainContext.messenger
 import screeps.api.*
-
+import snapshotDeserialize
+import snapshotSerialize
 
 fun MainRoom.doSnapShot() {
     val structures = this.room.find(FIND_STRUCTURES)
@@ -15,6 +16,13 @@ fun MainRoom.doSnapShot() {
     if (Memory["snapShots"] == null) Memory["snapShots"] = object {}
     Memory["snapShots"][this.name] = d
     parent.parent.messenger("INFO", this.name, "Snapshot successful", COLOR_GREEN)
+
+    //tests
+//    val serialised = snapshotSerialize(structures)
+//    parent.parent.messenger("INFO", this.name,serialised , COLOR_GREEN)
+//    val deSerialised = snapshotDeserialize(serialised, this.name)
+//    parent.parent.messenger("INFO", this.name, "size ${deSerialised.size}", COLOR_GREEN)
+//    for (struct in deSerialised ) parent.parent.messenger("INFO", this.name, "${struct.structureConstant} ,${struct.roomPosition.roomName}, ${struct.roomPosition.x}, ${struct.roomPosition.y} ", COLOR_GREEN)
 }
 
 fun MainRoom.restoreSnapShot(){

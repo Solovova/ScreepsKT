@@ -27,14 +27,15 @@ fun Constants.initMain() {                         //M0       M1       M2       
 
 
     m(0).marketBuyEnergy = true
+    m(1).marketBuyEnergy = true
     m(3).marketBuyEnergy = true
     m(4).marketBuyEnergy = true
     m(6).marketBuyEnergy = true
     m(7).marketBuyEnergy = true
 
 
-    s(18,1).autoBuildRoad = true
-    s(18,2).autoBuildRoad = true
+
+
 
 
 

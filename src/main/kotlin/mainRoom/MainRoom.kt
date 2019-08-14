@@ -618,6 +618,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         if (!this.setNextTickRun()) return
         this.marketCreateBuyOrders()
         this.needCleanerCalculate()
+        this.upgradeListForm()
     }
 
     private fun messageAboutUpgrade() {
@@ -732,6 +733,17 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         if (!result) result = needClean(this.structureContainerNearController[0]?.store, RESOURCE_ENERGY)
         if (!result) result = needClean(this.structureContainerNearMineral[0]?.store, this.mineral.mineralType)
         this.constant.needCleaner = result
+    }
+
+    fun upgradeListForm() {
+        val upgradeList = this.room.find(FIND_STRUCTURES).filter {
+            (it.structureType == STRUCTURE_WALL || it.structureType == STRUCTURE_RAMPART)
+                    && it.hits < (this.constant.upgradeWallHits - 100000)}.sortedByDescending { it.hits }
+        this.constant.upgradeList.clear()
+        for (record in upgradeList) {
+            this.constant.upgradeList[record.id] = this.constant.upgradeWallHits
+            if (this.constant.upgradeList.size > 15) return
+        }
     }
 }
 

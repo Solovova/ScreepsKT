@@ -1,10 +1,15 @@
 package constants
 
+import screeps.api.*
+
 class GlobalConstant {
     val dataCacheCarrierAuto: MutableMap<String, CacheCarrier> = mutableMapOf() //cashed
     val roomRunNotEveryTickTicksPauseMin: Int = 300
     val roomRunNotEveryTickTicksPauseMax: Int = 400
     val buttleGroupList: MutableList<String> = MutableList(0){""}
+
+
+
 
 
     val clearProfit: Boolean = false

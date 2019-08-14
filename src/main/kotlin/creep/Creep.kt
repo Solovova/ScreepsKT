@@ -201,14 +201,14 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
     }
 
     if (this.memory.role == 106 || this.memory.role == 1006) {
-        if ((this.memory.role == 106) && this.ticksToLive<100) this.memory.role = this.memory.role + 1000
+        //if ((this.memory.role == 106) && this.ticksToLive<100) this.memory.role = this.memory.role + 1000
         if (!isTask) isTask = this.slaveTakeFromContainer(0,creepCarry,mainContext,slaveRoom)
         if (!isTask) isTask = this.slaveBuild(creepCarry, mainContext, slaveRoom, 2)
         if (!isTask) isTask = this.transferToStorage(creepCarry,mainContext,mainRoom)
     }
 
     if (this.memory.role == 108 || this.memory.role == 1008) {
-        if ((this.memory.role == 108) && this.ticksToLive<100) this.memory.role = this.memory.role + 1000
+        //if ((this.memory.role == 108) && this.ticksToLive<100) this.memory.role = this.memory.role + 1000
         if (!isTask) isTask = this.slaveTakeFromContainer(1,creepCarry,mainContext,slaveRoom)
         if (!isTask) isTask = this.slaveBuild(creepCarry, mainContext, slaveRoom, 2)
         if (!isTask) isTask = this.transferToStorage(creepCarry,mainContext,mainRoom)
