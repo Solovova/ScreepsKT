@@ -20,6 +20,7 @@ fun MainContext.getCacheRecordRoom(type: String, mainRoom: MainRoom, slaveRoom: 
         "mainContainer1" -> objectTo = mainRoom.structureContainerNearSource[1]
         "slaveContainer0" -> if (slaveRoom != null)  objectTo = slaveRoom.structureContainerNearSource[0]
         "slaveContainer1" -> if (slaveRoom != null)  objectTo = slaveRoom.structureContainerNearSource[1]
+        "slaveContainer2" -> if (slaveRoom != null)  objectTo = slaveRoom.structureContainerNearSource[2]
     }
 
     if (objectTo == null) return null

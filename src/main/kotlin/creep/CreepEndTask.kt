@@ -18,6 +18,32 @@ fun Creep.endTask(mainContext: MainContext) {
     val creepCarry: Int = this.carry.toMap().map { it.value }.sum()
 
 
+    //Break in dang room
+    if ((this.memory.role in 120..125 || this.memory.role in 1120..1125) && task.type != TypeOfTask.GoToRescueFlag) {
+        val mainRoom: MainRoom? = mainContext.mainRoomCollector.rooms[this.memory.mainRoom]
+        if (mainRoom == null) mainContext.tasks.deleteTask(this.id)
+        else {
+            val slaveRoom: SlaveRoom? = mainRoom.slaveRooms[this.memory.slaveRoom]
+            if (slaveRoom == null) mainContext.tasks.deleteTask(this.id)
+            else {
+                var indKl: Int = -1
+                if (this.memory.role in arrayOf(120, 121, 1120, 1121)) indKl = 0
+                if (this.memory.role in arrayOf(122, 123, 1122, 1123)) indKl = 1
+                if (this.memory.role in arrayOf(124, 125, 1124, 1125)) indKl = 2
+                val keeperLair = slaveRoom.structureKeeperLair[indKl]
+                if (keeperLair != null) {
+                    if (this.pos.inRangeTo(keeperLair.pos, 10) && keeperLair.ticksToSpawn < 20) {
+                        console.log("Task deleted")
+                        mainContext.tasks.deleteTask(this.id)
+                        return
+                    }
+
+                }
+            }
+        }
+    }
+
+
     when (task.type) {
         TypeOfTask.Harvest -> {
             if (creepCarry == this.carryCapacity) mainContext.tasks.deleteTask(this.id)
@@ -56,7 +82,7 @@ fun Creep.endTask(mainContext: MainContext) {
         }
 
         TypeOfTask.TransferTo -> {
-            if (this.memory.role == 106 || this.memory.role == 1006 || this.memory.role == 108 || this.memory.role == 1008) {
+            if (this.memory.role in arrayOf(106,1006,108,1008,121,123,125,1121,1123,1125)) {
                 val mainRoom: MainRoom = mainContext.mainRoomCollector.rooms[this.memory.mainRoom] ?: return
                 val slaveRoom: SlaveRoom?  = mainRoom.slaveRooms[this.memory.slaveRoom] ?: return
                 if (slaveRoom != null) {
@@ -144,7 +170,7 @@ fun Creep.endTask(mainContext: MainContext) {
 
         TypeOfTask.GoToPos -> {
             if (task.posObject0 == null) mainContext.tasks.deleteTask(this.id)
-            else if (this.pos.inRangeTo(task.posObject0,0)) mainContext.tasks.deleteTask(this.id)
+            else if (this.pos.inRangeTo(task.posObject0,task.quantity)) mainContext.tasks.deleteTask(this.id)
         }
 
         TypeOfTask.AttackRange -> {
@@ -219,6 +245,31 @@ fun Creep.endTask(mainContext: MainContext) {
 
             val hostileCreep : Creep? =  slaveRoom.room?.find(FIND_HOSTILE_CREEPS)?.firstOrNull()
             if (hostileCreep != null) {mainContext.tasks.deleteTask(this.id); return}
+        }
+
+        TypeOfTask.GoToRescueFlag -> {
+            val mainRoom: MainRoom? = mainContext.mainRoomCollector.rooms[this.memory.mainRoom]
+            if (mainRoom == null) mainContext.tasks.deleteTask(this.id)
+            else {
+                val slaveRoom: SlaveRoom? = mainRoom.slaveRooms[this.memory.slaveRoom]
+                if (slaveRoom == null) mainContext.tasks.deleteTask(this.id)
+                else {
+                    var indKl: Int = -1
+                    if (this.memory.role in arrayOf(120, 121, 1120, 1121)) indKl = 0
+                    if (this.memory.role in arrayOf(122, 123, 1122, 1123)) indKl = 1
+                    if (this.memory.role in arrayOf(124, 125, 1124, 1125)) indKl = 2
+                    val keeperLair = slaveRoom.structureKeeperLair[indKl]
+                    if (keeperLair == null) mainContext.tasks.deleteTask(this.id)
+                    else {
+                        if (keeperLair.ticksToSpawn > 30) {
+                            val hostileNear = this.room.find(FIND_HOSTILE_CREEPS).filter { it.pos.inRangeTo(this.pos,10) }
+                            if (hostileNear.isEmpty()) mainContext.tasks.deleteTask(this.id)
+                            return
+                        }
+
+                    }
+                }
+            }
         }
 
         else -> {

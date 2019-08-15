@@ -37,6 +37,17 @@ In future
 //17 - cleaner -
 model 2
 //15 - eraser
+//20 - harvester 0 -
+//21 - carrier harvester 0 -
+//22 - harvester 1 -
+//23 - carrier harvester 1 -
+//24 - harvester 2 -
+//25 - carrier harvester 2 -
+//26 - harvester mineral -
+//27 - carrier mineral -
+
+
+
 
 //Queue priority
 //need0

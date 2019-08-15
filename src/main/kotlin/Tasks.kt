@@ -28,7 +28,8 @@ enum class TypeOfTask {
     EraserGoToKL,
     UpgradeStructure,
     TransferToCreep,
-    HealCreep
+    HealCreep,
+    GoToRescueFlag
 }
 
 class CreepTask {

@@ -16,9 +16,9 @@ import kotlin.random.Random
 class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, val constant: SlaveRoomConstant) {
     val room: Room? = Game.rooms[this.name]
 
-    val need = Array(3) { Array(20) { 0 } }
-    val have = Array(20) { 0 }
-    val haveForQueue = Array(20) { 0 }
+    val need = Array(3) { Array(100) { 0 } }
+    val have = Array(100) { 0 }
+    val haveForQueue = Array(100) { 0 }
 
     //StructureController
     private var _structureController: Map<Int, StructureController>? = null
@@ -105,6 +105,31 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             return _structureStorage ?: throw AssertionError("Error get StructureStorage")
         }
 
+    //Mineral
+    private var _mineral: Map<Int, Mineral>? = null
+    val mineral: Map<Int, Mineral>
+        get() {
+            if (this.room == null)
+                _mineral = mapOf()
+            else if (this._mineral == null) {
+                val result:MutableMap<Int, Mineral> = mutableMapOf()
+                result[0] = this.room.find(FIND_MINERALS).first()
+                _mineral = result.toMap()
+            }
+            return _mineral ?: throw AssertionError("Error get Mineral")
+        }
+
+    //StructureExtractor
+    private var _structureExtractor: Map<Int, StructureExtractor>? = null
+    val structureExtractor: Map<Int, StructureExtractor>
+        get() {
+            if (this.room == null)
+                _structureExtractor = mapOf()
+            else if (this._structureExtractor == null)
+                _structureExtractor = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_EXTRACTOR }.withIndex().associate { it.index to it.value as StructureExtractor }
+            return _structureExtractor ?: throw AssertionError("Error get StructureExtractor")
+        }
+
     //StructureKeeperLair
     private var _structureKeeperLair: Map<Int, StructureKeeperLair>? = null
     val structureKeeperLair: Map<Int, StructureKeeperLair>
@@ -112,15 +137,53 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             if (this.room == null)
                 _structureKeeperLair = mapOf()
             else
-                if (this._structureKeeperLair == null){
-                    _structureKeeperLair = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_KEEPER_LAIR }.sortedWith(Comparator<Structure>{ a, b ->
-                        when {
-                            a.id > b.id -> 1
-                            a.id < b.id -> -1
-                            else -> 0
-                        }}).withIndex().associate { it.index to (it.value as StructureKeeperLair)}
+                if (this._structureKeeperLair == null) {
+                    val result: MutableMap<Int, StructureKeeperLair> = mutableMapOf()
+                    val tmpKeeperLairs: List<Structure> = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_KEEPER_LAIR }
+                    for (sourceRecord in this.source)
+                        for (keeperLair in tmpKeeperLairs)
+                            if (sourceRecord.value.pos.inRangeTo(keeperLair.pos, 6)) {
+                                result[sourceRecord.key] = keeperLair as StructureKeeperLair
+                                break
+                            }
+                    val tmpMineral = this.mineral[0]
+                    if (tmpMineral != null)
+                        for (keeperLair in tmpKeeperLairs)
+                            if (tmpMineral.pos.inRangeTo(keeperLair.pos, 6)) {
+                                result[3] = keeperLair as StructureKeeperLair
+                                break
+                            }
+                    _structureKeeperLair = result.toMap()
                 }
             return _structureKeeperLair ?: throw AssertionError("Error get StructureKeeperLair")
+        }
+
+    //RescueFlag
+    private var _rescueFlag: Map<Int, Flag>? = null
+    val rescueFlag: Map<Int, Flag>
+        get() {
+            if (this.room == null)
+                _rescueFlag = mapOf()
+            else
+                if (this._rescueFlag == null) {
+                    val result: MutableMap<Int, Flag> = mutableMapOf()
+                    val tmpFlags: List<Flag> = this.room.find(FIND_FLAGS).filter { it.color == COLOR_WHITE && it.secondaryColor == COLOR_WHITE }
+                    for (sourceRecord in this.source)
+                        for (flag in tmpFlags)
+                            if (sourceRecord.value.pos.inRangeTo(flag.pos, 8)) {
+                                result[sourceRecord.key] = flag
+                                break
+                            }
+                    val tmpMineral = this.mineral[0]
+                    if (tmpMineral != null)
+                        for (flag in tmpFlags)
+                            if (tmpMineral.pos.inRangeTo(flag.pos, 8)) {
+                                result[3] = flag
+                                break
+                            }
+                    _rescueFlag = result.toMap()
+                }
+            return _rescueFlag ?: throw AssertionError("Error get RescueFlag")
         }
 
     init {
@@ -131,7 +194,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
     }
 
     fun buildQueue(queue: MutableList<QueueSpawnRecord>, priority: Int) {
-        val fPriorityOfRole = arrayOf(10, 11, 15, 4, 0, 1 , 2 , 3, 5, 7, 9, 6, 8)
+        val fPriorityOfRole = arrayOf(10, 11, 15, 4, 0, 1 , 2 , 3, 5, 7, 9, 6, 8,20,22,24,21,23,25)
         for (fRole in fPriorityOfRole) {
             var fNeed = this.need[0][fRole]
             if (priority >= 1) fNeed += this.need[1][fRole]
@@ -205,6 +268,40 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
 
             115 -> {
                 result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL)
+            }
+
+            120,122,124 -> {
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+            }
+
+            121 -> {
+                val carrierAuto: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer0",this.parent,this)
+                if (carrierAuto==null) {
+                    parent.parent.parent.messenger("ERROR", this.name, "Auto not exists slaveContainer0", COLOR_RED)
+                    result = arrayOf()
+                }else{
+                    result = carrierAuto.needBody
+                }
+            }
+
+            123 -> {
+                val carrierAuto: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer1",this.parent,this)
+                if (carrierAuto==null) {
+                    parent.parent.parent.messenger("ERROR", this.name, "Auto not exists slaveContainer1", COLOR_RED)
+                    result = arrayOf()
+                }else{
+                    result = carrierAuto.needBody
+                }
+            }
+
+            125 -> {
+                val carrierAuto: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer1",this.parent,this)
+                if (carrierAuto==null) {
+                    parent.parent.parent.messenger("ERROR", this.name, "Auto not exists slaveContainer1", COLOR_RED)
+                    result = arrayOf()
+                }else{
+                    result = carrierAuto.needBody
+                }
             }
         }
         return result
@@ -297,7 +394,26 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                         this.structureContainerNearSource.size == this.source.size) this.need[1][9] = 2
             }
             2 -> {
-                this.need[1][15] = 2
+                this.need[0][4] = 1
+                this.need[1][15] = 1
+
+                if (this.source.containsKey(0) && this.rescueFlag.containsKey(0)) this.need[1][20] = 1
+                val carrierAuto0: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer0",this.parent,this)
+                if (carrierAuto0!=null) {
+                    if (this.need[1][21] == 0) this.need[1][21] = carrierAuto0.needCarriers + 1
+                }
+
+                if (this.source.containsKey(1) && this.rescueFlag.containsKey(1)) this.need[1][22] = 1
+                val carrierAuto1: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer1",this.parent,this)
+                if (carrierAuto1!=null) {
+                    if (this.need[1][23] == 0) this.need[1][23] = carrierAuto1.needCarriers + 1
+                }
+
+                if (this.source.containsKey(2) && this.rescueFlag.containsKey(2)) this.need[1][24] = 1
+                val carrierAuto2: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer2",this.parent,this)
+                if (carrierAuto2!=null) {
+                    if (this.need[1][25] == 0) this.need[1][25] = carrierAuto2.needCarriers + 1
+                }
             }
         }
     }

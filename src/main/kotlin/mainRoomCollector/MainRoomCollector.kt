@@ -71,7 +71,7 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
         if (Memory["profit"] == null) Memory["profit"] = object {}
 
         for (creep in Game.creeps.values) {
-            if (creep.memory.role == 106 || creep.memory.role == 108 || creep.memory.role == 1106 || creep.memory.role == 1108) {
+            if (creep.memory.role in arrayOf(106,1006,108,1008,121,123,125,1121,1123,1125)) {
                 val mainRoom: MainRoom = this.rooms[creep.memory.mainRoom] ?: continue
                 val slaveRoom: SlaveRoom = mainRoom.slaveRooms[creep.memory.slaveRoom] ?: continue
 

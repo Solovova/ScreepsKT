@@ -36,7 +36,7 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
 
     //00 starting creep, harvester, upgrader, builder to level 4
     if (this.memory.role == 0) {
-        if (!isTask) isTask = this.takeDroppedEnergy(creepCarry,mainContext,mainRoom)
+        if (!isTask) isTask = this.takeDroppedEnergy(creepCarry,mainContext)
         if (!isTask) isTask = this.takeFromStorage(creepCarry, mainContext, mainRoom)
         if (!isTask) isTask = this.takeFromContainer(3,creepCarry, mainContext, mainRoom)
         if (!isTask) isTask = this.harvestFromSource(2, creepCarry, mainContext, mainRoom)
@@ -163,7 +163,7 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
 
     if (this.memory.role == 101) {
         if (!isTask) isTask = this.slaveGoToRoom(mainContext)
-        if (!isTask) isTask = this.slaveHarvest(2, creepCarry,mainContext,slaveRoom)
+        if (!isTask) isTask = this.slaveHarvest(3, creepCarry,mainContext,slaveRoom)
         if (!isTask) isTask = this.slaveUpgradeNormalOrEmergency(0,creepCarry,mainContext,slaveRoom)
         if (!isTask) isTask = this.slaveTransferToFilling(creepCarry, mainContext,slaveRoom)
         if (!isTask) isTask = this.slaveBuild(creepCarry,mainContext,slaveRoom)
@@ -172,7 +172,7 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
 
     if (this.memory.role == 102) {
         if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
-        if (!isTask) isTask = this.slaveTransferToStorageOrContainer(2, creepCarry,mainContext,slaveRoom)
+        if (!isTask) isTask = this.slaveTransferToStorageOrContainer(3, creepCarry,mainContext,slaveRoom)
     }
 
     if (this.memory.role == 103) {
@@ -238,13 +238,58 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
         if (!isTask) isTask = this.slaveAttack(mainContext, slaveRoom)
     }
 
-    if (this.memory.role == 115) {
+    if (this.memory.role == 115 || this.memory.role == 1115) {
+        if ((this.memory.role < 1000) && this.ticksToLive < 200) this.memory.role = this.memory.role + 1000
         if (!isTask) isTask = this.slaveGoToRoom(mainContext)
         if (!isTask) isTask = this.slaveEraser(mainContext, slaveRoom)
     }
 
     if (this.memory.role == 116) {
         if (!isTask) isTask = this.slaveHealCreep(mainContext,slaveRoom)
+    }
+
+    if (this.memory.role in arrayOf(120,122,124,1120,1122,1124)) {
+        if ((this.memory.role < 1000) && this.ticksToLive < 200) this.memory.role = this.memory.role + 1000
+
+        var indKl: Int = -1
+        if (this.memory.role in arrayOf(120, 121, 1120, 1121)) indKl = 0
+        if (this.memory.role in arrayOf(122, 123, 1122, 1123)) indKl = 1
+        if (this.memory.role in arrayOf(124, 125, 1124, 1125)) indKl = 2
+
+
+        //ToDo pick up energy and tomb carry ++ 600
+        if (!isTask) isTask = this.slaveGoToRescueFlag(indKl, mainContext, slaveRoom)
+        //if (!isTask) if (slaveRoom != null && slaveRoom.structureContainerNearSource[indKl] != null) {
+        if (!isTask) isTask = this.takeDroppedEnergy(creepCarry, mainContext, 3)
+        //}
+        if (!isTask) isTask = this.slaveGoToPosOfContainer(indKl, mainContext, slaveRoom)
+        if (!isTask) isTask = this.slaveGoToPosNearSource(indKl, mainContext, slaveRoom)
+        if (!isTask) isTask = this.slaveHarvest(indKl, creepCarry, mainContext, slaveRoom)
+        if (!isTask) isTask = this.slaveBuild(creepCarry, mainContext, slaveRoom, 3)
+        if (!isTask) if (slaveRoom != null && slaveRoom.structureContainerNearSource[indKl] == null){
+            val source = slaveRoom.source[indKl]
+            if (source != null && this.pos.inRangeTo(source.pos,1))
+                this.room.createConstructionSite(this.pos, STRUCTURE_CONTAINER)
+        }
+
+        if (!isTask) isTask = this.slaveRepairContainer(indKl, creepCarry, mainContext, slaveRoom)
+        if (!isTask) isTask = this.slaveTransferToStorageOrContainer(indKl, creepCarry, mainContext, slaveRoom)
+    }
+
+    if (this.memory.role in arrayOf(121,123,125,1121,1123,1125)) {
+        if ((this.memory.role < 1000) && this.ticksToLive < 200) this.memory.role = this.memory.role + 1000
+
+        var indKl: Int = -1
+        if (this.memory.role in arrayOf(120, 121, 1120, 1121)) indKl = 0
+        if (this.memory.role in arrayOf(122, 123, 1122, 1123)) indKl = 1
+        if (this.memory.role in arrayOf(124, 125, 1124, 1125)) indKl = 2
+
+
+        if (!isTask) isTask = this.slaveGoToRescueFlag(indKl, mainContext, slaveRoom)
+        if (!isTask) isTask = this.slaveTakeFromContainer(indKl,creepCarry,mainContext,slaveRoom)
+        if (!isTask) isTask = this.slaveBuild(creepCarry, mainContext, slaveRoom, 2)
+        if (!isTask) isTask = this.transferToStorage(creepCarry,mainContext,mainRoom)
+
     }
 
     return isTask

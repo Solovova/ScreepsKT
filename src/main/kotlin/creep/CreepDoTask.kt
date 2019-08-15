@@ -156,7 +156,7 @@ fun Creep.doTask(mainContext: MainContext) {
         }
 
         TypeOfTask.GoToPos -> {
-            if (!task.come) this.doTaskGoTo(task, task.posObject0, 0)
+            if (!task.come) this.doTaskGoTo(task, task.posObject0, task.quantity)
         }
 
         TypeOfTask.AttackRange -> {
@@ -243,6 +243,10 @@ fun Creep.doTask(mainContext: MainContext) {
                         this.moveTo(structureKeeperLair)
                     }
                 }
+        }
+
+        TypeOfTask.GoToRescueFlag -> {
+            if (!task.come) this.doTaskGoTo(task, task.posObject0, 1)
         }
 
 

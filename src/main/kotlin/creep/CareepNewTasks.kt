@@ -326,11 +326,11 @@ fun Creep.slaveSignRoom(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolea
     return result
 }
 
-fun Creep.takeDroppedEnergy(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
+fun Creep.takeDroppedEnergy(creepCarry: Int, mainContext: MainContext, range: Int = 100): Boolean {
     var result = false
     if (creepCarry == 0) {
-        val objDroppedEnergy: Resource? = mainRoom.room.find(FIND_DROPPED_ENERGY).minBy { this.pos.getRangeTo(it.pos) }
-        if (objDroppedEnergy != null) {
+        val objDroppedEnergy: Resource? = this.room.find(FIND_DROPPED_ENERGY).minBy { this.pos.getRangeTo(it.pos) }
+        if (objDroppedEnergy != null && objDroppedEnergy.pos.inRangeTo(this.pos,range)) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TakeDropped, idObject0 = objDroppedEnergy.id, posObject0 = objDroppedEnergy.pos))
             result = true
         }
@@ -343,8 +343,7 @@ fun Creep.slaveTakeFromContainer(type: Int, creepCarry: Int, mainContext: MainCo
     if (creepCarry == 0 && slaveRoom != null) {
         var objForFilling: Structure? = null
         when (type) {
-            0 -> objForFilling = slaveRoom.structureContainerNearSource[0]
-            1 -> objForFilling = slaveRoom.structureContainerNearSource[1]
+            0,1,2 -> objForFilling = slaveRoom.structureContainerNearSource[type]
             4 -> objForFilling = slaveRoom.structureContainer.values.filter { it.store.energy > 0}.minBy { this.pos.getRangeTo(it)}
         }
         if (objForFilling != null) {
@@ -418,6 +417,23 @@ fun Creep.slaveReserve(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean
     return result
 }
 
+fun Creep.slaveGoToRescueFlag(type: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+    var result = false
+    if (slaveRoom != null) {
+        val keeperLair = slaveRoom.structureKeeperLair[type]
+        if (keeperLair != null) {
+            if (keeperLair.ticksToSpawn < 20 && this.pos.inRangeTo(keeperLair.pos,10)) {
+                val flag: Flag? = slaveRoom.rescueFlag[type]
+                if (flag != null) {
+                    mainContext.tasks.add(this.id, CreepTask(TypeOfTask.GoToRescueFlag, idObject0 = flag.name, posObject0 = flag.pos))
+                    result = true
+                }
+            }
+        }
+    }
+    return result
+}
+
 fun Creep.slaveGoToPosOfContainer(type: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
     //type 0 - source 0, 1 - source 1, 2 - random
     var result = false
@@ -433,8 +449,23 @@ fun Creep.slaveGoToPosOfContainer(type: Int, mainContext: MainContext, slaveRoom
     return result
 }
 
-fun Creep.slaveHarvest(type: Int, creepCarry: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+fun Creep.slaveGoToPosNearSource(type: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
     //type 0 - source 0, 1 - source 1, 2 - random
+    var result = false
+    if (slaveRoom != null) {
+        val tSource: Source? = slaveRoom.source[type]
+        if (tSource != null) {
+            if (!this.pos.inRangeTo(tSource.pos,1)) {
+                mainContext.tasks.add(this.id, CreepTask(TypeOfTask.GoToPos, idObject0 = tSource.id, posObject0 = tSource.pos, quantity = 1))
+                result = true
+            }
+        }
+    }
+    return result
+}
+
+fun Creep.slaveHarvest(type: Int, creepCarry: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
+    //type 0 - source 0, 1 - source 1, 2 - source, 3 - random
     var result = false
     if (slaveRoom != null) {
         if (creepCarry == 0) {
@@ -442,9 +473,8 @@ fun Creep.slaveHarvest(type: Int, creepCarry: Int, mainContext: MainContext, sla
 
             var tSource: Source? = null
             when (type) {
-                0 -> tSource = slaveRoom.source[0]
-                1 -> tSource = slaveRoom.source[1]
-                2 -> tSource = slaveRoom.source[Random.nextInt(slaveRoom.source.size)]
+                0,1,2 -> tSource = slaveRoom.source[type]
+                3 -> tSource = slaveRoom.source[Random.nextInt(slaveRoom.source.size)]
             }
 
 
@@ -502,15 +532,14 @@ fun Creep.slaveBuild(creepCarry: Int, mainContext: MainContext, slaveRoom: Slave
 }
 
 fun Creep.slaveTransferToStorageOrContainer(type: Int, creepCarry: Int, mainContext: MainContext, slaveRoom: SlaveRoom?): Boolean {
-    //type 0 - cont 0, 1 - cont 1, 2 - any
+    //type 0 - cont 0, 1 - cont 1, 3 - any
     var result = false
     if (slaveRoom != null) {
         if (creepCarry > 0) {
             var objForFilling: Structure? =  null
             when (type) {
-                0 -> objForFilling = slaveRoom.structureContainerNearSource[0]
-                1 -> objForFilling = slaveRoom.structureContainerNearSource[1]
-                2 -> {
+                0,1,2 -> objForFilling = slaveRoom.structureContainerNearSource[type]
+                3 -> {
                     objForFilling =  slaveRoom.structureStorage[0]
                     if (objForFilling == null) objForFilling = slaveRoom.structureContainer.values.firstOrNull()
                 }
@@ -529,11 +558,7 @@ fun Creep.slaveRepairContainer(type: Int, creepCarry: Int, mainContext: MainCont
     var result = false
     if (slaveRoom != null) {
         if (creepCarry > 0) {
-            var containerRepair: StructureContainer? = null
-            when (type) {
-                0 -> containerRepair = slaveRoom.structureContainerNearSource[0]
-                1 -> containerRepair = slaveRoom.structureContainerNearSource[1]
-            }
+            val containerRepair: StructureContainer? = slaveRoom.structureContainerNearSource[type]
 
             if (containerRepair != null) {
                 if (containerRepair.hits < (containerRepair.hitsMax - 10000)){

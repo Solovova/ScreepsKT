@@ -19,9 +19,9 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     val room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
     val slaveRooms: MutableMap<String, SlaveRoom> = mutableMapOf()
 
-    val need  = Array(3) {Array(20) {0}}
-    val have  = Array(20) {0}
-    private val haveForQueue = Array(20) {0}
+    val need  = Array(3) {Array(100) {0}}
+    val have  = Array(100) {0}
+    private val haveForQueue = Array(100) {0}
     private val queue = mutableListOf<QueueSpawnRecord>()
 
     //Cash data
