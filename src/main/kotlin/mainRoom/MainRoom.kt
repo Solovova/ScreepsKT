@@ -239,12 +239,58 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
     //StructureLabs
     private var _structureLab: Map<String, StructureLab>? = null
-    private val structureLab: Map<String, StructureLab>
+    val structureLab: Map<String, StructureLab>
         get() {
             if (this._structureLab == null)
                 _structureLab = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_LAB }.associate { it.id to it as StructureLab}
             return _structureLab ?: throw AssertionError("Error get StructureLab")
         }
+
+    //StructureLabsSort
+    private var _structureLabSort: Map<Int, StructureLab>? = null
+    val structureLabSort: Map<Int, StructureLab>
+        get() {
+            if (this._structureLabSort == null) {
+                val result:MutableMap<Int, StructureLab> = mutableMapOf()
+
+                val minX: Int = this.structureLab.values.minBy { it.pos.x }?.pos?.x
+                        ?: return result
+                val minY: Int = this.structureLab.values.minBy { it.pos.y }?.pos?.y
+                        ?: return result
+                if (this.structureLab.size == 3) {
+                    val arrDx = arrayOf(0,1,1)
+                    val arrDy = arrayOf(2,1,0)
+                    for (ind in 0 .. 2) {
+                        val tmpLab: StructureLab? = this.structureLab.values.firstOrNull {
+                            it.pos.x == (minX + arrDx[ind]) && it.pos.y == (minY + arrDy[ind]) }
+                        if (tmpLab != null) result[ind] = tmpLab
+                    }
+                }
+                if (this.structureLab.size == 6) {
+                    val arrDx = arrayOf(0,1,1,2,2,2)
+                    val arrDy = arrayOf(2,1,0,0,1,2)
+                    for (ind in 0 .. 5) {
+                        val tmpLab: StructureLab? = this.structureLab.values.firstOrNull {
+                            it.pos.x == (minX + arrDx[ind]) && it.pos.y == (minY + arrDy[ind]) }
+                        if (tmpLab != null) result[ind] = tmpLab
+                    }
+                }
+
+                if (this.structureLab.size == 10) {
+                    val arrDx = arrayOf(1,2,2,3,3,3,0,0,0,1)
+                    val arrDy = arrayOf(2,1,0,0,1,2,1,2,3,3)
+                    for (ind in 0 .. 9) {
+                        val tmpLab: StructureLab? = this.structureLab.values.firstOrNull {
+                            it.pos.x == (minX + arrDx[ind]) && it.pos.y == (minY + arrDy[ind]) }
+                        if (tmpLab != null) result[ind] = tmpLab
+                    }
+                }
+
+                this._structureLabSort = result.toMap()
+            }
+            return _structureLabSort ?: throw AssertionError("Error get StructureLabSort")
+        }
+
 
     private fun buildCreeps() {
         this.needCorrection()
@@ -257,12 +303,18 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
     private fun needCorrection() {
         val nowLevelOfRoom: Int = this.getLevelOfRoom()
+
         if (nowLevelOfRoom < this.constant.levelOfRoom) {
-            if (this.need[0][5] ==0) this.need[0][5] = 1 //filler
-            if (this.need[1][5] ==0) this.need[1][5] = 1 //filler
-            this.need[0][8]=2
-            this.restoreSnapShot()
-            return
+            if (this.getResourceInStorage() > 40000) {
+                if (this.need[0][5] ==0) this.need[0][5] = 1 //filler
+                if (this.need[1][5] ==0) this.need[1][5] = 1 //filler
+                this.need[0][8]=2
+                this.restoreSnapShot()
+                return
+            }else{
+                this.restoreSnapShot()
+                this.constant.levelOfRoom = nowLevelOfRoom
+            }
         }else this.constant.levelOfRoom = nowLevelOfRoom
 
         when (this.constant.levelOfRoom){

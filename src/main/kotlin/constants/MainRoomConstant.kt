@@ -2,6 +2,7 @@ package constants
 
 import mainContext.messenger
 import screeps.api.COLOR_RED
+import screeps.api.ResourceConstant
 
 class MainRoomConstant(val parent: Constants) {
     var slaveRooms : Array<String> = arrayOf() //simple
@@ -36,6 +37,10 @@ class MainRoomConstant(val parent: Constants) {
     var energyMaxStorage: Int = 500000
     var energyMinTerminal: Int = 10000
     var energyMaxTerminal: Int = 60000
+    var mineralMinTerminal: Int = 10000
+    var mineralAllMaxTerminal: Int = 150000
+    var needMineral: MutableMap<ResourceConstant,Int> = mutableMapOf()
+
 
     //Market
     var marketBuyEnergy: Boolean = false

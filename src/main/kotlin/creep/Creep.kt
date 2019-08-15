@@ -36,6 +36,7 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
 
     //00 starting creep, harvester, upgrader, builder to level 4
     if (this.memory.role == 0) {
+        if (!isTask) isTask = this.takeDroppedEnergy(creepCarry,mainContext,mainRoom)
         if (!isTask) isTask = this.takeFromStorage(creepCarry, mainContext, mainRoom)
         if (!isTask) isTask = this.takeFromContainer(3,creepCarry, mainContext, mainRoom)
         if (!isTask) isTask = this.harvestFromSource(2, creepCarry, mainContext, mainRoom)
@@ -99,7 +100,9 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
     }
 
     if (this.memory.role == 8) {
-        if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
+        if (mainRoom.getResourceInStorage() > (mainRoom.constant.energyBuilder - 5000)) {
+            if (!isTask) isTask = this.takeFromStorage(creepCarry, mainContext, mainRoom)
+        }
         //if (!isTask) isTask = this.takeDroppedEnergy(creepCarry,mainContext,mainRoom)   //ToDo костиль
         //if (!isTask) isTask = this.takeFromContainer(3,creepCarry,mainContext,mainRoom) //ToDo костиль
         //if (!isTask) isTask = this.transferToFilling(creepCarry, mainContext, mainRoom) //ToDo костиль
@@ -117,7 +120,7 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
     }
 
     if (this.memory.role == 11) {
-        if (mainRoom.getResourceInStorage() > mainRoom.constant.energyBuilder) {
+        if (mainRoom.getResourceInStorage() > (mainRoom.constant.energyBuilder - 5000)) {
             if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
         }
         if (!isTask) isTask = this.transferToBigBuilder(creepCarry,mainContext,mainRoom)

@@ -1,11 +1,9 @@
 package mainRoom
 
-import screeps.api.Creep
 import screeps.utils.toMap
 import CreepTask
 import mainContext.messenger
-import screeps.api.COLOR_RED
-import screeps.api.RESOURCE_ENERGY
+import screeps.api.*
 import kotlin.math.min
 
 fun MainRoom.setLogistTask(creep: Creep) {
@@ -69,6 +67,38 @@ fun MainRoom.setLogistTask(creep: Creep) {
         parent.parent.messenger("INFO",this.name,"Too many energy", COLOR_RED)
 
 
+    //Mineral work
+    //Storage -> Terminal this.constant.mineralMinTerminal but < this.constant.mineralAllMaxTerminal
+
+    for (resInStorage in storage.store) {
+        if (resInStorage.component1() == RESOURCE_ENERGY) continue
+        val resourceStorage: ResourceConstant = resInStorage.component1()
+        val quantityStorage: Int = resInStorage.component2()
+        val quantityTerminal: Int = this.getResourceInTerminal(resourceStorage)
+        val needInTerminal = this.constant.mineralMinTerminal - quantityTerminal
+        val canMineralAllTerminal = this.constant.mineralAllMaxTerminal - (terminal.store.toMap().map { it.value }.sum()
+        -this.getResourceInTerminal(RESOURCE_ENERGY))
+        if (canMineralAllTerminal <= 0) parent.parent.messenger("INFO",this.name,"Terminal mineral is full", COLOR_RED)
+        carry = min(min(min(needInTerminal, quantityStorage), creep.carryCapacity), canMineralAllTerminal)
+        if (carry > 0) {
+            parent.parent.tasks.add(creep.id, CreepTask(TypeOfTask.Transport, storage.id, storage.pos, terminal.id, terminal.pos, resourceStorage, carry))
+            return
+        }
+    }
+
+    //Terminal -> Storage all mineral > this.constant.mineralMinTerminal
+    for (resInTerminal in terminal.store) {
+        if (resInTerminal.component1() == RESOURCE_ENERGY) continue
+        val resourceTerminal: ResourceConstant = resInTerminal.component1()
+        val quantityTerminal: Int = resInTerminal.component2()
+
+        val haveInTerminal = quantityTerminal - this.constant.mineralMinTerminal
+        carry = min(haveInTerminal, creep.carryCapacity)
+        if (carry > 0) {
+            parent.parent.tasks.add(creep.id, CreepTask(TypeOfTask.Transport, terminal.id, terminal.pos, storage.id, storage.pos, resourceTerminal, carry))
+            return
+        }
+    }
 }
 
 fun MainRoom.logisticAddCarry(creep: Creep) {

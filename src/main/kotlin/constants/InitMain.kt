@@ -1,5 +1,7 @@
 package constants
 
+import screeps.api.RESOURCE_HYDROGEN
+
 fun Constants.initMain() {                         //M0       M1       M2       M3       M4       M5       M6        M7        M8        M9
     this.initMainRoomConstantContainer( arrayOf("E54N37","E59N36","E52N35","E52N38","E53N39","E52N37","E54N39", "E51N39", "E53N38", "E51N37",
                                                 "E59N38","E57N34","E51N33","E51N35","E58N37","E52N36","E57N32", "E58N39", "E57N39", "E57N35",
@@ -29,12 +31,18 @@ fun Constants.initMain() {                         //M0       M1       M2       
 
     m(0).marketBuyEnergy = true
     m(1).marketBuyEnergy = true
+    m(2).marketBuyEnergy = true
     m(3).marketBuyEnergy = true
     m(4).marketBuyEnergy = true
+    m(5).marketBuyEnergy = true
     m(6).marketBuyEnergy = true
     m(7).marketBuyEnergy = true
+    m(8).marketBuyEnergy = true
+    //m(9).marketBuyEnergy = true
     m(10).marketBuyEnergy = true
     m(11).marketBuyEnergy = true
+
+    //m(4).needMineral[RESOURCE_HYDROGEN] = 3000
 
 
 

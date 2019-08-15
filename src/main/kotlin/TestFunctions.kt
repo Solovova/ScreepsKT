@@ -1,5 +1,6 @@
 import mainContext.MainContext
 import mainContext.messenger
+import mainRoom.MainRoom
 import screeps.api.*
 
 fun testingFunctions (mainContext : MainContext) {
@@ -32,18 +33,24 @@ fun testingFunctions (mainContext : MainContext) {
 //        console.log("BG2 ${battleGroup2.constants.testCashedBG} ${battleGroup2.constants.testSimpleBG}")
 //    }
 
-    for (mainRoom in mainContext.mainRoomCollector.rooms.values) {
-        //mainRoom.doSnapShot()
-        if (mainRoom.constant.needCleaner) mainContext.messenger("INFO",mainRoom.name,"Main need clean", COLOR_RED)
-        for (slaveRoom in mainRoom.slaveRooms.values){
-            //slaveRoom.doSnapShot()
-            if (slaveRoom.constant.needCleaner) mainContext.messenger("INFO",slaveRoom.name,"Slave need clean", COLOR_RED)
-        }
-
-    }
+//    for (mainRoom in mainContext.mainRoomCollector.rooms.values) {
+//        //mainRoom.doSnapShot()
+//        if (mainRoom.constant.needCleaner) mainContext.messenger("INFO",mainRoom.name,"Main need clean", COLOR_RED)
+//        for (slaveRoom in mainRoom.slaveRooms.values){
+//            //slaveRoom.doSnapShot()
+//            if (slaveRoom.constant.needCleaner) mainContext.messenger("INFO",slaveRoom.name,"Slave need clean", COLOR_RED)
+//        }
+//
+//    }
 
     //mainContext.directControlTaskClearInRoom("W5N3")
     //console.log("1234".toSecDigit())
+
+//    val mainRoom:MainRoom? = mainContext.mainRoomCollector.rooms["E54N39"]
+//    if (mainRoom != null) {
+//        for (record in mainRoom.structureLabSort)
+//            console.log("${record.key}   : ${record.value}")
+//    }
 
 
 }
