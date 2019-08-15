@@ -1,5 +1,6 @@
 package mainContext
 
+import mainRoom.MainRoom
 import screeps.api.*
 
 fun MainContext.messenger(type: String, room: String, text: String, color: ColorConstant = COLOR_GREY,
@@ -19,18 +20,27 @@ fun MainContext.messenger(type: String, room: String, text: String, color: Color
         }
     }
 
+
+    val mainRoom: MainRoom? = this.mainRoomCollector.rooms[this.constants.mainRooms[0]]
+    if (mainRoom!= null) {
+        if (mainRoom.room.find(FIND_FLAGS).none { it.color == COLOR_BROWN && it.secondaryColor == COLOR_RED }) {
+            if (type == "QUEUE") return
+        }
+    }
+
     if (type == "TASK") return
     if (type == "TEST") return
 
 
     val prefix: String = when(type) {
         "HEAD" -> "00"
-        "ERROR" -> "95"
-        "INFO" -> "94"
+        "PROD" -> "03"
         "QUEUE" -> "07"
         "PROFIT" -> "09"
         "TASK" -> "11"
         "TEST" -> "13"
+        "INFO" -> "94"
+        "ERROR" -> "95"
         else -> "99"
 
     }

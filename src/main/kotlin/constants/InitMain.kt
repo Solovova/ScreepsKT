@@ -4,6 +4,7 @@ fun Constants.initMain() {                         //M0       M1       M2       
     this.initMainRoomConstantContainer( arrayOf("E54N37","E59N36","E52N35","E52N38","E53N39","E52N37","E54N39", "E51N39", "E53N38", "E51N37",
                                                 "E59N38","E57N34","E51N33","E51N35","E58N37","E52N36","E57N32", "E58N39", "E57N39", "E57N35",
                                                 "E57N37","E52N33") )
+    //Colonization E49N39
     this.getMainRoomConstant("E54N37").initSlaveRoomConstantContainer(arrayOf("E53N37"))                                //M0
     this.getMainRoomConstant("E59N36").initSlaveRoomConstantContainer(arrayOf("E58N36"))                                //M1
     this.getMainRoomConstant("E52N35").initSlaveRoomConstantContainer(arrayOf("E52N34"))                                //M2
@@ -32,6 +33,12 @@ fun Constants.initMain() {                         //M0       M1       M2       
     m(4).marketBuyEnergy = true
     m(6).marketBuyEnergy = true
     m(7).marketBuyEnergy = true
+    m(10).marketBuyEnergy = true
+    m(11).marketBuyEnergy = true
+
+
+
+
 
 
 

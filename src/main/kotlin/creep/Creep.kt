@@ -117,7 +117,9 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
     }
 
     if (this.memory.role == 11) {
-        if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
+        if (mainRoom.getResourceInStorage() > mainRoom.constant.energyBuilder) {
+            if (!isTask) isTask = this.takeFromStorage(creepCarry,mainContext,mainRoom)
+        }
         if (!isTask) isTask = this.transferToBigBuilder(creepCarry,mainContext,mainRoom)
     }
 

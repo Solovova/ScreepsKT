@@ -1,10 +1,6 @@
 import mainContext.MainContext
-import mainContext.directControlTaskClearInRoom
 import mainContext.messenger
-import mainRoom.doSnapShot
 import screeps.api.*
-import screeps.utils.unsafe.delete
-import slaveRoom.doSnapShot
 
 fun testingFunctions (mainContext : MainContext) {
 //    val mCash:MutableMap<ResourceConstant,Int> = mutableMapOf()
@@ -47,8 +43,7 @@ fun testingFunctions (mainContext : MainContext) {
     }
 
     //mainContext.directControlTaskClearInRoom("W5N3")
-
-
+    //console.log("1234".toSecDigit())
 
 
 }

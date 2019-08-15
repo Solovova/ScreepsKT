@@ -71,7 +71,6 @@ tasks {
             modules.putAll(jsFiles.associate { it.nameWithoutExtension to it.readText() })
 
             println("uploading ${jsFiles.count()} files to branch $branch on server $host")
-            println("character: ${screepsUser} password: $screepsPassword")
         }
 
     }

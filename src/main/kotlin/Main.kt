@@ -7,18 +7,9 @@ import kotlin.math.roundToInt
 var mainContextGlob : MainContext? = null
 
 fun loop() {
-//    delete(Memory["profitCreep"])
-//    delete(Memory["path"])
-    //delete(Memory["global"]["globalConstant"]["dataCacheCarrierAuto"]["dataCacheCarrierAuto"])
-//    delete(Memory["snapShots"])
+
     val cpuStart = Game.cpu.getUsed()
-//    delete(Memory["rooms"])
-//    delete(Memory["account"])
-//    delete(Memory["mainRooms"])
-//    delete(Memory["mainRoomsData"])
-//    delete(Memory["dataCache"])
-//    delete(Memory["mainRoomCollector"])
-//    delete(Memory["test"])
+
 
 
 

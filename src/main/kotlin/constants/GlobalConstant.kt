@@ -15,7 +15,7 @@ class GlobalConstant {
     val clearProfit: Boolean = false
 
     //INFO
-    val showProfitWhenLessWhen: Int = 60000
+    val showProfitWhenLessWhen: Int = 6000
 
     fun toDynamic(): dynamic {
         val result: dynamic = object {}

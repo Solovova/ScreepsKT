@@ -40,12 +40,21 @@ data class RecordOfStructurePosition(val structureConstant: StructureConstant, v
 fun snapshotDeserialize(str: String, name: String): Array<RecordOfStructurePosition> {
     var result:Array<RecordOfStructurePosition> = arrayOf()
     val elements = str.split(";")
-    console.log(elements.size)
     for (element in elements) {
         val struct = element.split(",")
-        console.log(struct.size)
         if (struct.size!=3) continue
         result += RecordOfStructurePosition( (zipStructure[struct[0]] ?: STRUCTURE_ROAD).unsafeCast<StructureConstant>(), RoomPosition(struct[1].toInt(),struct[2].toInt(),name))
+    }
+    return result
+}
+
+fun String.toSecDigit(): String {
+    var result = ""
+    for (ind in 0 .. ((this.length - 1) / 3)){
+        val startIndex = ind * 3
+        val endIndex = if ((startIndex + 3)<this.length) (startIndex + 3) else this.length
+
+        result = "${this.subSequence(this.length - startIndex,this.length - endIndex)} " + result
     }
     return result
 }
