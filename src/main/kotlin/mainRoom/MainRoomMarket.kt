@@ -8,7 +8,7 @@ import screeps.utils.toMap
 
 fun MainRoom.marketCreateBuyOrders() {
     if (!this.constant.marketBuyEnergy) return
-    if (this.parent.parent.constants.globalConstant.marketMinCreditForOpenBuyOrder < Game.market.credits) return
+    if (Game.market.credits < this.parent.parent.constants.globalConstant.marketMinCreditForOpenBuyOrder) return
 
     val priceEnergy = 0.010
     if ((this.getResourceInTerminal() + this.getResourceInStorage()) < 300000) {

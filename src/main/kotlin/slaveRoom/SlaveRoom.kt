@@ -394,6 +394,34 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                         this.structureContainerNearSource.size == this.source.size) this.need[1][9] = 2
             }
             2 -> {
+                if (this.room!=null && this.constant.model == 2) {
+                    val hostileCreeps = this.room.find(FIND_HOSTILE_CREEPS).filter { it.name.startsWith("invader") }
+                    this.constant.roomHostile = hostileCreeps.isNotEmpty()
+                    var typeAttack = 2 //ranged
+                    for (hostileCreep in hostileCreeps)
+                        if (hostileCreep.body.firstOrNull { it.type == ATTACK } != null) {
+                            typeAttack = 1
+                            break
+                        }
+                    this.constant.roomHostileType =typeAttack
+                    this.constant.roomHostileNum = hostileCreeps.size
+                }
+
+                //5 Defender
+                if (this.constant.roomHostile) {
+                    parent.parent.parent.messenger("INFO",this.name,"Attacked tpe: ${this.constant.roomHostileType} num:${this.constant.roomHostileNum}", COLOR_RED)
+                    if (this.constant.roomHostileNum > 1 ) {
+                        if (this.room == null) this.need[0][4] = 1
+                    }
+//                    else {
+//                        if (this.constant.roomHostileType == 2) this.need[1][10] = 1
+//                        else this.need[1][11] = 1
+//                    }
+
+                    return
+                }
+
+
                 this.need[0][4] = 1
                 this.need[1][15] = 1
 
