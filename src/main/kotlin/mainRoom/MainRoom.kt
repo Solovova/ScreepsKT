@@ -702,6 +702,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         this.restoreSnapShot()
         this.building()
         this.marketCreateBuyOrders()
+        this.marketCreateBuyOrdersMineral()
         this.needCleanerCalculate()
         this.upgradeListForm()
     }

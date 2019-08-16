@@ -1,10 +1,64 @@
 package mainContext
 
-import screeps.api.RESOURCE_POWER
-import screeps.api.Resource
-import screeps.api.ResourceConstant
+import OrderRecord
+import screeps.api.*
 
-data class MineralInfo(var quantity: Int)
+fun MainContext.marketGetSellOrdersSorted(sellMineral: ResourceConstant, roomName: String): List<OrderRecord> {
 
-fun MainContext.mineralSumAll() {
+    val buyPriceEnergy = this.constants.globalConstant.marketBuyPriceEnergy
+    val result: MutableList<OrderRecord> = mutableListOf()
+
+    val orders = Game.market.getAllOrders().filter {
+        it.resourceType == sellMineral
+                && it.type == ORDER_SELL
+    }
+    for (order in orders) {
+        val transactionCost:Double = Game.market.calcTransactionCost(1000,order.roomName, roomName).toDouble()*buyPriceEnergy/1000.0
+        result.add(result.size,OrderRecord(order,order.price + transactionCost))
+    }
+
+    result.sortBy { it.realPrice }
+    return result.toList()
+}
+
+fun MainContext.marketGetBuyOrdersSorted(sellMineral: ResourceConstant, roomName: String): List<OrderRecord> {
+
+    val buyPriceEnergy = this.constants.globalConstant.marketBuyPriceEnergy
+    val result: MutableList<OrderRecord> = mutableListOf()
+
+    val orders = Game.market.getAllOrders().filter {
+        it.resourceType == sellMineral
+                && it.type == ORDER_BUY
+    }
+
+    for (order in orders) {
+        val transactionCost:Double = Game.market.calcTransactionCost(1000,order.roomName, roomName).toDouble()*buyPriceEnergy/1000.0
+        result.add(result.size,OrderRecord(order,order.price - transactionCost))
+    }
+
+    result.sortByDescending { it.realPrice }
+    return result.toList()
+}
+
+fun MainContext.marketShowSellOrdersRealPrice(resourceConstant: ResourceConstant = RESOURCE_ENERGY) {
+    if (this.constants.mainRooms.isEmpty()) return
+    val marketSell = this.marketGetSellOrdersSorted(resourceConstant, this.constants.mainRooms[0])
+    console.log("Sell orders $resourceConstant}")
+    for (record in marketSell) {
+        val strPrice = record.order.price.asDynamic().toFixed(3).toString().padEnd(6)
+        val strRealPrice = record.realPrice.asDynamic().toFixed(3).toString().padEnd(6)
+        console.log("id: ${record.order.id} mineral: $resourceConstant price: $strPrice real price: $strRealPrice quantity:${record.order.remainingAmount}")
+    }
+}
+
+fun MainContext.marketShowBuyOrdersRealPrice(resourceConstant: ResourceConstant = RESOURCE_ENERGY) {
+    if (this.constants.mainRooms.isEmpty()) return
+    val marketSell = this.marketGetBuyOrdersSorted(resourceConstant, this.constants.mainRooms[0])
+
+    console.log("Buy orders $resourceConstant}")
+    for (record in marketSell) {
+        val strPrice = record.order.price.asDynamic().toFixed(3).toString().padEnd(6)
+        val strRealPrice = record.realPrice.asDynamic().toFixed(3).toString().padEnd(6)
+        console.log("id: ${record.order.id} price: $strPrice real price: $strRealPrice  quantity:${record.order.remainingAmount}" )
+    }
 }

@@ -8,9 +8,11 @@ class GlobalConstant {
     val roomRunNotEveryTickTicksPauseMax: Int = 400
     val buttleGroupList: MutableList<String> = MutableList(0){""}
     val sentMaxMineralQuantity: Int = 10000
+
+
+    //Market
     val marketMinCreditForOpenBuyOrder: Double = 200000.0
-
-
+    val marketBuyPriceEnergy = 0.012
 
 
 

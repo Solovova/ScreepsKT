@@ -52,9 +52,8 @@ class MainRoomConstant(val parent: Constants) {
     var upgradeDefenceHits: Int    = 200000
     var upgradeList: MutableMap<String,Int> = mutableMapOf() //cashed //id of wall or rampart, hits
 
-    //Reaction control
-    var reactionActive: String = "" //set in initialization
-    var reactionStarted: String = "" //set after check in MainRoom
+    //Reaction control set in ProductionController
+    var reactionActive: String = ""
 
 
 
