@@ -87,4 +87,7 @@ fun MainRoom.needCorrection2() {
 
     //11 cleaner
     if (this.constant.needCleaner) this.need[2][17] = 1
+
+    //18 Lab filler
+    if (this.structureLabSort.isNotEmpty() && this.constant.reactionActive != "") this.need[1][18] = 1
 }

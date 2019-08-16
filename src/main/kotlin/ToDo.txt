@@ -19,6 +19,7 @@ In future
 //15 - mineral extractor
 //16 - mineral carrier
 //17 - cleaner
+//18 - lab filler
 
 
 //Slave

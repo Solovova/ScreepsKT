@@ -1,12 +1,10 @@
 package mainRoomCollector
 
 import mainRoom.MainRoom
-import mainRoom.setLogistTask
 import screeps.api.OK
 import screeps.api.RESOURCE_ENERGY
 import screeps.api.structures.StructureTerminal
 import screeps.utils.toMap
-import kotlin.math.max
 import kotlin.math.min
 
 fun MainRoomCollector.runTerminalsTransfer() {

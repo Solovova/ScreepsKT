@@ -4,6 +4,7 @@ import Tasks
 import battleGroup.BattleGroupContainer
 import constants.Constants
 import mainRoomCollector.MainRoomCollector
+import mainRoomCollector.infoShow
 import productionController.ProductionController
 import screeps.api.*
 
@@ -57,5 +58,6 @@ class MainContext {
         this.tasks.toMemory()
         this.constants.toMemory()
         this.messengerShow()
+        this.mainRoomCollector.infoShow()
     }
 }

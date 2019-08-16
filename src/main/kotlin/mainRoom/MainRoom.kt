@@ -22,7 +22,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     val need  = Array(3) {Array(100) {0}}
     val have  = Array(100) {0}
     private val haveForQueue = Array(100) {0}
-    private val queue = mutableListOf<QueueSpawnRecord>()
+    val queue = mutableListOf<QueueSpawnRecord>()
 
     //Cash data
     val resStorage: MutableMap<ResourceConstant,Int> = mutableMapOf()  //Stored in Store + Logist
@@ -30,7 +30,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
     //StructureSpawn
     private var _structureSpawn: Map<String, StructureSpawn>? = null
-    private val structureSpawn: Map<String, StructureSpawn>
+    val structureSpawn: Map<String, StructureSpawn>
         get() {
             if (this._structureSpawn == null)
                 _structureSpawn = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_SPAWN }.associate { it.id to it as StructureSpawn }
@@ -298,7 +298,6 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         this.buildQueue()
 
         this.spawnCreep()
-        this.showQueue()
     }
 
     private fun needCorrection() {
@@ -338,8 +337,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
     private fun buildQueue() {
         for (i in 0 until this.have.size) this.haveForQueue[i] = this.have[i]
-        val fPriorityOfRole = if (this.getResourceInStorage() < 2000) arrayOf(0, 9, 1,  3, 2, 4, 14, 5,  6, 7, 10,  8, 11, 12, 13, 15, 16, 17)
-        else  arrayOf(0, 9, 5, 14, 1, 3,  2, 4, 6,  7, 10,  8, 11, 12, 13, 15, 16, 17)
+        val fPriorityOfRole = if (this.getResourceInStorage() < 2000) arrayOf(0, 9, 1,  3, 2, 4, 14, 5,  6, 7, 10,  8, 11, 12, 13, 15, 16, 17, 18)
+        else  arrayOf(0, 9, 5, 14, 1, 3,  2, 4, 6,  7, 10,  8, 11, 12, 13, 15, 16, 17, 18)
 
         //Main 0..1
         for (priority in 0..1) {
@@ -382,42 +381,6 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         //Slave 2
         for (slaveRoom in slaveRooms.values)
             slaveRoom.buildQueue(this.queue,2)
-    }
-
-
-    private fun showQueue() {
-        var showText = "lvl: ${this.constant.levelOfRoom} (${this.describe}):".padEnd(8)
-        var textSpawning  = ""
-
-        for (spawn in this.structureSpawn) {
-            val recordSpawning = spawn.value.spawning
-            if (recordSpawning != null) {
-                val creep: Creep? = Game.creeps[recordSpawning.name]
-                textSpawning += creep?.getDescribeForQueue(parent.parent) ?: ""
-            }
-        }
-
-        showText += textSpawning
-        showText = showText.padEnd(45) + ":"
-
-
-        for (record in this.queue) {
-            var prefix = ""
-            if (record.mainRoom != record.slaveRoom)
-                prefix = this.slaveRooms[record.slaveRoom]?.describe ?: "und"
-            showText += "$prefix ${record.role},"
-        }
-
-        var testBefore: String = "(lvl: ${this.structureController[0]?.level} "
-        testBefore += "${this.structureController[0]?.progress}".padStart(9)
-        testBefore += "/ "
-        testBefore += "${this.structureController[0]?.progressTotal}".padStart(9)
-        testBefore += "  "
-        testBefore += "${(this.structureController[0]?.progressTotal ?: 0) - (this.structureController[0]?.progress ?: 0)}".padStart(9)
-        testBefore = testBefore.padEnd(40) + ")"
-
-        parent.parent.messenger("QUEUE", this.name, showText, COLOR_YELLOW,
-                testBefore = testBefore)
     }
 
     private fun getBodyRole(role: Int): Array<BodyPartConstant> {
@@ -509,6 +472,10 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
             17 -> {
                 result = arrayOf(MOVE,CARRY)
+            }
+
+            18 -> {
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
             }
 
 
@@ -614,7 +581,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     }
     //0 - only role 0 creep
     //1 - Storage, 3 container, energy >300+20*50 1300
-    private fun getLevelOfRoom(): Int {
+    fun getLevelOfRoom(): Int {
         if (this.room.energyCapacityAvailable >= 1800
                 && this.structureLinkNearSource.size == this.source.size
                 && this.structureContainerNearController.size == 1
@@ -677,7 +644,6 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         this.runTower()
         this.buildCreeps()
         this.directControl()
-        this.messageAboutUpgrade()
 
         for (room in this.slaveRooms.values) {
             try {
@@ -707,18 +673,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         this.upgradeListForm()
     }
 
-    private fun messageAboutUpgrade() {
-        if (this.constructionSite.isNotEmpty()) return
-        val controller: StructureController? = this.structureController[0]
-        if (controller != null) {
-            val answer: String = this.missingStructures()
-            if (answer!="")
-                parent.parent.messenger("INFO","Room: ${this.describe}  ${this.name}",answer, COLOR_RED)
-        }
-
-    }
-
-    private fun missingStructures():String {
+    fun missingStructures():String {
         if (this.constructionSite.isNotEmpty()) return ""
         val controller: StructureController = this.structureController[0] ?: return ""
 

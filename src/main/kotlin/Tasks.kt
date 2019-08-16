@@ -5,33 +5,6 @@ import screeps.api.*
 import screeps.api.Memory
 import screeps.utils.unsafe.delete
 
-enum class TypeOfTask {
-    GoToRoom,
-    Take,
-    Transport,
-    Build,
-    Repair,
-    Drop,
-    Harvest,
-    TransferTo,
-    Upgrade,
-    Claim,
-    Reserve,
-    GoToPos,
-    TakeDropped,
-    AttackRange,
-    AttackMile,
-    SignRoom,
-    SignSlaveRoom,
-    HarvestMineral,
-    EraserAttack,
-    EraserGoToKL,
-    UpgradeStructure,
-    TransferToCreep,
-    HealCreep,
-    GoToRescueFlag
-}
-
 class CreepTask {
     val type: TypeOfTask
     val idObject0: String

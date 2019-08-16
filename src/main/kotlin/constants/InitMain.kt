@@ -45,7 +45,8 @@ fun Constants.initMain() {                         //M0       M1       M2       
     m(10).marketBuyEnergy = true
     m(11).marketBuyEnergy = true
 
-    //m(4).needMineral[RESOURCE_HYDROGEN] = 3000
+
+    //m(0).needMineral[RESOURCE_HYDROGEN] = 3000
 
 
 

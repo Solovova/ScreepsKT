@@ -4,6 +4,7 @@ import mainContext.MainContext
 import mainRoom.MainRoom
 import slaveRoom.SlaveRoom
 import mainRoom
+import mainRoom.setLabFillerTask
 import mainRoom.setLogistTask
 import role
 import screeps.api.*
@@ -151,6 +152,11 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
         if (!isTask) isTask = this.clean(creepCarry,mainContext,mainRoom)
         if (!isTask) isTask = this.drop(creepCarry,mainContext)
         mainRoom.needCleanerCalculate()
+    }
+
+    if (this.memory.role == 18 || this.memory.role == 1018) {
+        if (this.memory.role == 18 && this.ticksToLive<44) this.memory.role = this.memory.role + 1000
+        if (!isTask) mainRoom.setLabFillerTask(this)
     }
 
 
