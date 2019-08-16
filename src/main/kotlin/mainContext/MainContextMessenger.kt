@@ -20,8 +20,10 @@ fun MainContext.messenger(type: String, room: String, text: String, color: Color
         }
     }
 
+    val mainRoom: MainRoom? = if (this.constants !== undefined && this.constants.mainRooms.isNotEmpty())
+        this.mainRoomCollector.rooms[this.constants.mainRooms[0]]
+    else null
 
-    val mainRoom: MainRoom? = this.mainRoomCollector.rooms[this.constants.mainRooms[0]]
     if (mainRoom!= null) {
         if (mainRoom.room.find(FIND_FLAGS).none { it.color == COLOR_BROWN && it.secondaryColor == COLOR_RED }) {
             if (type == "QUEUE") return

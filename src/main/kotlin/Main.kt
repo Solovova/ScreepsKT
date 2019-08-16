@@ -21,7 +21,8 @@ fun loop() {
     protectedMainContext.messenger("HEAD", "", "Current game tick is ${Game.time} _________________________________________", COLOR_WHITE)
 
     // Start tick functions
-    if (!protectedMainContext.initOnThisTick)   protectedMainContext.runInStartOfTick()
+    protectedMainContext.runInStartOfTick()
+
     protectedMainContext.runNotEveryTick()
 
     // Testing functions

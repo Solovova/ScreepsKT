@@ -5,20 +5,10 @@ import mainContext.messenger
 import screeps.api.*
 import screeps.utils.unsafe.delete
 
-//Two type constants
-//simple - initializing on start of tick, you can change it but data not save in memory and on next tick will be initialized default data
-//cashed - initializing in program, at end of tick save to memory, and red on start of next tick
-
-//MainRoom.constant         - simple
-//MainRoom.constant.cashed  - cashed
-
-//SlaveRoom.constant         - simple
-//SlaveRoom.constant.cashed  - cashed
-
-
 class Constants(val parent: MainContext) {
     val globalConstant: GlobalConstant = GlobalConstant()  //cashed
-    var mainRooms: Array<String> = arrayOf() //simple
+    var mainRoomsInit: Array<String> = arrayOf() //simple
+    var mainRooms: Array<String> = arrayOf() //simple after check mainRoomsInit
     val mainRoomConstantContainer: MutableMap<String, MainRoomConstant> = mutableMapOf() //cashed
 
     var battleGroups: Array<String> = arrayOf() //cashed
@@ -28,9 +18,12 @@ class Constants(val parent: MainContext) {
     init {
         if (Game.rooms["E54N37"] != null) this.initMain()
         else this.initTest()
+
+        this.fromMemory()
     }
 
     fun initMainRoomConstantContainer(names: Array<String>) {
+        this.mainRoomsInit = names
         var resultMainRooms: Array<String> = arrayOf()
         for (name in names)
             if (Game.rooms[name] != null) {
@@ -41,7 +34,7 @@ class Constants(val parent: MainContext) {
     }
 
     fun getMainRoomConstant(mainRoomName: String) : MainRoomConstant {
-        val mainRoomConstant:MainRoomConstant ? = mainRoomConstantContainer[mainRoomName]
+        val mainRoomConstant:MainRoomConstant? = mainRoomConstantContainer[mainRoomName]
         return if (mainRoomConstant == null) {
             parent.messenger("ERROR", mainRoomName, "initialization don't see MainRoomConstant", COLOR_RED)
             MainRoomConstant(this)
@@ -49,19 +42,19 @@ class Constants(val parent: MainContext) {
     }
 
     fun m(index: Int) : MainRoomConstant {
-        if (index>this.mainRooms.size) {
+        if (index>=this.mainRoomsInit.size) {
             parent.messenger("ERROR", "$index", "initialization M out of range main room", COLOR_RED)
             return MainRoomConstant(this)
         }
-        return this.getMainRoomConstant(this.mainRooms[index])
+        return this.getMainRoomConstant(this.mainRoomsInit[index])
     }
 
     fun s(indexMain: Int, indexSlave: Int) : SlaveRoomConstant {
-        if (indexMain>this.mainRooms.size) {
-            parent.messenger("ERROR", "$indexSlave", "initialization S out of range main room", COLOR_RED)
+        if (indexMain >= this.mainRoomsInit.size) {
+            parent.messenger("ERROR", "$indexMain", "initialization S out of range main room", COLOR_RED)
             return SlaveRoomConstant()
         }
-        val mainRoomConstant:MainRoomConstant = this.getMainRoomConstant(this.mainRooms[indexMain])
+        val mainRoomConstant:MainRoomConstant = this.getMainRoomConstant(this.mainRoomsInit[indexMain])
         return mainRoomConstant.s(indexSlave)
     }
 
@@ -108,7 +101,7 @@ class Constants(val parent: MainContext) {
             battleGroupContainerConstant.fromDynamic(d["battleGroupContainerConstant"] )
     }
 
-    fun fromMemory() {
+    private fun fromMemory() {
         val d: dynamic = Memory["global"]
         if (d!= null) this.fromDynamic(d)
     }

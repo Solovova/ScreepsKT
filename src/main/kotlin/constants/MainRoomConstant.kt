@@ -52,6 +52,10 @@ class MainRoomConstant(val parent: Constants) {
     var upgradeDefenceHits: Int    = 200000
     var upgradeList: MutableMap<String,Int> = mutableMapOf() //cashed //id of wall or rampart, hits
 
+    //Reaction control
+    var reactionActive: String = "" //set in initialization
+    var reactionStarted: String = "" //set after check in MainRoom
+
 
 
     private fun getSlaveRoomConstant(slaveRoomName: String) : SlaveRoomConstant {
@@ -63,7 +67,7 @@ class MainRoomConstant(val parent: Constants) {
     }
 
     fun s(index: Int) : SlaveRoomConstant {
-        if (index>this.slaveRooms.size) {
+        if (index >= this.slaveRooms.size) {
             parent.parent.messenger("ERROR", "$index", "initialization S out of range slave room", COLOR_RED)
             return SlaveRoomConstant()
         }

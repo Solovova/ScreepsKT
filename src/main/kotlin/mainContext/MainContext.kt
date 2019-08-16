@@ -7,30 +7,18 @@ import mainRoomCollector.MainRoomCollector
 import productionController.ProductionController
 import screeps.api.ResourceConstant
 
-//mainContext.MainContext initial only then died
-//in start of tick initial mainRoomCollector
-//in start of tick initial Constant and assign it need place
-
 class MainContext {
-    var mainRoomCollector: MainRoomCollector = MainRoomCollector(this, arrayOf())
-    val tasks: Tasks = Tasks(this)
-    val constants: Constants = Constants(this)
-    var initOnThisTick: Boolean = true
     val messengerMap : MutableMap<String,String> = mutableMapOf()
-    val battleGroupContainer: BattleGroupContainer
-    val productionController: ProductionController = ProductionController(this)
-
-
-    init {
-        this.constants.fromMemory()
-        this.battleGroupContainer = BattleGroupContainer(this)
-        this.runInStartOfTick()
-    }
+    val constants: Constants = Constants(this)
+    val tasks: Tasks = Tasks(this)
+    var mainRoomCollector: MainRoomCollector = MainRoomCollector(this, arrayOf())
+    private val battleGroupContainer: BattleGroupContainer = BattleGroupContainer(this)
+    private val productionController: ProductionController = ProductionController(this)
 
     fun runInStartOfTick() {
-        this.mainRoomCollector = MainRoomCollector(this, this.constants.mainRooms)
-        this.mainRoomCollector.runInStartOfTick()
+        this.mainRoomCollector = MainRoomCollector(this,this.constants.mainRoomsInit)
         this.productionController.runInStartOfTick()
+        this.mainRoomCollector.runInStartOfTick()
     }
 
     fun runNotEveryTick() {
@@ -40,7 +28,6 @@ class MainContext {
     }
 
     fun runInEndOfTick() {
-        this.initOnThisTick = false
         this.mainRoomCollector.runInEndOfTick()
         this.productionController.runInEndOfTick()
 

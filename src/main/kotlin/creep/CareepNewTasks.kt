@@ -329,7 +329,7 @@ fun Creep.slaveSignRoom(mainContext: MainContext, slaveRoom: SlaveRoom?): Boolea
 fun Creep.takeDroppedEnergy(creepCarry: Int, mainContext: MainContext, range: Int = 100): Boolean {
     var result = false
     if (creepCarry == 0) {
-        val objDroppedEnergy: Resource? = this.room.find(FIND_DROPPED_ENERGY).minBy { this.pos.getRangeTo(it.pos) }
+        val objDroppedEnergy: Resource? = this.room.find(FIND_DROPPED_RESOURCES ).filter { it.resourceType == RESOURCE_ENERGY }.minBy { this.pos.getRangeTo(it.pos) }
         if (objDroppedEnergy != null && objDroppedEnergy.pos.inRangeTo(this.pos,range)) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.TakeDropped, idObject0 = objDroppedEnergy.id, posObject0 = objDroppedEnergy.pos))
             result = true

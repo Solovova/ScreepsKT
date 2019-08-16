@@ -11,7 +11,7 @@ fun Constants.initMain() {                         //M0       M1       M2       
     this.getMainRoomConstant("E53N39").initSlaveRoomConstantContainer(arrayOf("E52N39"))                                //M4
     this.getMainRoomConstant("E54N39").initSlaveRoomConstantContainer(arrayOf("E54N38"))                                //M6
     this.getMainRoomConstant("E51N39").initSlaveRoomConstantContainer(arrayOf("E51N38"))                                //M7
-    this.getMainRoomConstant("E59N38").initSlaveRoomConstantContainer(arrayOf("E59N37","E59N39"))                       //M10
+    this.getMainRoomConstant("E59N38").initSlaveRoomConstantContainer(arrayOf("E59N37","E59N39","E58N39"))                       //M10
     this.getMainRoomConstant("E57N34").initSlaveRoomConstantContainer(arrayOf("E57N33","E56N33"))              //M11
     this.getMainRoomConstant("E51N33").initSlaveRoomConstantContainer(arrayOf("E51N34"))                                //M12
     this.getMainRoomConstant("E58N37").initSlaveRoomConstantContainer(arrayOf("E58N38"))                                //M14
@@ -20,6 +20,11 @@ fun Constants.initMain() {                         //M0       M1       M2       
     this.getMainRoomConstant("E57N39").initSlaveRoomConstantContainer(arrayOf("E56N39","E57N38","E56N38"))              //M18
     this.getMainRoomConstant("E57N35").initSlaveRoomConstantContainer(arrayOf("E58N35","E59N35"))              //M19
     this.getMainRoomConstant("E57N37").initSlaveRoomConstantContainer(arrayOf("E57N36"))                                //M20
+
+    //Far transfer E51N33 -> E52N33 wait
+    //Far transfer E59N38 -> E58N39
+    s(10,2).model = 1
+    //E57N35
 
 
 //    m(3).sentEnergyToRoom = "E54N37"
@@ -36,7 +41,7 @@ fun Constants.initMain() {                         //M0       M1       M2       
     m(6).marketBuyEnergy = true
     m(7).marketBuyEnergy = true
     m(8).marketBuyEnergy = true
-    //m(9).marketBuyEnergy = true
+    m(9).marketBuyEnergy = true
     m(10).marketBuyEnergy = true
     m(11).marketBuyEnergy = true
 

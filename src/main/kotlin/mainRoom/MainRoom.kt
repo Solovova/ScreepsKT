@@ -673,11 +673,9 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         }
 
         if (this.constant.levelOfRoom>1) this.linkLogistick()
-
         this.runTower()
         this.buildCreeps()
         this.directControl()
-
         this.messageAboutUpgrade()
     }
 
