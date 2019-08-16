@@ -26,7 +26,7 @@ class Constants(val parent: MainContext) {
         this.mainRoomsInit = names
         var resultMainRooms: Array<String> = arrayOf()
         for (name in names)
-            if (Game.rooms[name] != null) {
+            if (Game.rooms[name] != null && (Game.rooms[name]?.controller?.my == true)) {
                 mainRoomConstantContainer[name] = MainRoomConstant(this)
                 resultMainRooms += name
             } else parent.messenger("ERROR", name, "initialization don't see room in Game.rooms", COLOR_RED)

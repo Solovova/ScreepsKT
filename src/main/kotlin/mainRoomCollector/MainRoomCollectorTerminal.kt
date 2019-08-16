@@ -9,7 +9,7 @@ import screeps.utils.toMap
 import kotlin.math.max
 import kotlin.math.min
 
-fun MainRoomCollector.terminalCalculate() {
+fun MainRoomCollector.runTerminalsTransfer() {
     this.terminalSentEnergy()
     this.terminalSentMineral()
 }

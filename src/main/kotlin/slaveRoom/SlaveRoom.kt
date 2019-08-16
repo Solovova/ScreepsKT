@@ -466,9 +466,11 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
     }
 
     fun runInStartOfTick() {
+    }
+
+    fun runInEndOfTick() {
         this.directControl()
         if (this.constant.model != 1) this.profitShow()
-        if (this.parent.parent.parent.constants.globalConstant.clearProfit) this.profitClear()
     }
 
     private fun profitShow() {

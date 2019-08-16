@@ -649,8 +649,6 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 slaveRooms[slaveName] = SlaveRoom(this, slaveName, "${this.describe}S$index", slaveRoomConstant)
             else parent.parent.messenger("ERROR", "${this.name} $slaveName", "initialization don't see constant", COLOR_RED)
         }
-
-        this.fillCash()
     }
 
 
@@ -664,6 +662,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     }
 
     fun runInStartOfTick() {
+        this.fillCash()
         for (room in this.slaveRooms.values) {
             try {
                 room.runInStartOfTick()
@@ -671,12 +670,22 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 parent.parent.messenger("ERROR", "Slave room in start", room.name, COLOR_RED)
             }
         }
+    }
 
-        if (this.constant.levelOfRoom>1) this.linkLogistick()
+    fun runInEndOfTick(){
+        if (this.constant.levelOfRoom>1) this.runLinkTransfers()
         this.runTower()
         this.buildCreeps()
         this.directControl()
         this.messageAboutUpgrade()
+
+        for (room in this.slaveRooms.values) {
+            try {
+                room.runInEndOfTick()
+            }catch (e: Exception) {
+                parent.parent.messenger("ERROR", "Slave room in end", room.name, COLOR_RED)
+            }
+        }
     }
 
     fun runNotEveryTick() {
@@ -780,7 +789,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         return ""
     }
 
-    private fun linkLogistick() {
+    private fun runLinkTransfers() {
         val fLinkTo: StructureLink = this.structureLinkNearStorage[0] ?: return
         if (fLinkTo.energy!=0) return
 

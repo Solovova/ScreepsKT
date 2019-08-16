@@ -17,8 +17,8 @@ class MainContext {
 
     fun runInStartOfTick() {
         this.mainRoomCollector = MainRoomCollector(this,this.constants.mainRoomsInit)
-        this.productionController.runInStartOfTick()
         this.mainRoomCollector.runInStartOfTick()
+        this.productionController.runInStartOfTick()
     }
 
     fun runNotEveryTick() {

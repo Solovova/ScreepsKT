@@ -53,18 +53,18 @@ fun testingFunctions (mainContext : MainContext) {
 //            console.log("${record.key}   : ${record.value}")
 //    }
 
-    val mainRoom: MainRoom? = mainContext.mainRoomCollector.rooms["W4N3"]
-    if (mainRoom != null) {
-        val slaveRoom: SlaveRoom? = mainRoom.slaveRooms["W4N4"]
-        if (slaveRoom != null) {
-            for (record in slaveRoom.source)
-                console.log("${record.key}   : ${record.value}")
-
-            for (record in slaveRoom.rescueFlag)
-                console.log("${record.key}   : ${record.value}")
-        }
-
-    }
+//    val mainRoom: MainRoom? = mainContext.mainRoomCollector.rooms["W4N3"]
+//    if (mainRoom != null) {
+//        val slaveRoom: SlaveRoom? = mainRoom.slaveRooms["W4N4"]
+//        if (slaveRoom != null) {
+//            for (record in slaveRoom.source)
+//                console.log("${record.key}   : ${record.value}")
+//
+//            for (record in slaveRoom.rescueFlag)
+//                console.log("${record.key}   : ${record.value}")
+//        }
+//
+//    }
 
 
 }

@@ -12,6 +12,12 @@ fun Constants.initTest() {
     m(1).creepUseBigBuilder = true
     m(2).creepUseBigBuilder = true
 
+    m(0).note = "room 0"
+    m(1).note = "room 1"
+    m(2).note = "room 2"
+
+    s(1,0).profitPerTickPrevious = 0
+
 
 
 

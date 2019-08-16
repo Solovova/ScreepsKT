@@ -21,6 +21,7 @@ fun MainRoom.needCorrection2() {
     //1.3 small filler
     if ((this.have[5]==0)&&(this.getResourceInStorage()>2000))  this.need[0][9]=1
     if ((this.have[5]==0)&&(this.getResourceInStorage()<=2000))  this.need[0][0]=2
+    if (this.getResourceInStorage()==0)  this.need[0][0]=2
 
     //2 Upgrader
     if (this.constant.sentEnergyToRoom == "") {

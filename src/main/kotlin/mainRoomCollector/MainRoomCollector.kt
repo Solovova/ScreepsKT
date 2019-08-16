@@ -22,7 +22,7 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
     init {
         names.forEachIndexed { index, name ->
             val mainRoomConstant: MainRoomConstant? = this.parent.constants.mainRoomConstantContainer[name]
-            if (mainRoomConstant != null)
+            if (mainRoomConstant != null && Game.rooms[name] != null && (Game.rooms[name]?.controller?.my == true))
                 rooms[name] = MainRoom(this, name, "M${index.toString().padStart(2, '0')}", mainRoomConstant)
             else parent.messenger("ERROR", name, "initialization don't see mainRoomConstant", COLOR_RED)
         }
@@ -105,15 +105,7 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
                 parent.messenger("ERROR", "Room in start of tick", room.name, COLOR_RED)
             }
         }
-        this.terminalCalculate()
 
-        for (creep in Game.creeps.values) {
-            try {
-                creep.newTask(this.parent)
-            } catch (e: Exception) {
-                parent.messenger("ERROR", "CREEP New task", "${creep.memory.mainRoom} ${creep.memory.slaveRoom} ${creep.memory.role} ${creep.id}", COLOR_RED)
-            }
-        }
     }
 
     fun runNotEveryTick() {
@@ -128,7 +120,24 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
     }
 
     fun runInEndOfTick() {
+        for (room in rooms.values) {
+            try {
+                room.runInEndOfTick()
+            } catch (e: Exception) {
+                parent.messenger("ERROR", "Room in end of tick", room.name, COLOR_RED)
+            }
+        }
+
+        this.runTerminalsTransfer()
+
+
         for (creep in Game.creeps.values) {
+            try {
+                creep.newTask(this.parent)
+            } catch (e: Exception) {
+                parent.messenger("ERROR", "CREEP New task", "${creep.memory.mainRoom} ${creep.memory.slaveRoom} ${creep.memory.role} ${creep.id}", COLOR_RED)
+            }
+
             try {
                 creep.doTask(this.parent)
             } catch (e: Exception) {

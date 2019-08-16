@@ -14,8 +14,6 @@ class GlobalConstant {
 
 
 
-    val clearProfit: Boolean = false
-
     //INFO
     val showProfitWhenLessWhen: Int = 6000
 
