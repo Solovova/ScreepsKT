@@ -57,10 +57,10 @@ fun MainRoom.needCorrection2() {
     //8 Builder
 
     if (this.constant.creepUseBigBuilder) {
-        if ((this.constructionSite.isNotEmpty() || this.constant.upgradeList.isNotEmpty())
+        if ((this.constructionSite.isNotEmpty() || this.constant.defenceNeedUpgrade)
                 && (this.getResourceInStorage() > (this.constant.energyBuilder + 50000))) {
             this.need[1][10]=1
-            this.need[1][11]=this.have[10]
+            this.need[1][11]=this.have[10] * if (this.room.energyCapacityAvailable>=3500) 2 else 1
         }
     }else {
         if ((this.constructionSite.isNotEmpty()) && (this.getResourceInStorage() > this.constant.energyBuilder)) {
@@ -89,5 +89,8 @@ fun MainRoom.needCorrection2() {
     if (this.constant.needCleaner) this.need[2][17] = 1
 
     //18 Lab filler
-    if (this.structureLabSort.isNotEmpty() && this.constant.reactionActive != "") this.need[1][18] = 1
+    if (this.structureLabSort.isNotEmpty() && this.constant.reactionActive != "") {
+
+        this.need[1][18] = 1
+    }
 }

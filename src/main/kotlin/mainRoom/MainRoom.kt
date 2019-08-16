@@ -5,7 +5,6 @@ import constants.MainRoomConstant
 import constants.SlaveRoomConstant
 import slaveRoom.SlaveRoom
 import constants.constantMainRoomInit
-import creep.getDescribeForQueue
 import constants.CacheCarrier
 import mainContext.getCacheRecordRoom
 import mainContext.messenger
@@ -447,7 +446,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             }
 
             10 -> {
-                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                if (this.room.energyCapacityAvailable>=3500) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                else result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
             }
 
             11 -> {
@@ -637,6 +637,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 parent.parent.messenger("ERROR", "Slave room in start", room.name, COLOR_RED)
             }
         }
+        this.setMineralNeed()
     }
 
     fun runInEndOfTick(){
@@ -652,6 +653,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 parent.parent.messenger("ERROR", "Slave room in end", room.name, COLOR_RED)
             }
         }
+        this.runReactions()
     }
 
     fun runNotEveryTick() {
@@ -670,7 +672,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         this.marketCreateBuyOrders()
         this.marketCreateBuyOrdersMineral()
         this.needCleanerCalculate()
-        this.upgradeListForm()
+        this.needDefenceUpgradeCalculate()
     }
 
     fun missingStructures():String {
@@ -789,15 +791,33 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         this.constant.needCleaner = result
     }
 
-    fun upgradeListForm() {
-        val upgradeList = this.room.find(FIND_STRUCTURES).filter {
-            (it.structureType == STRUCTURE_WALL || it.structureType == STRUCTURE_RAMPART)
-                    && it.hits < (this.constant.upgradeDefenceHits - 50000)}.sortedByDescending { it.hits }
-        this.constant.upgradeList.clear()
-        for (record in upgradeList) {
-            this.constant.upgradeList[record.id] = this.constant.upgradeDefenceHits
-            if (this.constant.upgradeList.size > 15) return
+    private fun needDefenceUpgradeCalculate() {
+        val structure: Structure? = this.room.find(FIND_STRUCTURES).filter {
+            (it.structureType == STRUCTURE_RAMPART || it.structureType == STRUCTURE_WALL)
+                    && it.hits < this.constant.defenceHits
+        }.firstOrNull()
+        this.constant.defenceNeedUpgrade = (structure != null)
+    }
+
+    private fun runReactions() {
+        if(this.constant.reactionActive == "") return
+        if (this.structureLabSort.size !in arrayOf(3,6,10)) return
+        val lab0 = this.structureLabSort[0] ?: return
+        val lab1 = this.structureLabSort[1] ?: return
+        for (ind in 2 until this.structureLabSort.size) {
+            val lab = this.structureLabSort[ind] ?: continue
+            if (lab.cooldown != 0) continue
+            lab.runReaction(lab0,lab1)
         }
+    }
+
+    fun setMineralNeed() {
+        if (this.constant.reactionActive == "") return
+        val reaction = this.constant.reactionActive.unsafeCast<ResourceConstant>()
+        if (this.structureLabSort.size !in arrayOf(3,6,10)) return
+        val reactionComponent = this.parent.parent.constants.globalConstant.labReactionComponent[reaction] ?: return
+        this.constant.needMineral[reactionComponent[0]] = 1000
+        this.constant.needMineral[reactionComponent[1]] = 1000
     }
 }
 

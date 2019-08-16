@@ -1,5 +1,7 @@
 package constants
 
+import screeps.api.*
+
 fun Constants.initTest() {
     this.initMainRoomConstantContainer( arrayOf("W5N3","W4N3","W7N3") )
     this.getMainRoomConstant("W5N3").initSlaveRoomConstantContainer(arrayOf("W5N2","W5N4")) //M0
@@ -18,8 +20,7 @@ fun Constants.initTest() {
 
     s(1,0).profitPerTickPrevious = 0
 
-
-
-
-
+    m(0).reactionActive = "ZK"
+    m(1).reactionActive = "UL"
+    m(2).reactionActive = "G"
 }

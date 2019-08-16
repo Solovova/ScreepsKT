@@ -33,10 +33,12 @@ class MainContext {
 //        RESOURCE_ZYNTHIUM_KEANITE: "ZK",
 //        RESOURCE_UTRIUM_LEMERGITE: "UL",
 
-//        this.marketShowBuyOrdersRealPrice(RESOURCE_KEANIUM)
-//        this.marketShowSellOrdersRealPrice(RESOURCE_KEANIUM)
-//        val result = Game.market.deal("5d53042649ede365f785b86d",10000,"E54N37")
+        //this.marketShowBuyOrdersRealPrice("XGHO2".unsafeCast<ResourceConstant>())
+        //this.marketShowSellOrdersRealPrice("XGHO2".unsafeCast<ResourceConstant>())
+        //Game.market.createOrder(ORDER_SELL,"XGHO2".unsafeCast<ResourceConstant>(),3.0,10000,"E54N37")
+        //val result = Game.market.deal("5d4b64f5e4c2aa66fdcc1fdd",10000,"E54N37")
 //        console.log("Trade: $result")
+        //this.directControlTaskClearInRoom()
     }
 
     fun runInStartOfTick() {

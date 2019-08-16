@@ -1,5 +1,10 @@
-import screeps.api.ColorConstant
-import screeps.api.Market
+import screeps.api.*
+import screeps.api.structures.Structure
+
+external val LAB_MINERAL_CAPACITY : IntConstant
+external val REACTION_TIME : Record<ResourceConstant, Int>
+external val RESOURCES_ALL : Array<ResourceConstant>
+external val REACTIONS: dynamic
 
 enum class TypeOfTask {
     GoToRoom,
@@ -52,3 +57,9 @@ data class MainRoomInfoSetup(val type: TypeOfMainRoomInfo,
                              val width: Int,
                              val prefix: String = "",
                              val suffix: String = "")
+
+data class LabFillerTask(val StructureFrom: Structure,
+                         val StructureTo: Structure,
+                         val resource: ResourceConstant,
+                         val quantity: Int,
+                         val priority: Int)

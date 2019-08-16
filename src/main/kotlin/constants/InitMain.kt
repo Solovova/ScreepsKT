@@ -1,5 +1,8 @@
 package constants
 
+import screeps.api.RESOURCE_KEANIUM
+import screeps.api.RESOURCE_ZYNTHIUM
+
 fun Constants.initMain() {                         //M0       M1       M2       M3       M4       M5       M6        M7        M8        M9
     this.initMainRoomConstantContainer( arrayOf("E54N37","E59N36","E52N35","E52N38","E53N39","E52N37","E54N39", "E51N39", "E53N38", "E51N37",
                                                 "E59N38","E57N34","E51N33","E51N35","E58N37","E52N36","E57N32", "E58N39", "E57N39", "E57N35",
@@ -44,9 +47,34 @@ fun Constants.initMain() {                         //M0       M1       M2       
     m(9).marketBuyEnergy = true
     m(10).marketBuyEnergy = true
     m(11).marketBuyEnergy = true
+    m(12).marketBuyEnergy = true
+    m(14).marketBuyEnergy = true
+    m(16).marketBuyEnergy = true
 
+    m(0).reactionActive = "ZK"
+    m(4).reactionActive = "UL"
+    m(6).reactionActive = "G"
 
-    //m(0).needMineral[RESOURCE_HYDROGEN] = 3000
+    m(1).reactionActive = "OH"
+    m(2).reactionActive = "OH"
+    m(3).reactionActive = "OH"
+    m(5).reactionActive = "OH"
+    m(7).reactionActive = "OH"
+    m(8).reactionActive = "OH"
+    m(9).reactionActive = "OH"
+    m(10).reactionActive = "OH"
+    m(11).reactionActive = "OH"
+    m(16).reactionActive = "OH"
+
+    m(6).creepUseBigBuilder = true
+    m(6).defenceHits = 3000000
+
+    m(0).creepUseBigBuilder = true
+    m(0).defenceHits = 1000000
+
+    m(1).creepUseBigBuilder = true
+    m(1).defenceHits = 1000000
+
 
 
 

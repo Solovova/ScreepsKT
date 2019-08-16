@@ -8,6 +8,7 @@ import CreepTask
 import TypeOfTask
 import role
 import screeps.api.*
+import screeps.api.Game.structures
 import screeps.api.structures.*
 import screeps.utils.toMap
 import slaveRoom
@@ -118,18 +119,19 @@ fun Creep.buildBigStructure(mainContext: MainContext, mainRoom: MainRoom): Boole
         }
     }
     if (!result) {
-        var structure: Structure? = null
-        var toHits = 0
-        for(record in mainRoom.constant.upgradeList){
-            val tmpStructure: Structure? = Game.getObjectById(record.key)
-            if (tmpStructure != null && tmpStructure.hits < record.value) {
-                structure = tmpStructure
-                toHits = record.value
-                break
-            }
+        var structure: Structure? = mainRoom.room.find(FIND_STRUCTURES).filter {
+            (it.structureType == STRUCTURE_RAMPART || it.structureType == STRUCTURE_WALL)
+                    && it.hits < mainRoom.constant.defenceHits
+        }.minBy { it.hits + it.pos.getRangeTo(this.pos) * 30000 }
+
+        if (structure == null) {
+            structure = mainRoom.room.find(FIND_STRUCTURES).filter {
+                (it.structureType == STRUCTURE_RAMPART || it.structureType == STRUCTURE_WALL)
+            }.minBy { it.hits + it.pos.getRangeTo(this.pos) * 30000 }
         }
+
         if (structure != null) {
-            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.UpgradeStructure, idObject0 = structure.id, posObject0 = structure.pos, quantity = toHits))
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.UpgradeStructure, idObject0 = structure.id, posObject0 = structure.pos, quantity = (structure.hits + 30000)))
             result = true
         }
     }

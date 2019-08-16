@@ -9,6 +9,7 @@ import CreepTask
 import mainContext.messenger
 import role
 import mainRoom
+import screeps.utils.toMap
 import slaveRoom
 
 fun Creep.doTask(mainContext: MainContext) {
@@ -50,8 +51,11 @@ fun Creep.doTask(mainContext: MainContext) {
         TypeOfTask.TransferToCreep -> {
             val objForFilling: Creep? = Game.getObjectById(mainRoom.constant.creepIdOfBigBuilder)
             if (objForFilling != null) {
-                if (this.pos.inRangeTo(objForFilling.pos,1))
-                    this.transfer(objForFilling, task.resource)
+                if (this.pos.inRangeTo(objForFilling.pos,1)){
+                    val carryCreepTo = objForFilling.carry.toMap().map { it.value }.sum()
+                    if (carryCreepTo == 0)
+                        this.transfer(objForFilling, task.resource)
+                }
                 else this.moveTo(objForFilling.pos)
             }
         }

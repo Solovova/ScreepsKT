@@ -1,5 +1,6 @@
 package constants
 
+import REACTIONS
 import screeps.api.*
 
 class GlobalConstant {
@@ -18,6 +19,15 @@ class GlobalConstant {
 
     //INFO
     val showProfitWhenLessWhen: Int = 6000
+
+    val labReactionComponent: MutableMap<ResourceConstant,Array<ResourceConstant>> = mutableMapOf()
+
+    init {
+        for (key0 in js("Object").keys(REACTIONS).unsafeCast<Array<ResourceConstant>>())
+            for (key1 in js("Object").keys(REACTIONS[key0]).unsafeCast<Array<ResourceConstant>>())
+                labReactionComponent[REACTIONS[key0][key1].unsafeCast<ResourceConstant>()] = arrayOf(key0,key1)
+    }
+
 
     fun toDynamic(): dynamic {
         val result: dynamic = object {}

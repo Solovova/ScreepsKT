@@ -61,7 +61,7 @@ fun MainRoom.runTower() {
 
     //3.1 STRUCTURE_RAMPART<5000
     if (fTask == null){
-        val damagedRamparts =  this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_RAMPART && it.hits < 5000 }
+        val damagedRamparts =  this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_RAMPART && it.hits < 2000 }
 
         if(damagedRamparts.isNotEmpty()) {
             fTask = "repair"

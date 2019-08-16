@@ -49,8 +49,8 @@ class MainRoomConstant(val parent: Constants) {
     var mineralMaxInRoom: Int = 200000
 
     //Wall and Ramparts upgrade
-    var upgradeDefenceHits: Int    = 200000
-    var upgradeList: MutableMap<String,Int> = mutableMapOf() //cashed //id of wall or rampart, hits
+    var defenceHits: Int    = 200000
+    var defenceNeedUpgrade: Boolean = false //cashed
 
     //Reaction control set in ProductionController
     var reactionActive: String = ""
@@ -88,19 +88,12 @@ class MainRoomConstant(val parent: Constants) {
         result["roomRunNotEveryTickNextTickRun"] = this.roomRunNotEveryTickNextTickRun
         result["levelOfRoom"] = this.levelOfRoom
         result["needCleaner"] = this.needCleaner
-
-
+        result["defenceNeedUpgrade"] = this.defenceNeedUpgrade
 
         if (this.slaveRooms.isNotEmpty()) {
             result["slaveRoomConstantContainer"] = object {}
             for (record in this.slaveRoomConstantContainer)
                     result["slaveRoomConstantContainer"][record.key] = record.value.toDynamic()
-        }
-
-        if (this.upgradeList.isNotEmpty()) {
-            result["upgradeList"] = object {}
-            for (record in this.upgradeList)
-                result["upgradeList"][record.key] = record.value
         }
 
         return result
@@ -112,13 +105,10 @@ class MainRoomConstant(val parent: Constants) {
         if (d["roomRunNotEveryTickNextTickRun"] != null) this.roomRunNotEveryTickNextTickRun = d["roomRunNotEveryTickNextTickRun"] as Int
         if (d["levelOfRoom"] != null) this.levelOfRoom = d["levelOfRoom"] as Int
         if (d["needCleaner"] != null) this.needCleaner = d["needCleaner"] as Boolean
+        if (d["defenceNeedUpgrade"] != null) this.defenceNeedUpgrade = d["defenceNeedUpgrade"] as Boolean
 
         if (d["slaveRoomConstantContainer"] != null)
             for (record in slaveRoomConstantContainer)
                 record.value.fromDynamic(d["slaveRoomConstantContainer"][record.key])
-
-        if (d["upgradeList"] != null)
-            for (record in js("Object").keys(d["upgradeList"]).unsafeCast<Array<String>>() )
-                this.upgradeList[record] = d["upgradeList"][record] as Int
     }
 }
