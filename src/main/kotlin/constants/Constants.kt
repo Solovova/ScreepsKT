@@ -16,10 +16,14 @@ class Constants(val parent: MainContext) {
     val battleGroupContainerConstant: BattleGroupContainerConstant = BattleGroupContainerConstant() //cashed
 
     init {
-        if (Game.rooms["E54N37"] != null) this.initMain()
-        else this.initTest()
+
+        if (Game.rooms["E54N37"] != null) this.initMainHead()
+        else this.initTestHead()
 
         this.fromMemory()
+
+        if (Game.rooms["E54N37"] != null) this.initMain()
+        else this.initTest()
     }
 
     fun initMainRoomConstantContainer(names: Array<String>) {

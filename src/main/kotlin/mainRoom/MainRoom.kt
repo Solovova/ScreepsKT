@@ -804,6 +804,12 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         if (this.structureLabSort.size !in arrayOf(3,6,10)) return
         val lab0 = this.structureLabSort[0] ?: return
         val lab1 = this.structureLabSort[1] ?: return
+        val reaction = this.constant.reactionActive.unsafeCast<ResourceConstant>()
+        val reactionComponent = this.parent.parent.constants.globalConstant.labReactionComponent[reaction]
+                ?: return
+        if (reactionComponent.size != 2) return
+        if (lab0.mineralAmount!=0 && lab0.mineralType != reactionComponent[0]) return
+        if (lab1.mineralAmount!=0 && lab1.mineralType != reactionComponent[1]) return
         for (ind in 2 until this.structureLabSort.size) {
             val lab = this.structureLabSort[ind] ?: continue
             if (lab.cooldown != 0) continue

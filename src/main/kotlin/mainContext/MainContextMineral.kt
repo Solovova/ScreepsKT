@@ -2,6 +2,9 @@ package mainContext
 
 import OrderRecord
 import screeps.api.*
+import MineralData
+import RESOURCES_ALL
+import toSecDigit
 
 fun MainContext.marketGetSellOrdersSorted(sellMineral: ResourceConstant, roomName: String): List<OrderRecord> {
 
@@ -61,4 +64,17 @@ fun MainContext.marketShowBuyOrdersRealPrice(resourceConstant: ResourceConstant 
         val strRealPrice = record.realPrice.asDynamic().toFixed(3).toString().padEnd(6)
         console.log("id: ${record.order.id} price: $strPrice real price: $strRealPrice  quantity:${record.order.remainingAmount}" )
     }
+}
+
+fun MainContext.mineralDataFill() {
+    for (res in RESOURCES_ALL)
+        mineralData[res] = MineralData(quantity = this.mainRoomCollector.rooms.values.sumBy {it.getResource(res)})
+}
+
+fun MainContext.mineralInfoShow() {
+    val mineralInfo = MineralInfo()
+    for (res in RESOURCES_ALL)
+        if ((mineralData[res]?.quantity ?: 0) != 0)
+            mineralInfo.addColumn(arrayOf("$res", (mineralData[res]?.quantity ?: 0).toString().toSecDigit(),"_______________"))
+    mineralInfo.show(this)
 }

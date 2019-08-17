@@ -5,16 +5,16 @@ import battleGroup.BattleGroupContainer
 import constants.Constants
 import mainRoomCollector.MainRoomCollector
 import mainRoomCollector.infoShow
-import productionController.ProductionController
+import MineralData
 import screeps.api.*
 
 class MainContext {
     val messengerMap : MutableMap<String,String> = mutableMapOf()
+    val mineralData: MutableMap<ResourceConstant, MineralData> = mutableMapOf()
     val constants: Constants = Constants(this)
     val tasks: Tasks = Tasks(this)
     var mainRoomCollector: MainRoomCollector = MainRoomCollector(this, arrayOf())
     private val battleGroupContainer: BattleGroupContainer = BattleGroupContainer(this)
-    private val productionController: ProductionController = ProductionController(this)
 
     init {
 //        RESOURCE_ENERGY: "energy",
@@ -44,21 +44,19 @@ class MainContext {
     fun runInStartOfTick() {
         this.mainRoomCollector = MainRoomCollector(this,this.constants.mainRoomsInit)
         this.mainRoomCollector.runInStartOfTick()
-        this.productionController.runInStartOfTick()
+        this.mineralDataFill()
     }
 
     fun runNotEveryTick() {
         this.mainRoomCollector.runNotEveryTick()
         this.tasks.deleteTaskDiedCreep()
-        this.productionController.runNotEveryTick()
     }
 
     fun runInEndOfTick() {
         this.mainRoomCollector.runInEndOfTick()
-        this.productionController.runInEndOfTick()
-
         this.tasks.toMemory()
         this.constants.toMemory()
+        this.mineralInfoShow()
         this.messengerShow()
         this.mainRoomCollector.infoShow()
     }

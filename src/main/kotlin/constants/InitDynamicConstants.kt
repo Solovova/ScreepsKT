@@ -14,4 +14,8 @@ fun constantSlaveRoomInit(slaveRoom: SlaveRoom) {
         slaveRoom.need[1][2] = 3
     }
 
+    if (slaveRoom.parent.name == "E51N33" && slaveRoom.name == "E52N33") {
+        slaveRoom.need[1][2] = 2
+    }
+
 }
