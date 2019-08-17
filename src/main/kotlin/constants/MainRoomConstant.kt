@@ -53,7 +53,7 @@ class MainRoomConstant(val parent: Constants) {
     var defenceNeedUpgrade: Boolean = false //cashed
 
     //Reaction control set in ProductionController
-    var reactionActive: String = ""
+    var reactionActive: String = "" //cashed
 
 
 
@@ -89,6 +89,9 @@ class MainRoomConstant(val parent: Constants) {
         result["levelOfRoom"] = this.levelOfRoom
         result["needCleaner"] = this.needCleaner
         result["defenceNeedUpgrade"] = this.defenceNeedUpgrade
+        result["reactionActive"] = this.reactionActive
+
+
 
         if (this.slaveRooms.isNotEmpty()) {
             result["slaveRoomConstantContainer"] = object {}
@@ -106,6 +109,7 @@ class MainRoomConstant(val parent: Constants) {
         if (d["levelOfRoom"] != null) this.levelOfRoom = d["levelOfRoom"] as Int
         if (d["needCleaner"] != null) this.needCleaner = d["needCleaner"] as Boolean
         if (d["defenceNeedUpgrade"] != null) this.defenceNeedUpgrade = d["defenceNeedUpgrade"] as Boolean
+        if (d["reactionActive"] != null) this.reactionActive = d["reactionActive"] as String
 
         if (d["slaveRoomConstantContainer"] != null)
             for (record in slaveRoomConstantContainer)

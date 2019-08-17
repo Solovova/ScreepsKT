@@ -49,6 +49,7 @@ fun Constants.initMain() {                         //M0       M1       M2       
     m(11).marketBuyEnergy = true
     m(12).marketBuyEnergy = true
     m(14).marketBuyEnergy = true
+    m(15).marketBuyEnergy = true
     m(16).marketBuyEnergy = true
 
     m(0).reactionActive = "ZK"
@@ -64,7 +65,10 @@ fun Constants.initMain() {                         //M0       M1       M2       
     m(9).reactionActive = "OH"
     m(10).reactionActive = "OH"
     m(11).reactionActive = "OH"
+    m(12).reactionActive = "OH"
+    m(14).reactionActive = "OH"
     m(16).reactionActive = "OH"
+
 
     m(6).creepUseBigBuilder = true
     m(6).defenceHits = 3000000

@@ -816,8 +816,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         val reaction = this.constant.reactionActive.unsafeCast<ResourceConstant>()
         if (this.structureLabSort.size !in arrayOf(3,6,10)) return
         val reactionComponent = this.parent.parent.constants.globalConstant.labReactionComponent[reaction] ?: return
-        this.constant.needMineral[reactionComponent[0]] = 1000
-        this.constant.needMineral[reactionComponent[1]] = 1000
+        this.constant.needMineral[reactionComponent[0]] = 2000
+        this.constant.needMineral[reactionComponent[1]] = 2000
     }
 }
 
