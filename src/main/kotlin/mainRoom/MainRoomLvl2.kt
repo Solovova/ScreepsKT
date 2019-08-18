@@ -1,8 +1,7 @@
 package mainRoom
 
 import mainContext.messenger
-import screeps.api.COLOR_RED
-import screeps.api.get
+import screeps.api.*
 import screeps.api.structures.StructureContainer
 
 fun MainRoom.needCorrection2() {
@@ -90,7 +89,11 @@ fun MainRoom.needCorrection2() {
 
     //18 Lab filler
     if (this.structureLabSort.isNotEmpty() && this.constant.reactionActive != "") {
-
         this.need[1][18] = 1
     }
+
+    //Manual defence
+    this.need[1][20] = this.room.find(FIND_FLAGS).filter { it.color == COLOR_PURPLE }.size
+    this.need[1][21] = this.room.find(FIND_FLAGS).filter { it.color == COLOR_BLUE}.size
+    this.need[1][22] = this.room.find(FIND_FLAGS).filter { it.color == COLOR_CYAN}.size
 }

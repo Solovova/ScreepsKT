@@ -15,9 +15,11 @@ import screeps.utils.isEmpty
 import screeps.utils.toMap
 import screeps.utils.unsafe.delete
 import slaveRoom
+import kotlin.math.roundToInt
 
 class MainRoomCollector(val parent: MainContext, names: Array<String>) {
     val rooms: MutableMap<String, MainRoom> = mutableMapOf()
+    val flags = Game.flags.toMap().values.toList()
 
     init {
         names.forEachIndexed { index, name ->
@@ -95,8 +97,11 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
     }
 
     fun runInStartOfTick() {
+
+
         this.creepsCalculate()
         this.creepsCalculateProfit()
+
         for (room in rooms.values) {
             try {
                 room.runInStartOfTick()
@@ -104,6 +109,7 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
                 parent.messenger("ERROR", "Room in start of tick", room.name, COLOR_RED)
             }
         }
+
 
     }
 
@@ -129,7 +135,7 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
 
         this.runTerminalsTransfer()
 
-
+        val cpuStartCreeps = Game.cpu.getUsed()
         for (creep in Game.creeps.values) {
             try {
                 creep.newTask(this.parent)
@@ -143,6 +149,8 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
                 parent.messenger("ERROR", "CREEP Do task", "${creep.memory.mainRoom} ${creep.memory.slaveRoom} ${creep.memory.role} ${creep.id}", COLOR_RED)
             }
         }
+
+        Memory["CPUCreep"] = (Game.cpu.getUsed() - cpuStartCreeps).roundToInt()
     }
 
     private fun houseKeeping() {

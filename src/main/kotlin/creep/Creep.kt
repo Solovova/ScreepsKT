@@ -159,7 +159,17 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
         if (!isTask) mainRoom.setLabFillerTask(this)
     }
 
+    if (this.memory.role == 20) {
+        this.manualDefenceMile(mainContext)
+    }
 
+    if (this.memory.role == 21) {
+        this.manualDefenceRanged(mainContext)
+    }
+
+    if (this.memory.role == 22) {
+        this.manualDefenceHealer(mainContext)
+    }
 
     if (this.memory.role == 100) {
         if (!isTask) isTask = this.slaveGoToRoom(mainContext)

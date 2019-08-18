@@ -42,6 +42,6 @@ fun loop() {
 //    for (valCS in countCS) console.log("${valCS.key}  ${valCS.value}")
 
 
-    console.log("CPU: ${(Game.cpu.getUsed() - cpuStart).roundToInt()}")
+    console.log("CPU: ${(Game.cpu.getUsed() - cpuStart).roundToInt()}   Creep: ${Memory["CPUCreep"]}")
 
 }

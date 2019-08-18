@@ -18,7 +18,7 @@ fun MainRoom.marketCreateBuyOrders() {
         if (orders.isNotEmpty()) {
             val order = orders.values.first()
             if (order.price != priceEnergy) Game.market.changeOrderPrice(order.id, priceEnergy)
-            if (order.remainingAmount < 50000) Game.market.extendOrder(order.id, 50000)
+            if (order.remainingAmount < 100000) Game.market.extendOrder(order.id, 100000)
         } else
             Game.market.createOrder(ORDER_BUY, RESOURCE_ENERGY, priceEnergy, 100000, this.name)
     }

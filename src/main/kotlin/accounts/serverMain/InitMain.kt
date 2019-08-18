@@ -55,10 +55,12 @@ fun Constants.initMainBody() {
     m(10).reactionActive = "G"
     m(11).reactionActive = "G"
     m(12).reactionActive = "G"
+    m(13).reactionActive = "GH"
     m(14).reactionActive = "G"
     m(15).reactionActive = "GH"
     m(16).reactionActive = "OH"
     m(18).reactionActive = "OH"
 
     m(6).needMineral["GH2O".unsafeCast<ResourceConstant>()] = 10000
+    m(3).needMineral["XGH2O".unsafeCast<ResourceConstant>()] = 10000
 }

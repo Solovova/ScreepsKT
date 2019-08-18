@@ -1,8 +1,7 @@
 package constants
 
 import mainContext.messenger
-import screeps.api.COLOR_RED
-import screeps.api.ResourceConstant
+import screeps.api.*
 
 class MainRoomConstant(val parent: Constants) {
     var slaveRooms : Array<String> = arrayOf() //simple
@@ -54,6 +53,12 @@ class MainRoomConstant(val parent: Constants) {
 
     //Reaction control set in ProductionController
     var reactionActive: String = "" //cashed
+
+    //Manual defence
+    var manualDefenceRoomMainColorFlag: ColorConstant = COLOR_PURPLE
+    var manualDefenceGroupPos: RoomPosition? = null //manualDefenceRoomMainColorFlag
+    var manualDefenceTargetCreep: Creep? = null
+    //var
 
 
 

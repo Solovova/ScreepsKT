@@ -8,6 +8,8 @@ In future
 // 3 - harvester source 1
 // 4 - transport source 1
 // 5 - filler
+
+
 // 6 - transport upgrader
 // 7 - upgrader
 // 8 - builder
@@ -20,6 +22,11 @@ In future
 //16 - mineral carrier
 //17 - cleaner
 //18 - lab filler
+
+//20 - manual defender mile
+//21 - manual defender range
+//22 - manual defender healer
+
 
 
 //Slave
@@ -59,6 +66,15 @@ model 2
 //need2
 //slave2
 
+//Main color use
+//COLOR_WHITE - auto build Structure
+//COLOR_RED - snapshots of room
+
+//COLOR_PURPLE - manual defence system mile attack
+//COLOR_BLUE - manual defence system ranged attack
+//COLOR_CYAN - manual defence system healer
+//COLOR_GREEN - manual defence tower commands
+
 
 
 
@@ -93,3 +109,19 @@ for (key in js("Object").keys(testMutable.asDynamic()).unsafeCast<Array<String>>
 // 8 COLOR_BROWN
 // 9 COLOR_GREY
 //10 COLOR_WHITE     - ignore this position
+
+//ToDo manual defence system
+//COLOR_PURPLE COLOR_PURPLE - manual defence system mile attack place
+//room color COLOR_RED - group goto flag
+//room color COLOR_GREEN - move down
+//room color COLOR_YELLOW - move up
+//room color COLOR_ORANGE - move left
+//room color COLOR_BROWN - move right
+//room color COLOR_GREY - pos of target
+//room color COLOR_WHITE - 1 turn delete move flags
+
+
+
+//COLOR_BLUE   COLOR_BLUE - manual defence system ranged attack place
+//COLOR_CYAN   COLOR_CYAN - manual defence system healer place
+//COLOR_GREEN - manual defence tower commands

@@ -18,14 +18,14 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     val room: Room = Game.rooms[this.name] ?: throw AssertionError("Not room $this.name")
     val slaveRooms: MutableMap<String, SlaveRoom> = mutableMapOf()
 
-    val need  = Array(3) {Array(100) {0}}
-    val have  = Array(100) {0}
-    private val haveForQueue = Array(100) {0}
+    val need = Array(3) { Array(100) { 0 } }
+    val have = Array(100) { 0 }
+    private val haveForQueue = Array(100) { 0 }
     val queue = mutableListOf<QueueSpawnRecord>()
 
     //Cash data
-    val resStorage: MutableMap<ResourceConstant,Int> = mutableMapOf()  //Stored in Store + Logist
-    private val resTerminal: MutableMap<ResourceConstant,Int> = mutableMapOf()
+    val resStorage: MutableMap<ResourceConstant, Int> = mutableMapOf()  //Stored in Store + Logist
+    private val resTerminal: MutableMap<ResourceConstant, Int> = mutableMapOf()
 
     //StructureSpawn
     private var _structureSpawn: Map<String, StructureSpawn>? = null
@@ -50,7 +50,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     val structureController: Map<Int, StructureController>
         get() {
             if (this._structureController == null)
-                _structureController = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_CONTROLLER }.withIndex().associate { it.index to it.value as StructureController}
+                _structureController = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_CONTROLLER }.withIndex().associate { it.index to it.value as StructureController }
             return _structureController ?: throw AssertionError("Error get StructureController")
         }
 
@@ -59,12 +59,13 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     val source: Map<Int, Source>
         get() {
             if (this._source == null)
-                _source = this.room.find(FIND_SOURCES).sortedWith(Comparator<Source>{ a, b ->
+                _source = this.room.find(FIND_SOURCES).sortedWith(Comparator<Source> { a, b ->
                     when {
                         a.id > b.id -> 1
                         a.id < b.id -> -1
                         else -> 0
-                    }}).withIndex().associate {it.index to it.value}
+                    }
+                }).withIndex().associate { it.index to it.value }
             return _source ?: throw AssertionError("Error get Source")
         }
 
@@ -82,7 +83,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     val structureTower: Map<String, StructureTower>
         get() {
             if (this._structureTower == null)
-                _structureTower = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_TOWER }.associate { it.id to it as StructureTower}
+                _structureTower = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_TOWER }.associate { it.id to it as StructureTower }
             return _structureTower ?: throw AssertionError("Error get StructureTower")
         }
 
@@ -91,7 +92,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     val structureContainer: Map<String, StructureContainer>
         get() {
             if (this._structureContainer == null)
-                _structureContainer = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_CONTAINER }.associate { it.id to it as StructureContainer}
+                _structureContainer = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_CONTAINER }.associate { it.id to it as StructureContainer }
             return _structureContainer ?: throw AssertionError("Error get StructureContainer")
         }
 
@@ -107,7 +108,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                             resultContainer[sourceRec.key] = container
                 _structureContainerNearSource = resultContainer
             }
-            return _structureContainerNearSource ?: throw AssertionError("Error get StructureContainerNearSource")
+            return _structureContainerNearSource
+                    ?: throw AssertionError("Error get StructureContainerNearSource")
         }
 
     //StructureContainerNearController
@@ -123,7 +125,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 }
                 _structureContainerNearController = resultContainer
             }
-            return _structureContainerNearController ?: throw AssertionError("Error get StructureContainerNearController")
+            return _structureContainerNearController
+                    ?: throw AssertionError("Error get StructureContainerNearController")
         }
 
     //StructureStorage
@@ -131,7 +134,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     val structureStorage: Map<Int, StructureStorage>
         get() {
             if (this._structureStorage == null)
-                _structureStorage = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_STORAGE }.withIndex().associate { it.index to it.value as StructureStorage}
+                _structureStorage = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_STORAGE }.withIndex().associate { it.index to it.value as StructureStorage }
             return _structureStorage ?: throw AssertionError("Error get StructureStorage")
         }
 
@@ -140,7 +143,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     private val structureLink: Map<String, StructureLink>
         get() {
             if (this._structureLink == null)
-                _structureLink = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_LINK }.associate { it.id to it as StructureLink}
+                _structureLink = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_LINK }.associate { it.id to it as StructureLink }
             return _structureLink ?: throw AssertionError("Error get StructureLink")
         }
 
@@ -156,7 +159,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                             resultLink[sourceRec.key] = link
                 _structureLinkNearSource = resultLink
             }
-            return _structureLinkNearSource ?: throw AssertionError("Error get StructureLinkNearSource")
+            return _structureLinkNearSource
+                    ?: throw AssertionError("Error get StructureLinkNearSource")
         }
 
     //StructureLinkNearController
@@ -172,7 +176,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 }
                 _structureLinkNearController = resultLink
             }
-            return _structureLinkNearController ?: throw AssertionError("Error get StructureLinkNearController")
+            return _structureLinkNearController
+                    ?: throw AssertionError("Error get StructureLinkNearController")
         }
 
     //StructureLinkNearStorage
@@ -191,7 +196,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 }
                 _structureLinkNearStorage = resultLink
             }
-            return _structureLinkNearStorage ?: throw AssertionError("Error get StructureLinkNearStorage")
+            return _structureLinkNearStorage
+                    ?: throw AssertionError("Error get StructureLinkNearStorage")
         }
 
     //StructureTerminal
@@ -199,7 +205,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     val structureTerminal: Map<Int, StructureTerminal>
         get() {
             if (this._structureTerminal == null)
-                _structureTerminal = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_TERMINAL }.withIndex().associate { it.index to it.value as StructureTerminal}
+                _structureTerminal = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_TERMINAL }.withIndex().associate { it.index to it.value as StructureTerminal }
             return _structureTerminal ?: throw AssertionError("Error get StructureTerminal")
         }
 
@@ -217,7 +223,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     val structureExtractor: Map<Int, StructureExtractor>
         get() {
             if (this._structureExtractor == null)
-                _structureExtractor = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_EXTRACTOR }.withIndex().associate { it.index to it.value as StructureExtractor}
+                _structureExtractor = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_EXTRACTOR }.withIndex().associate { it.index to it.value as StructureExtractor }
             return _structureExtractor ?: throw AssertionError("Error get StructureExtractor")
         }
 
@@ -233,7 +239,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 }
                 _structureContainerNearMineral = resultContainer
             }
-            return _structureContainerNearMineral ?: throw AssertionError("Error get StructureContainerNearMineral")
+            return _structureContainerNearMineral
+                    ?: throw AssertionError("Error get StructureContainerNearMineral")
         }
 
     //StructureLabs
@@ -241,7 +248,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     val structureLab: Map<String, StructureLab>
         get() {
             if (this._structureLab == null)
-                _structureLab = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_LAB }.associate { it.id to it as StructureLab}
+                _structureLab = this.room.find(FIND_STRUCTURES).filter { it.structureType == STRUCTURE_LAB }.associate { it.id to it as StructureLab }
             return _structureLab ?: throw AssertionError("Error get StructureLab")
         }
 
@@ -250,37 +257,40 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     val structureLabSort: Map<Int, StructureLab>
         get() {
             if (this._structureLabSort == null) {
-                val result:MutableMap<Int, StructureLab> = mutableMapOf()
+                val result: MutableMap<Int, StructureLab> = mutableMapOf()
 
                 val minX: Int = this.structureLab.values.minBy { it.pos.x }?.pos?.x
                         ?: return result
                 val minY: Int = this.structureLab.values.minBy { it.pos.y }?.pos?.y
                         ?: return result
                 if (this.structureLab.size == 3) {
-                    val arrDx = arrayOf(0,1,1)
-                    val arrDy = arrayOf(2,1,0)
-                    for (ind in 0 .. 2) {
+                    val arrDx = arrayOf(0, 1, 1)
+                    val arrDy = arrayOf(2, 1, 0)
+                    for (ind in 0..2) {
                         val tmpLab: StructureLab? = this.structureLab.values.firstOrNull {
-                            it.pos.x == (minX + arrDx[ind]) && it.pos.y == (minY + arrDy[ind]) }
+                            it.pos.x == (minX + arrDx[ind]) && it.pos.y == (minY + arrDy[ind])
+                        }
                         if (tmpLab != null) result[ind] = tmpLab
                     }
                 }
                 if (this.structureLab.size == 6) {
-                    val arrDx = arrayOf(0,1,1,2,2,2)
-                    val arrDy = arrayOf(2,1,0,0,1,2)
-                    for (ind in 0 .. 5) {
+                    val arrDx = arrayOf(0, 1, 1, 2, 2, 2)
+                    val arrDy = arrayOf(2, 1, 0, 0, 1, 2)
+                    for (ind in 0..5) {
                         val tmpLab: StructureLab? = this.structureLab.values.firstOrNull {
-                            it.pos.x == (minX + arrDx[ind]) && it.pos.y == (minY + arrDy[ind]) }
+                            it.pos.x == (minX + arrDx[ind]) && it.pos.y == (minY + arrDy[ind])
+                        }
                         if (tmpLab != null) result[ind] = tmpLab
                     }
                 }
 
                 if (this.structureLab.size == 10) {
-                    val arrDx = arrayOf(1,2,2,3,3,3,0,0,0,1)
-                    val arrDy = arrayOf(2,1,0,0,1,2,1,2,3,3)
-                    for (ind in 0 .. 9) {
+                    val arrDx = arrayOf(1, 2, 2, 3, 3, 3, 0, 0, 0, 1)
+                    val arrDy = arrayOf(2, 1, 0, 0, 1, 2, 1, 2, 3, 3)
+                    for (ind in 0..9) {
                         val tmpLab: StructureLab? = this.structureLab.values.firstOrNull {
-                            it.pos.x == (minX + arrDx[ind]) && it.pos.y == (minY + arrDy[ind]) }
+                            it.pos.x == (minX + arrDx[ind]) && it.pos.y == (minY + arrDy[ind])
+                        }
                         if (tmpLab != null) result[ind] = tmpLab
                     }
                 }
@@ -289,7 +299,6 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             }
             return _structureLabSort ?: throw AssertionError("Error get StructureLabSort")
         }
-
 
     private fun buildCreeps() {
         this.needCorrection()
@@ -304,18 +313,18 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
         if (nowLevelOfRoom < this.constant.levelOfRoom) {
             if (this.getResourceInStorage() > 40000) {
-                if (this.need[0][5] ==0) this.need[0][5] = 1 //filler
-                if (this.need[1][5] ==0) this.need[1][5] = 1 //filler
-                this.need[0][8]=2
+                if (this.need[0][5] == 0) this.need[0][5] = 1 //filler
+                if (this.need[1][5] == 0) this.need[1][5] = 1 //filler
+                this.need[0][8] = 2
                 this.restoreSnapShot()
                 return
-            }else{
+            } else {
                 this.restoreSnapShot()
                 this.constant.levelOfRoom = nowLevelOfRoom
             }
-        }else this.constant.levelOfRoom = nowLevelOfRoom
+        } else this.constant.levelOfRoom = nowLevelOfRoom
 
-        when (this.constant.levelOfRoom){
+        when (this.constant.levelOfRoom) {
             0 -> this.needCorrection0()
             1 -> this.needCorrection1()
             2 -> this.needCorrection2()
@@ -336,8 +345,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
     private fun buildQueue() {
         for (i in 0 until this.have.size) this.haveForQueue[i] = this.have[i]
-        val fPriorityOfRole = if (this.getResourceInStorage() < 2000) arrayOf(0, 9, 1,  3, 2, 4, 14, 5,  6, 7, 10,  8, 11, 12, 13, 15, 16, 17, 18)
-        else  arrayOf(0, 9, 5, 14, 1, 3,  2, 4, 6,  7, 10,  8, 11, 12, 13, 15, 16, 17, 18)
+        val fPriorityOfRole = if (this.getResourceInStorage() < 2000) arrayOf(0, 9, 1, 3, 2, 4, 14, 5, 6, 20, 21, 22, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18)
+        else arrayOf(0, 9, 5, 14, 1, 3, 2, 4, 20, 21, 22, 6, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18)
 
         //Main 0..1
         for (priority in 0..1) {
@@ -352,16 +361,15 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             }
         }
 
-
         //Slave 0
         for (slaveRoom in this.slaveRooms.values) {
             for (i in 0 until slaveRoom.have.size) slaveRoom.haveForQueue[i] = slaveRoom.have[i]
-            slaveRoom.buildQueue(this.queue,0)
+            slaveRoom.buildQueue(this.queue, 0)
         }
 
         //Slave 1
         for (slaveRoom in this.slaveRooms.values) {
-            slaveRoom.buildQueue(this.queue,1)
+            slaveRoom.buildQueue(this.queue, 1)
         }
 
         //Main 2
@@ -379,7 +387,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
         //Slave 2
         for (slaveRoom in slaveRooms.values)
-            slaveRoom.buildQueue(this.queue,2)
+            slaveRoom.buildQueue(this.queue, 2)
     }
 
     private fun getBodyRole(role: Int): Array<BodyPartConstant> {
@@ -390,55 +398,55 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 if (this.have[0] == 0 && this.room.energyAvailable < 800) result = arrayOf(MOVE, MOVE, WORK, CARRY)
                 else if (this.room.energyCapacityAvailable < 400) result = arrayOf(MOVE, MOVE, WORK, CARRY)
                 else if (this.room.energyCapacityAvailable < 800) result = arrayOf(MOVE, MOVE, WORK, WORK, CARRY, CARRY)
-                else result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,CARRY,CARRY,CARRY,CARRY)
+                else result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, CARRY, CARRY, CARRY, CARRY)
             }
 
-            1,3 ->  {
-                result = arrayOf(MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY)
+            1, 3 -> {
+                result = arrayOf(MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY)
             }
 
-            2 ->  {
-                val carrierAuto: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer0",this)
-                if (carrierAuto==null) {
+            2 -> {
+                val carrierAuto: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer0", this)
+                if (carrierAuto == null) {
                     parent.parent.messenger("ERROR", this.name, "Auto not exists mainContainer0", COLOR_RED)
-                    result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
-                }else{
+                    result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
+                } else {
                     result = carrierAuto.needBody
                 }
             }
 
-            4 ->  {
-                val carrierAuto: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer1",this)
-                if (carrierAuto==null) {
+            4 -> {
+                val carrierAuto: CacheCarrier? = parent.parent.getCacheRecordRoom("mainContainer1", this)
+                if (carrierAuto == null) {
                     parent.parent.messenger("ERROR", this.name, "Auto not exists mainContainer1", COLOR_RED)
-                    result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
-                }else{
+                    result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
+                } else {
                     result = carrierAuto.needBody
                 }
             }
 
             5 -> {
-                if (this.room.energyCapacityAvailable>=5000) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
-                else if (this.room.energyCapacityAvailable>=1300) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
-                else result = arrayOf(MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                if (this.room.energyCapacityAvailable >= 5000) result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
+                else if (this.room.energyCapacityAvailable >= 1300) result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
+                else result = arrayOf(MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
             }
 
             6 -> {
-                if (this.room.energyCapacityAvailable<1800) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
-                else if (this.room.energyCapacityAvailable<=5600) result = arrayOf(CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE)
-                else result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                if (this.room.energyCapacityAvailable < 1800) result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
+                else if (this.room.energyCapacityAvailable <= 5600) result = arrayOf(CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE)
+                else result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
             }
 
             7 -> {
-                if (this.room.energyCapacityAvailable<1800) result = arrayOf(MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY)
-                else if (this.room.energyCapacityAvailable<2300) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY)
-                else if (this.room.energyCapacityAvailable<3000) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY)
-                else if (this.room.energyCapacityAvailable<=5600) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
-                else result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                if (this.room.energyCapacityAvailable < 1800) result = arrayOf(MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY)
+                else if (this.room.energyCapacityAvailable < 2300) result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY)
+                else if (this.room.energyCapacityAvailable < 3000) result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY)
+                else if (this.room.energyCapacityAvailable <= 5600) result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
+                else result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
             }
 
             8 -> {
-                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
             }
 
             9 -> {
@@ -446,12 +454,12 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             }
 
             10 -> {
-                if (this.room.energyCapacityAvailable>=3500) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
-                else result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                if (this.room.energyCapacityAvailable >= 3500) result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
+                else result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
             }
 
             11 -> {
-                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
             }
 
             13 -> {
@@ -459,26 +467,51 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             }
 
             14 -> {
-                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
             }
 
             15 -> {
-                if (this.room.energyCapacityAvailable>=2300) result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK)
+                if (this.room.energyCapacityAvailable >= 2300) result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK)
             }
 
             16 -> {
-                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
             }
 
             17 -> {
-                result = arrayOf(MOVE,CARRY)
+                result = arrayOf(MOVE, CARRY)
             }
 
             18 -> {
-                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+                result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
             }
 
+            20 -> {
+                //Min
+                //result = arrayOf(MOVE)
+                //Middle
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK)
+                //Max
+                //result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK)
+            }
 
+            21 -> { //RA
+                //Min
+                //result = arrayOf(MOVE, MOVE)
+                //Middle
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK)
+                //Max
+                //result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK)
+            }
+
+            22 -> {
+                //Min
+                //result = arrayOf(MOVE, MOVE, MOVE)
+                //Middle
+                result = arrayOf(TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL)
+                //Max
+                //result = arrayOf(TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL)
+            }
         }
         return result
     }
@@ -488,20 +521,20 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         for (spawn in this.structureSpawn.values) {
             if (this.queue.size == 0) return
             if (!spawn.isActive() || spawn.spawning != null) continue
-            var result:ScreepsReturnCode = OK
+            var result: ScreepsReturnCode = OK
 
-            val d: dynamic = object{}
+            val d: dynamic = object {}
             d["role"] = this.queue[0].role
             d["slaveRoom"] = this.queue[0].slaveRoom
             d["mainRoom"] = this.queue[0].mainRoom
-            val spawnOptions: dynamic = object{}
+            val spawnOptions: dynamic = object {}
             spawnOptions["memory"] = d
 
             if (this.queue[0].slaveRoom == this.queue[0].mainRoom)
                 result = spawn.spawnCreep(getBodyRole(this.queue[0].role), "mst_${this.queue[0].mainRoom}_${this.queue[0].slaveRoom}_${Game.time} ", spawnOptions.unsafeCast<SpawnOptions>())
             else {
                 val slaveRoom = this.slaveRooms[this.queue[0].slaveRoom]
-                if (slaveRoom!=null)
+                if (slaveRoom != null)
                     result = spawn.spawnCreep(slaveRoom.getBodyRole(this.queue[0].role), "mst_${this.queue[0].mainRoom}_${this.queue[0].slaveRoom}_${Game.time} ", spawnOptions.unsafeCast<SpawnOptions>())
             }
             if (result == OK) {
@@ -515,24 +548,24 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     }
 
     fun getSpawnOrExtensionForFiling(pos: RoomPosition, mainContext: MainContext): Structure? {
-        data class StructureData (val need: Int, val priority: Int)
-        val needs : MutableMap<Structure,StructureData> = mutableMapOf()
+        data class StructureData(val need: Int, val priority: Int)
+
+        val needs: MutableMap<Structure, StructureData> = mutableMapOf()
 
         // Загружаем все extension
         for (extension in this.structureExtension.values)
             if (extension.energyCapacity > extension.energy)
-                needs[extension] = StructureData(extension.energyCapacity - extension.energy,1)
+                needs[extension] = StructureData(extension.energyCapacity - extension.energy, 1)
 
         // Загружаем все спавны
         for (spawn in this.structureSpawn.values)
             if (spawn.energyCapacity > spawn.energy)
-                needs[spawn] = StructureData(spawn.energyCapacity - spawn.energy,1)
-
+                needs[spawn] = StructureData(spawn.energyCapacity - spawn.energy, 1)
 
         // Загружаем Tower если енергия меньше 1000
         //ToDo set priority 0 if have hostile creeps and queue < 2
         for (tower in this.structureTower.values)
-            if (tower.energy < 400) needs[tower] = StructureData(tower.energyCapacity - tower.energy,3)
+            if (tower.energy < 400) needs[tower] = StructureData(tower.energyCapacity - tower.energy, 3)
 
         if (needs.isEmpty()) return null
         // Производим коррекцию с учетем заданий которые делаются и ищем ближайший
@@ -567,7 +600,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         return tObject
     }
 
-    fun getSourceForHarvest(pos: RoomPosition, mainContext: MainContext) : Source {
+    fun getSourceForHarvest(pos: RoomPosition, mainContext: MainContext): Source {
         var tSource: Source = this.source.values.first()
         var tDistance = 1000
         for (source in this.source.values) {
@@ -579,6 +612,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         }
         return tSource
     }
+
     //0 - only role 0 creep
     //1 - Storage, 3 container, energy >300+20*50 1300
     fun getLevelOfRoom(): Int {
@@ -606,7 +640,6 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         return result
     }
 
-
     init {
         constantMainRoomInit(this)
         this.constant.slaveRooms.forEachIndexed { index, slaveName ->
@@ -617,8 +650,6 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         }
     }
 
-
-
     private fun setNextTickRun(): Boolean {
         if (this.constant.roomRunNotEveryTickNextTickRun > Game.time) return false
         this.constant.roomRunNotEveryTickNextTickRun = Game.time + Random.nextInt(parent.parent.constants.globalConstant.roomRunNotEveryTickTicksPauseMin,
@@ -628,19 +659,20 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     }
 
     fun runInStartOfTick() {
+        this.manualDefenceInStartOfTick()
         this.fillCash()
         for (room in this.slaveRooms.values) {
             try {
                 room.runInStartOfTick()
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 parent.parent.messenger("ERROR", "Slave room in start", room.name, COLOR_RED)
             }
         }
         this.setMineralNeed()
     }
 
-    fun runInEndOfTick(){
-        if (this.constant.levelOfRoom>1) this.runLinkTransfers()
+    fun runInEndOfTick() {
+        if (this.constant.levelOfRoom > 1) this.runLinkTransfers()
         this.runTower()
         this.buildCreeps()
         this.directControl()
@@ -648,18 +680,21 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         for (room in this.slaveRooms.values) {
             try {
                 room.runInEndOfTick()
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 parent.parent.messenger("ERROR", "Slave room in end", room.name, COLOR_RED)
             }
         }
+
+        val cpuStartLab = Game.cpu.getUsed()
         this.runReactions()
+        Memory["CPULab"] = Memory["CPULab"] + Game.cpu.getUsed() - cpuStartLab
     }
 
     fun runNotEveryTick() {
         for (record in this.slaveRooms) {
             try {
                 record.value.runNotEveryTick()
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 parent.parent.messenger("ERROR", "Slave not every tick", record.value.name, COLOR_RED)
             }
         }
@@ -674,7 +709,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         this.needDefenceUpgradeCalculate()
     }
 
-    fun missingStructures():String {
+    fun missingStructures(): String {
         if (this.constructionSite.isNotEmpty()) return ""
         val controller: StructureController = this.structureController[0] ?: return ""
 
@@ -685,12 +720,12 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
         if (controller.level == 3) {
             if (this.room.energyCapacityAvailable != 800) return " Missing extension"
-            if (this.structureTower.size!=1) return " Missing tower"
+            if (this.structureTower.size != 1) return " Missing tower"
         }
 
         if (controller.level == 4) {
             if (this.room.energyCapacityAvailable != 1300) return " Missing extension"
-            if (this.structureTower.size!=1) return " Missing tower"
+            if (this.structureTower.size != 1) return " Missing tower"
             if (this.source.isNotEmpty() && !this.structureContainerNearSource.containsKey(0)) return " Missing container near source 0"
             if (this.source.size > 1 && !this.structureContainerNearSource.containsKey(1)) return " Missing container near source 1"
             if (!this.structureContainerNearController.containsKey(0)) return " Missing container near controller"
@@ -699,45 +734,44 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
         if (controller.level == 5) {
             if (this.room.energyCapacityAvailable != 1800) return " Missing extension"
-            if (this.structureTower.size!=2) return " Missing tower"
+            if (this.structureTower.size != 2) return " Missing tower"
             if (this.source.isNotEmpty() && !this.structureContainerNearSource.containsKey(0)) return " Missing container near source 0"
             if (this.source.size > 1 && !this.structureContainerNearSource.containsKey(1)) return " Missing container near source 1"
             if (!this.structureContainerNearController.containsKey(0)) return " Missing container near controller"
             if (!this.structureStorage.containsKey(0)) return " Missing storage"
-
         }
 
         if (controller.level == 6) {
             if (this.room.energyCapacityAvailable != 2300) return " Missing extension"
-            if (this.structureTower.size!=2) return " Missing tower"
+            if (this.structureTower.size != 2) return " Missing tower"
             if (this.source.isNotEmpty() && !this.structureLinkNearSource.containsKey(0)) return " Missing link near source 0"
             if (this.source.size > 1 && !this.structureLinkNearSource.containsKey(1)) return " Missing link near source 1"
             if (!this.structureContainerNearController.containsKey(0)) return " Missing container near controller"
             if (!this.structureStorage.containsKey(0)) return " Missing storage"
-            if (this.structureTerminal.size!=1) return " Missing terminal"
-            if (this.structureLinkNearStorage.size!=1) return " Missing link near storage"
+            if (this.structureTerminal.size != 1) return " Missing terminal"
+            if (this.structureLinkNearStorage.size != 1) return " Missing link near storage"
             if (this.structureContainerNearSource.containsKey(0)) return " Not need container near source 0"
             if (this.structureContainerNearSource.containsKey(1)) return " Not need container near source 1"
-            if (this.structureExtractor.size!=1) return " Missing extractor"
-            if (this.structureContainerNearMineral.size!=1) return " Missing container near mineral"
-            if (this.structureLab.size<3) return " Missing lab"
+            if (this.structureExtractor.size != 1) return " Missing extractor"
+            if (this.structureContainerNearMineral.size != 1) return " Missing container near mineral"
+            if (this.structureLab.size < 3) return " Missing lab"
         }
 
         if (controller.level == 7) {
-            if (this.structureSpawn.size!=2) return " Missing spawn"
+            if (this.structureSpawn.size != 2) return " Missing spawn"
             if (this.room.energyCapacityAvailable != 5600) return " Missing extension"
-            if (this.structureTower.size!=3) return " Missing tower"
+            if (this.structureTower.size != 3) return " Missing tower"
             if (this.source.isNotEmpty() && !this.structureLinkNearSource.containsKey(0)) return " Missing link near source 0"
             if (this.source.size > 1 && !this.structureLinkNearSource.containsKey(1)) return " Missing link near source 1"
             if (!this.structureContainerNearController.containsKey(0)) return " Missing container near controller"
             if (!this.structureStorage.containsKey(0)) return " Missing storage"
-            if (this.structureTerminal.size!=1) return " Missing terminal"
-            if (this.structureLinkNearStorage.size!=1) return " Missing link near storage"
+            if (this.structureTerminal.size != 1) return " Missing terminal"
+            if (this.structureLinkNearStorage.size != 1) return " Missing link near storage"
             if (this.structureContainerNearSource.containsKey(0)) return " Not need container near source 0"
             if (this.structureContainerNearSource.containsKey(1)) return " Not need container near source 1"
-            if (this.structureExtractor.size!=1) return " Missing extractor"
-            if (this.structureContainerNearMineral.size!=1) return " Missing container near mineral"
-            if (this.structureLab.size<6) return " Missing lab"
+            if (this.structureExtractor.size != 1) return " Missing extractor"
+            if (this.structureContainerNearMineral.size != 1) return " Missing container near mineral"
+            if (this.structureLab.size < 6) return " Missing lab"
         }
 
         if (controller.level == 8) {
@@ -748,11 +782,11 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
     private fun runLinkTransfers() {
         val fLinkTo: StructureLink = this.structureLinkNearStorage[0] ?: return
-        if (fLinkTo.energy!=0) return
+        if (fLinkTo.energy != 0) return
 
         for (link in this.structureLinkNearSource.values)
-            if (link.energy>=700 && link.cooldown == 0) {
-                link.transferEnergy(fLinkTo,link.energy)
+            if (link.energy >= 700 && link.cooldown == 0) {
+                link.transferEnergy(fLinkTo, link.energy)
                 break
             }
     }
@@ -760,22 +794,23 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     private fun fillCash() {
         val store: StructureStorage? = this.structureStorage[0]
         if (store != null)
-            for (record in store.store.toMap()) this.resStorage[record.key] = (this.resStorage[record.key] ?: 0) + record.value
+            for (record in store.store.toMap()) this.resStorage[record.key] = (this.resStorage[record.key]
+                    ?: 0) + record.value
 
         val terminal: StructureTerminal? = this.structureTerminal[0]
         if (terminal != null)
-            for (record in terminal.store.toMap()) this.resTerminal[record.key] = (this.resTerminal[record.key] ?: 0) + record.value
-
+            for (record in terminal.store.toMap()) this.resTerminal[record.key] = (this.resTerminal[record.key]
+                    ?: 0) + record.value
     }
 
-    fun needCleanWhat(store: StoreDefinition?, resource: ResourceConstant):ResourceConstant? {
+    fun needCleanWhat(store: StoreDefinition?, resource: ResourceConstant): ResourceConstant? {
         if (store == null) return null
         for (record in store.keys)
-            if (store[record] != null && store[record]!= 0 && record != resource) return record
+            if (store[record] != null && store[record] != 0 && record != resource) return record
         return null
     }
 
-    private fun needClean(store: StoreDefinition?, resource: ResourceConstant):Boolean {
+    private fun needClean(store: StoreDefinition?, resource: ResourceConstant): Boolean {
         if (store == null) return false
         return (store[resource] ?: 0) != (store.toMap().map { it.value }.sum())
     }
@@ -800,28 +835,29 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     }
 
     private fun runReactions() {
-        if(this.constant.reactionActive == "") return
-        if (this.structureLabSort.size !in arrayOf(3,6,10)) return
+        if (this.constant.reactionActive == "") return
+        if (this.structureLabSort.size !in arrayOf(3, 6, 10)) return
         val lab0 = this.structureLabSort[0] ?: return
         val lab1 = this.structureLabSort[1] ?: return
         val reaction = this.constant.reactionActive.unsafeCast<ResourceConstant>()
         val reactionComponent = this.parent.parent.constants.globalConstant.labReactionComponent[reaction]
                 ?: return
         if (reactionComponent.size != 2) return
-        if (lab0.mineralAmount!=0 && lab0.mineralType != reactionComponent[0]) return
-        if (lab1.mineralAmount!=0 && lab1.mineralType != reactionComponent[1]) return
+        if (lab0.mineralAmount != 0 && lab0.mineralType != reactionComponent[0]) return
+        if (lab1.mineralAmount != 0 && lab1.mineralType != reactionComponent[1]) return
         for (ind in 2 until this.structureLabSort.size) {
             val lab = this.structureLabSort[ind] ?: continue
             if (lab.cooldown != 0) continue
-            lab.runReaction(lab0,lab1)
+            lab.runReaction(lab0, lab1)
         }
     }
 
     private fun setMineralNeed() {
         if (this.constant.reactionActive == "") return
         val reaction = this.constant.reactionActive.unsafeCast<ResourceConstant>()
-        if (this.structureLabSort.size !in arrayOf(3,6,10)) return
-        val reactionComponent = this.parent.parent.constants.globalConstant.labReactionComponent[reaction] ?: return
+        if (this.structureLabSort.size !in arrayOf(3, 6, 10)) return
+        val reactionComponent = this.parent.parent.constants.globalConstant.labReactionComponent[reaction]
+                ?: return
         this.constant.needMineral[reactionComponent[0]] = 2000
         this.constant.needMineral[reactionComponent[1]] = 2000
     }

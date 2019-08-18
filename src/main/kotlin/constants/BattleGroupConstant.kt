@@ -11,6 +11,7 @@ import screeps.api.Game
 class BattleGroupConstant {
     var mode: TypeBattleGroupMode = TypeBattleGroupMode.Defence
     var roomName: String = ""
+    var assembleRoom: String = ""
     var step: BattleGroupStep = BattleGroupStep.GetPowerHostileCreep
     var queue: MutableList<BattleGroupQueueRecord> = mutableListOf()
     var creeps: MutableList<BattleGroupCreeps> = mutableListOf()

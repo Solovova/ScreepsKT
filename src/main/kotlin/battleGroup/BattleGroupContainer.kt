@@ -75,4 +75,12 @@ class BattleGroupContainer(val parent: MainContext) {
             }
         }
     }
+
+    fun getBattleGroupsForAssembleInRoom(roomName: String):List<BattleGroup> {
+        val listBg: MutableList<BattleGroup> = mutableListOf()
+        for (battleGroup in battleGroupContainer.values)
+            if (battleGroup.constants.assembleRoom == roomName)
+                listBg.add(listBg.size,battleGroup)
+        return listBg
+    }
 }
