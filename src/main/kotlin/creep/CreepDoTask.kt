@@ -49,12 +49,24 @@ fun Creep.doTask(mainContext: MainContext) {
         }
 
         TypeOfTask.TransferToCreep -> {
-            val objForFilling: Creep? = Game.getObjectById(mainRoom.constant.creepIdOfBigBuilder)
+            val objForFilling: Creep? = Game.getObjectById(task.idObject0)
             if (objForFilling != null) {
                 if (this.pos.inRangeTo(objForFilling.pos,1)){
                     val carryCreepTo = objForFilling.carry.toMap().map { it.value }.sum()
                     if (carryCreepTo == 0)
                         this.transfer(objForFilling, task.resource)
+                }
+                else this.moveTo(objForFilling.pos)
+            }
+        }
+
+        TypeOfTask.TransferFromCreep -> {
+            val objForFilling: Creep? = Game.getObjectById(task.idObject0)
+            if (objForFilling != null) {
+                if (this.pos.inRangeTo(objForFilling.pos,1)){
+                    val carryCreepTo = objForFilling.carry.toMap().map { it.value }.sum()
+                    if (carryCreepTo != 0)
+                        objForFilling.transfer(this,task.resource)
                 }
                 else this.moveTo(objForFilling.pos)
             }
@@ -265,7 +277,7 @@ fun Creep.doTask(mainContext: MainContext) {
 fun Creep.doTaskGoTo(task: CreepTask, pos: RoomPosition, range: Int) {
     if (this.pos.inRangeTo(pos, range)) task.come = true
     else {
-        if (this.memory.role == 106 || this.memory.role == 108 || this.memory.role == 1106 || this.memory.role == 1108)
+        if (this.memory.role in arrayOf(106,108,1106,1108,121,123,125))
             if (this.room.name != this.memory.mainRoom) {
                 val room: Room? = Game.rooms[this.pos.roomName]
                 if (room != null) {

@@ -6,9 +6,10 @@ import constants.BattleGroupConstant
 import mainContext.MainContext
 import mainContext.messenger
 import screeps.api.COLOR_RED
+import BattleGroupData
 
 class BattleGroupContainer(val parent: MainContext) {
-    private val battleGroupContainer: MutableMap<String,BattleGroup> = mutableMapOf()
+    private val battleGroupContainer: MutableMap<String, BattleGroup> = mutableMapOf()
     val constants: BattleGroupContainerConstant
 
     init {
@@ -18,14 +19,13 @@ class BattleGroupContainer(val parent: MainContext) {
         this.constants = parent.constants.battleGroupContainerConstant
     }
 
-    fun addBattleGroup(name: String) {
-        if (!battleGroupContainer.containsKey(name)){
+    private fun addBattleGroup(name: String, battleGroupData: BattleGroupData) {
+        if (!battleGroupContainer.containsKey(name)) {
             parent.constants.battleGroups += name
             parent.constants.battleGroupConstantContainer[name] = BattleGroupConstant()
-            battleGroupContainer[name] = BattleGroup(this, name)
-        }
-        else
-            parent.messenger("INFO","Battle group container","Create $name already exist", COLOR_RED)
+            battleGroupContainer[name] = BattleGroup(this, name, battleGroupData)
+        } else
+            parent.messenger("INFO", "Battle group container", "Create $name already exist", COLOR_RED)
     }
 
     fun deleteBattleGroup(name: String) {
@@ -33,13 +33,46 @@ class BattleGroupContainer(val parent: MainContext) {
             battleGroupContainer.remove(name)
             parent.constants.battleGroups = parent.constants.battleGroups.filter { it != name }.toTypedArray()
             parent.constants.battleGroupConstantContainer.remove(name)
-        }
-
-        else
-            parent.messenger("INFO","Battle group container","Delete $name not exist", COLOR_RED)
+        } else
+            parent.messenger("INFO", "Battle group container", "Delete $name not exist", COLOR_RED)
     }
 
-    fun getBattleGroup(name: String):BattleGroup? {
+    fun getBattleGroup(name: String): BattleGroup? {
         return battleGroupContainer[name]
+    }
+
+    fun defenceRoom(roomName: String) {
+        this.addBattleGroup("defenceRoom$roomName",
+                BattleGroupData(TypeBattleGroupMode.defence, roomName = roomName))
+    }
+
+    fun runInStartOfTick() {
+        for (bg in battleGroupContainer.values) {
+            try {
+                bg.runInStartOfTick()
+            } catch (e: Exception) {
+                parent.messenger("ERROR", "Battle group runInStartOfTick", bg.name, COLOR_RED)
+            }
+        }
+    }
+
+    fun runNotEveryTick() {
+        for (bg in battleGroupContainer.values) {
+            try {
+                bg.runNotEveryTick()
+            } catch (e: Exception) {
+                parent.messenger("ERROR", "Battle group runNotEveryTick", bg.name, COLOR_RED)
+            }
+        }
+    }
+
+    fun runInEndOfTick() {
+        for (bg in battleGroupContainer.values) {
+            try {
+                bg.runInEndOfTick()
+            } catch (e: Exception) {
+                parent.messenger("ERROR", "Battle group runInEndOfTick", bg.name, COLOR_RED)
+            }
+        }
     }
 }

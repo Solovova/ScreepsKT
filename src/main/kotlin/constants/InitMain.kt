@@ -55,12 +55,13 @@ fun Constants.initMain() {
     m(14).marketBuyEnergy = true
     m(15).marketBuyEnergy = true
     m(16).marketBuyEnergy = true
+    m(18).marketBuyEnergy = true
 
     m(0).reactionActive = "ZK"
     m(4).reactionActive = "GH" //UL
-    m(6).reactionActive = "G"
+    m(6).reactionActive = "GH2O"
 
-    m(1).reactionActive = ""
+    m(1).reactionActive = "GH2O"
     m(2).reactionActive = "OH"
     m(3).reactionActive = "OH"
     m(5).reactionActive = "OH"
@@ -70,7 +71,8 @@ fun Constants.initMain() {
     m(10).reactionActive = "OH"
     m(11).reactionActive = "OH"
     m(12).reactionActive = "OH"
-    m(14).reactionActive = ""
+    m(14).reactionActive = "GH"
+    m(15).reactionActive = "GH"
     m(16).reactionActive = "OH"
 
 

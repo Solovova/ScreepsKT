@@ -817,7 +817,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         }
     }
 
-    fun setMineralNeed() {
+    private fun setMineralNeed() {
         if (this.constant.reactionActive == "") return
         val reaction = this.constant.reactionActive.unsafeCast<ResourceConstant>()
         if (this.structureLabSort.size !in arrayOf(3,6,10)) return

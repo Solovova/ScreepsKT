@@ -186,6 +186,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
             return _rescueFlag ?: throw AssertionError("Error get RescueFlag")
         }
 
+
     init {
         constantSlaveRoomInit(this)
         if (this.constant.model == 0 && this.room != null) {
@@ -194,7 +195,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
     }
 
     fun buildQueue(queue: MutableList<QueueSpawnRecord>, priority: Int) {
-        val fPriorityOfRole = arrayOf(10, 11, 15, 4, 0, 1 , 2 , 3, 5, 7, 9, 6, 8,20,22,24,21,23,25)
+        val fPriorityOfRole = arrayOf(10, 11, 15, 4, 0, 1 , 2 , 3, 5, 7, 9, 6, 8,20,22,24,21,23,25,26,27)
         for (fRole in fPriorityOfRole) {
             var fNeed = this.need[0][fRole]
             if (priority >= 1) fNeed += this.need[1][fRole]
@@ -304,6 +305,14 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                     result = carrierAuto.needBody
                 }
             }
+
+            126 -> {
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+            }
+
+            127 -> {
+                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY)
+            }
         }
         return result
     }
@@ -410,7 +419,7 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
 
                 //5 Defender
                 if (this.constant.roomHostile) {
-                    parent.parent.parent.messenger("INFO",this.name,"Attacked tpe: ${this.constant.roomHostileType} num:${this.constant.roomHostileNum}", COLOR_RED)
+                    parent.parent.parent.messenger("INFO",this.name,"Attacked type: ${this.constant.roomHostileType} num:${this.constant.roomHostileNum}", COLOR_RED)
                     if (this.constant.roomHostileNum > 1 ) {
                         if (this.room == null) this.need[0][4] = 1
                     }
@@ -442,6 +451,18 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
                 val carrierAuto2: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer2",this.parent,this)
                 if (carrierAuto2!=null) {
                     if (this.need[1][25] == 0) this.need[1][25] = carrierAuto2.needCarriers + 1
+                }
+
+                //Mineral
+                val mineral = this.mineral[0]
+                if (mineral != null) {
+                    if (mineral.mineralAmount > 0) {
+                        if (parent.getResource(mineral.mineralType) < parent.constant.mineralMaxInRoom)
+                            this.need[1][26] = 1
+                        else parent.parent.parent.messenger("INFO", this.name, "Mineral full in parent room", COLOR_RED)
+                    }
+
+                    this.need[1][27] = this.have[26]
                 }
             }
         }

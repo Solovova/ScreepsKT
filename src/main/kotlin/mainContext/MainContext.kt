@@ -45,14 +45,17 @@ class MainContext {
         this.mainRoomCollector = MainRoomCollector(this,this.constants.mainRoomsInit)
         this.mainRoomCollector.runInStartOfTick()
         this.mineralDataFill()
+        this.battleGroupContainer.runInStartOfTick()
     }
 
     fun runNotEveryTick() {
         this.mainRoomCollector.runNotEveryTick()
         this.tasks.deleteTaskDiedCreep()
+        this.battleGroupContainer.runNotEveryTick()
     }
 
     fun runInEndOfTick() {
+        this.battleGroupContainer.runInEndOfTick()
         this.mainRoomCollector.runInEndOfTick()
         this.tasks.toMemory()
         this.constants.toMemory()

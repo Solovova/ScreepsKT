@@ -19,7 +19,8 @@ class SlaveRoomConstant {
     var roomHostileNum: Int = 0
     var needCleaner: Boolean = false
 
-    var creepIdEraser: String = ""
+    var creepIdMineralHarvester: String = ""
+
 
 
 

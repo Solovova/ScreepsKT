@@ -1,9 +1,9 @@
 import screeps.api.*
 import screeps.api.structures.Structure
 
-external val LAB_MINERAL_CAPACITY : IntConstant
-external val REACTION_TIME : Record<ResourceConstant, Int>
-external val RESOURCES_ALL : Array<ResourceConstant>
+external val LAB_MINERAL_CAPACITY: IntConstant
+external val REACTION_TIME: Record<ResourceConstant, Int>
+external val RESOURCES_ALL: Array<ResourceConstant>
 external val REACTIONS: dynamic
 
 enum class TypeOfTask {
@@ -30,7 +30,8 @@ enum class TypeOfTask {
     UpgradeStructure,
     TransferToCreep,
     HealCreep,
-    GoToRescueFlag
+    GoToRescueFlag,
+    TransferFromCreep
 }
 
 enum class TypeOfMainRoomInfo {
@@ -76,3 +77,30 @@ data class MineralData(var quantity: Int = 0,
                        var storeMin: Int = 0,
                        var storeMax: Int = 0
 )
+
+enum class TypeBattleGroupMode {
+    defence
+}
+
+data class BattleGroupData(var mode: TypeBattleGroupMode,
+                           var roomName: String = ""
+)
+
+enum class BattleGroupStep {
+    getPowerHostileCreep,
+    waitExploreRoom,
+    waitBuildGroup,
+    gotoNeedRoom,
+    battle,
+    sleep
+}
+
+data class BattleGroupQueueRecord(var body: Array<BodyPartConstant> = arrayOf(),
+                                  var upgrade: String = "",
+                                  var build: Boolean = false
+)
+
+data class BattleGroupCreeps(var creep: Creep,
+                             var role: Int = 0
+)
+

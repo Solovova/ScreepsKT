@@ -250,9 +250,7 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
         if (!isTask) isTask = this.slaveEraser(mainContext, slaveRoom)
     }
 
-    if (this.memory.role == 116) {
-        if (!isTask) isTask = this.slaveHealCreep(mainContext,slaveRoom)
-    }
+
 
     if (this.memory.role in arrayOf(120,122,124,1120,1122,1124)) {
         if ((this.memory.role < 1000) && this.ticksToLive < 200) this.memory.role = this.memory.role + 1000
@@ -296,6 +294,18 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
         if (!isTask) isTask = this.slaveBuild(creepCarry, mainContext, slaveRoom, 2)
         if (!isTask) isTask = this.transferToStorage(creepCarry,mainContext,mainRoom)
 
+    }
+
+    if (this.memory.role == 126) {
+        if (!isTask) isTask = this.slaveGoToRescueFlag(3, mainContext, slaveRoom)
+        if (!isTask) isTask = this.slaveGoToPosOfMineral(mainContext, slaveRoom)
+        if (!isTask) isTask = this.slaveHarvestFromMineral(creepCarry, mainContext, slaveRoom)
+    }
+
+    if (this.memory.role == 127) {
+        if (!isTask) isTask = this.slaveGoToRescueFlag(3, mainContext, slaveRoom)
+        if (!isTask) isTask = this.slaveTakeMineralFromMineralHarvester(creepCarry,mainContext,mainRoom,slaveRoom)
+        if (!isTask) isTask = this.slaveTransferMineralToStorage(creepCarry,mainContext,mainRoom,slaveRoom)
     }
 
     return isTask

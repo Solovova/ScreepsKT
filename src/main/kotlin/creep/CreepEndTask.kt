@@ -19,7 +19,7 @@ fun Creep.endTask(mainContext: MainContext) {
 
 
     //Break in dang room
-    if ((this.memory.role in 120..125 || this.memory.role in 1120..1125) && task.type != TypeOfTask.GoToRescueFlag) {
+    if ((this.memory.role in 120..127 || this.memory.role in 1120..1125) && task.type != TypeOfTask.GoToRescueFlag) {
         val mainRoom: MainRoom? = mainContext.mainRoomCollector.rooms[this.memory.mainRoom]
         if (mainRoom == null) mainContext.tasks.deleteTask(this.id)
         else {
@@ -30,9 +30,12 @@ fun Creep.endTask(mainContext: MainContext) {
                 if (this.memory.role in arrayOf(120, 121, 1120, 1121)) indKl = 0
                 if (this.memory.role in arrayOf(122, 123, 1122, 1123)) indKl = 1
                 if (this.memory.role in arrayOf(124, 125, 1124, 1125)) indKl = 2
+                if (this.memory.role in arrayOf(126, 127)) indKl = 3
                 val keeperLair = slaveRoom.structureKeeperLair[indKl]
                 if (keeperLair != null) {
-                    if (this.pos.inRangeTo(keeperLair.pos, 10) && keeperLair.ticksToSpawn < 20) {
+                    val hostileNear = this.room.find(FIND_HOSTILE_CREEPS).firstOrNull { keeperLair.pos.inRangeTo(it.pos, 10) }
+                    if (this.pos.inRangeTo(keeperLair.pos, 10)
+                            && (keeperLair.ticksToSpawn < 20 || hostileNear != null)) {
                         console.log("Task deleted")
                         mainContext.tasks.deleteTask(this.id)
                         return
@@ -42,6 +45,8 @@ fun Creep.endTask(mainContext: MainContext) {
             }
         }
     }
+
+
 
 
     when (task.type) {
@@ -130,17 +135,21 @@ fun Creep.endTask(mainContext: MainContext) {
             }
         }
 
+        TypeOfTask.TransferFromCreep -> {
+            if (creepCarry != 0) mainContext.tasks.deleteTask(this.id)
+        }
+
         TypeOfTask.HealCreep -> {
-            val mainRoom: MainRoom? = mainContext.mainRoomCollector.rooms[this.memory.mainRoom]
-            if (mainRoom == null) mainContext.tasks.deleteTask(this.id)
-            else {
-                val slaveRoom: SlaveRoom?  = mainRoom.slaveRooms[this.memory.slaveRoom]
-                if (slaveRoom == null) mainContext.tasks.deleteTask(this.id)
-                else{
-                    val objForFilling: Creep? = Game.getObjectById(slaveRoom.constant.creepIdEraser)
-                    if (objForFilling == null) mainContext.tasks.deleteTask(this.id)
-                }
-            }
+//            val mainRoom: MainRoom? = mainContext.mainRoomCollector.rooms[this.memory.mainRoom]
+//            if (mainRoom == null) mainContext.tasks.deleteTask(this.id)
+//            else {
+//                val slaveRoom: SlaveRoom?  = mainRoom.slaveRooms[this.memory.slaveRoom]
+//                if (slaveRoom == null) mainContext.tasks.deleteTask(this.id)
+//                else{
+//                    val objForFilling: Creep? = Game.getObjectById(slaveRoom.constant.creepIdEraser)
+//                    if (objForFilling == null) mainContext.tasks.deleteTask(this.id)
+//                }
+//            }
         }
 
 
@@ -258,6 +267,7 @@ fun Creep.endTask(mainContext: MainContext) {
                     if (this.memory.role in arrayOf(120, 121, 1120, 1121)) indKl = 0
                     if (this.memory.role in arrayOf(122, 123, 1122, 1123)) indKl = 1
                     if (this.memory.role in arrayOf(124, 125, 1124, 1125)) indKl = 2
+                    if (this.memory.role in arrayOf(126, 127)) indKl = 3
                     val keeperLair = slaveRoom.structureKeeperLair[indKl]
                     if (keeperLair == null) mainContext.tasks.deleteTask(this.id)
                     else {

@@ -54,9 +54,8 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
                 if (!slaveRoom.constant.roomHostile
                         && (creep.memory.role == 107 || creep.memory.role == 105)
                         && creep.hits < creep.hitsMax) creep.suicide()
-                //
-                if (creep.memory.role == 115 && slaveRoom.constant.creepIdEraser == "") slaveRoom.constant.creepIdEraser = creep.id
-                if (creep.memory.role == 1115) slaveRoom.constant.creepIdEraser = creep.id
+
+                if (creep.memory.role == 126) slaveRoom.constant.creepIdMineralHarvester = creep.id
             }
 
             // Logist add transfer
