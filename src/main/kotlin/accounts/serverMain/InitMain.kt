@@ -1,8 +1,9 @@
-package constants
+package accounts.serverMain
 
-import screeps.api.RESOURCE_KEANIUM
-import screeps.api.RESOURCE_ZYNTHIUM
+import constants.Constants
+import screeps.api.ResourceConstant
 
+//Call before init of constants
 fun Constants.initMainHead() {                   //M0       M1       M2       M3       M4       M5       M6        M7        M8        M9
     this.initMainRoomConstantContainer( arrayOf("E54N37","E59N36","E52N35","E52N38","E53N39","E52N37","E54N39", "E51N39", "E53N38", "E51N37",
                                                 "E59N38","E57N34","E51N33","E51N35","E58N37","E52N36","E57N32", "E58N39", "E57N39", "E57N35",
@@ -25,7 +26,8 @@ fun Constants.initMainHead() {                   //M0       M1       M2       M3
     this.getMainRoomConstant("E57N37").initSlaveRoomConstantContainer(arrayOf("E57N36"))                                //M20
 }
 
-fun Constants.initMain() {
+//Call after init constants and load from memory
+fun Constants.initMainBody() {
 
     //Far transfer E51N33 -> E52N33 wait
     //Far transfer E59N38 -> E58N39
@@ -33,70 +35,30 @@ fun Constants.initMain() {
     s(12,1).model = 1
     //E57N35
 
-
 //    m(3).sentEnergyToRoom = "E54N37"
 //    m(4).sentEnergyToRoom = "E54N37"
 //    m(6).sentEnergyToRoom = "E54N37"
 
-
     m(0).marketBuyEnergy = true
-    m(1).marketBuyEnergy = true
-    m(2).marketBuyEnergy = true
-    m(3).marketBuyEnergy = true
-    m(4).marketBuyEnergy = true
-    m(5).marketBuyEnergy = true
-    m(6).marketBuyEnergy = true
-    m(7).marketBuyEnergy = true
-    m(8).marketBuyEnergy = true
-    m(9).marketBuyEnergy = true
-    m(10).marketBuyEnergy = true
-    m(11).marketBuyEnergy = true
-    m(12).marketBuyEnergy = true
-    m(14).marketBuyEnergy = true
-    m(15).marketBuyEnergy = true
-    m(16).marketBuyEnergy = true
-    m(18).marketBuyEnergy = true
 
-    m(0).reactionActive = "ZK"
+    m(0).reactionActive = "UL"  //ZK
     m(4).reactionActive = "GH" //UL
     m(6).reactionActive = "GH2O"
 
     m(1).reactionActive = "GH2O"
-    m(2).reactionActive = "OH"
-    m(3).reactionActive = "OH"
-    m(5).reactionActive = "OH"
-    m(7).reactionActive = "OH"
-    m(8).reactionActive = "OH"
-    m(9).reactionActive = "OH"
-    m(10).reactionActive = "OH"
-    m(11).reactionActive = "OH"
-    m(12).reactionActive = "OH"
-    m(14).reactionActive = "GH"
+    m(2).reactionActive = "XGH2O"
+    m(3).reactionActive = "XGH2O"
+    m(5).reactionActive = "XGH2O"
+    m(7).reactionActive = "XGH2O"
+    m(8).reactionActive = "XGH2O"
+    m(9).reactionActive = "XGH2O"
+    m(10).reactionActive = "G"
+    m(11).reactionActive = "G"
+    m(12).reactionActive = "G"
+    m(14).reactionActive = "G"
     m(15).reactionActive = "GH"
     m(16).reactionActive = "OH"
+    m(18).reactionActive = "OH"
 
-
-    m(6).creepUseBigBuilder = true
-    m(6).defenceHits = 3000000
-
-    m(0).creepUseBigBuilder = true
-    m(0).defenceHits = 1000000
-
-    m(1).creepUseBigBuilder = true
-    m(1).defenceHits = 1000000
-
-    m(2).creepUseBigBuilder = true
-    m(2).defenceHits = 1000000
-
-
-
-
-
-
-
-
-
-
-
-
+    m(6).needMineral["GH2O".unsafeCast<ResourceConstant>()] = 10000
 }

@@ -43,7 +43,7 @@ class BattleGroupContainer(val parent: MainContext) {
 
     fun defenceRoom(roomName: String) {
         this.addBattleGroup("defenceRoom$roomName",
-                BattleGroupData(TypeBattleGroupMode.defence, roomName = roomName))
+                BattleGroupData(TypeBattleGroupMode.Defence, roomName = roomName))
     }
 
     fun runInStartOfTick() {

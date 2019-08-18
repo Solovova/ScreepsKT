@@ -13,7 +13,7 @@ class GlobalConstant {
 
     //Market
     val marketMinCreditForOpenBuyOrder: Double = 200000.0
-    val marketBuyPriceEnergy = 0.010
+    val marketBuyPriceEnergy = 0.012
 
 
 

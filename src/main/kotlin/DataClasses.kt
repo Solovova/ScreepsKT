@@ -5,6 +5,7 @@ external val LAB_MINERAL_CAPACITY: IntConstant
 external val REACTION_TIME: Record<ResourceConstant, Int>
 external val RESOURCES_ALL: Array<ResourceConstant>
 external val REACTIONS: dynamic
+external val BOOSTS:dynamic
 
 enum class TypeOfTask {
     GoToRoom,
@@ -65,21 +66,10 @@ data class LabFillerTask(val StructureFrom: Structure,
                          val quantity: Int,
                          val priority: Int)
 
-data class MineralData(var quantity: Int = 0,
-                       var quantityUp: Int = 0,
-                       var quantityDown: Int = 0,
-                       var priceMin: Double = 0.0,
-                       var priceMax: Double = 0.0,
-                       var marketSellExcess: Int = 0,
-                       var marketBuyLack: Int = 0,
-                       var marketSellAlways: Int = 0,
-                       var marketBuyAlways: Int = 0,
-                       var storeMin: Int = 0,
-                       var storeMax: Int = 0
-)
+
 
 enum class TypeBattleGroupMode {
-    defence
+    Defence
 }
 
 data class BattleGroupData(var mode: TypeBattleGroupMode,
@@ -87,12 +77,12 @@ data class BattleGroupData(var mode: TypeBattleGroupMode,
 )
 
 enum class BattleGroupStep {
-    getPowerHostileCreep,
-    waitExploreRoom,
-    waitBuildGroup,
-    gotoNeedRoom,
-    battle,
-    sleep
+    GetPowerHostileCreep,
+    WaitExploreRoom,
+    WaitBuildGroup,
+    GotoNeedRoom,
+    Battle,
+    Sleep
 }
 
 data class BattleGroupQueueRecord(var body: Array<BodyPartConstant> = arrayOf(),

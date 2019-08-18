@@ -18,11 +18,11 @@ class BattleGroup {
     constructor(parent: BattleGroupContainer,name: String,battleGroupData: BattleGroupData):this (parent,name) {
         this.constants.mode = battleGroupData.mode
         this.constants.roomName = battleGroupData.roomName
-        this.constants.step = BattleGroupStep.getPowerHostileCreep
+        this.constants.step = BattleGroupStep.GetPowerHostileCreep
     }
 
     fun runInStartOfTick() {
-        if (this.constants.step == BattleGroupStep.getPowerHostileCreep) {
+        if (this.constants.step == BattleGroupStep.GetPowerHostileCreep) {
             if (Game.rooms[this.constants.roomName] == null) {
                 //build explorer in nearest room
             }

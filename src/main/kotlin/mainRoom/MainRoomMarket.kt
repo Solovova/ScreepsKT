@@ -25,6 +25,7 @@ fun MainRoom.marketCreateBuyOrders() {
 }
 
 fun MainRoom.marketCreateBuyOrdersMineral() {
+    return
     if (this.name != "E54N39") return
     if (Game.market.credits < this.parent.parent.constants.globalConstant.marketMinCreditForOpenBuyOrder) return
 

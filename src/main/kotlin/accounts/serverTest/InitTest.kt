@@ -1,6 +1,6 @@
-package constants
+package accounts.serverTest
 
-import screeps.api.*
+import constants.Constants
 
 fun Constants.initTestHead() {
     this.initMainRoomConstantContainer( arrayOf("W5N3","W4N3","W7N3") )
@@ -9,13 +9,9 @@ fun Constants.initTestHead() {
     this.getMainRoomConstant("W7N3").initSlaveRoomConstantContainer(arrayOf("W7N4")) //M2
 }
 
-fun Constants.initTest() {
+fun Constants.initTestBody() {
     //m(1).sentEnergyToRoom="W5N3"
     //m(2).sentEnergyToRoom="W5N3"
-    m(0).creepUseBigBuilder = true
-    m(1).creepUseBigBuilder = true
-    m(2).creepUseBigBuilder = true
-
     m(0).note = "room 0"
     m(1).note = "room 1"
     m(2).note = "room 2"

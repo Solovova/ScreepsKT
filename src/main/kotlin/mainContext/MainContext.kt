@@ -5,12 +5,11 @@ import battleGroup.BattleGroupContainer
 import constants.Constants
 import mainRoomCollector.MainRoomCollector
 import mainRoomCollector.infoShow
-import MineralData
 import screeps.api.*
 
 class MainContext {
     val messengerMap : MutableMap<String,String> = mutableMapOf()
-    val mineralData: MutableMap<ResourceConstant, MineralData> = mutableMapOf()
+    val mineralData: MutableMap<ResourceConstant, MineralDataRecord> = mutableMapOf()
     val constants: Constants = Constants(this)
     val tasks: Tasks = Tasks(this)
     var mainRoomCollector: MainRoomCollector = MainRoomCollector(this, arrayOf())
@@ -35,16 +34,17 @@ class MainContext {
 
         //this.marketShowBuyOrdersRealPrice("XGHO2".unsafeCast<ResourceConstant>())
         //this.marketShowSellOrdersRealPrice("XGHO2".unsafeCast<ResourceConstant>())
-        //Game.market.createOrder(ORDER_SELL,"XGHO2".unsafeCast<ResourceConstant>(),3.0,10000,"E54N37")
+        //Game.market.createOrder(ORDER_SELL,"GH2O".unsafeCast<ResourceConstant>(),1.995,10000,"E54N39")
         //val result = Game.market.deal("5d4b64f5e4c2aa66fdcc1fdd",10000,"E54N37")
 //        console.log("Trade: $result")
-        //this.directControlTaskClearInRoom()
+        //this.directControlTaskClearInRoom("E54N39")
     }
 
     fun runInStartOfTick() {
         this.mainRoomCollector = MainRoomCollector(this,this.constants.mainRoomsInit)
         this.mainRoomCollector.runInStartOfTick()
         this.mineralDataFill()
+        this.mineralProductionFill()
         this.battleGroupContainer.runInStartOfTick()
     }
 

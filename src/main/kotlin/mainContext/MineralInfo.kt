@@ -3,7 +3,7 @@ package mainContext
 import screeps.api.COLOR_ORANGE
 import kotlin.math.min
 
-class MineralInfo(private val numRows: Int = 3, val widthColumn: Int = 15, val numColumnInRow: Int = 10) {
+class MineralInfo(private val numRows: Int = 5, val widthColumn: Int = 15, val numColumnInRow: Int = 10) {
     var info = Array(numRows) { "" }
 
     fun addColumn(dataIn: Array<String>) {

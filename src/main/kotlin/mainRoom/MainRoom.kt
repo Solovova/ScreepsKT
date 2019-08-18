@@ -1,10 +1,10 @@
 package mainRoom
 
+import accounts.constantMainRoomInit
 import mainContext.MainContext
 import constants.MainRoomConstant
 import constants.SlaveRoomConstant
 import slaveRoom.SlaveRoom
-import constants.constantMainRoomInit
 import constants.CacheCarrier
 import mainContext.getCacheRecordRoom
 import mainContext.messenger
@@ -609,7 +609,6 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
     init {
         constantMainRoomInit(this)
-
         this.constant.slaveRooms.forEachIndexed { index, slaveName ->
             val slaveRoomConstant: SlaveRoomConstant? = this.constant.slaveRoomConstantContainer[slaveName]
             if (slaveRoomConstant != null)
@@ -795,6 +794,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         val structure: Structure? = this.room.find(FIND_STRUCTURES).filter {
             (it.structureType == STRUCTURE_RAMPART || it.structureType == STRUCTURE_WALL)
                     && it.hits < this.constant.defenceHits
+                    && it.pos.x != 49 && it.pos.x != 0 && it.pos.y != 49 && it.pos.y != 0
         }.firstOrNull()
         this.constant.defenceNeedUpgrade = (structure != null)
     }
