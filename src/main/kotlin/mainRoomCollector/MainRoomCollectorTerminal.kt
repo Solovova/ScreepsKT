@@ -36,11 +36,9 @@ fun MainRoomCollector.terminalSentMineral() {
         if (terminalTo.cooldown != 0) continue
         for (needResourceRecord in roomTo.constant.needMineral) {
             val needResourceQuantity = needResourceRecord.value - roomTo.getResource(needResourceRecord.key)
-            if (needResourceQuantity < minTransfer) continue
             val needResource = needResourceRecord.key
             val canMineralTakeTerminal = roomTo.constant.mineralAllMaxTerminal - (terminalTo.store.toMap().map { it.value }.sum()
                     - roomTo.getResourceInTerminal(RESOURCE_ENERGY))
-            if (canMineralTakeTerminal < minTransfer) continue
 
             for (roomFrom in this.rooms.values) {
                 if (roomFrom.name == roomTo.name) continue

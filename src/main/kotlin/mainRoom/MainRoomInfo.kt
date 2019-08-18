@@ -91,6 +91,12 @@ fun MainRoom.getInfoPlaceInTerminal(): MainRoomInfoRecord {
     else return resultEmpty
 }
 
+fun MainRoom.getInfoNeedUpgrade(): MainRoomInfoRecord {
+    val resultEmpty = MainRoomInfoRecord("", false)
+    return MainRoomInfoRecord(if (this.constant.defenceNeedUpgrade) "upgrade" else "",
+            this.constant.defenceNeedUpgrade)
+}
+
 fun MainRoom.getInfoReactionInfo(): MainRoomInfoRecord {
     val resultEmpty = MainRoomInfoRecord("", false)
     if (this.structureLabSort.size !in arrayOf(3,6,10)) return resultEmpty
@@ -112,6 +118,7 @@ fun MainRoom.getInfo(): Map<TypeOfMainRoomInfo, MainRoomInfoRecord> {
     result[TypeOfMainRoomInfo.infoPlaceInStorage] = this.getInfoPlaceInStorage()
     result[TypeOfMainRoomInfo.infoPlaceInTerminal] = this.getInfoPlaceInTerminal()
     result[TypeOfMainRoomInfo.infoReaction] = this.getInfoReactionInfo()
+    result[TypeOfMainRoomInfo.infoNeedUpgrade] = this.getInfoNeedUpgrade()
 
 
 

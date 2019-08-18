@@ -47,7 +47,8 @@ enum class TypeOfMainRoomInfo {
     infoRoomLevel,
     infoRoomEnergy,
     infoPlaceInStorage,
-    infoPlaceInTerminal
+    infoPlaceInTerminal,
+    infoNeedUpgrade
 }
 
 data class OrderRecord(val order: Market.Order, val realPrice: Double)
