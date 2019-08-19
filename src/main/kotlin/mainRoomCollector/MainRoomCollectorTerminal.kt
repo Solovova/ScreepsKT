@@ -60,7 +60,7 @@ fun MainRoomCollector.terminalSentMineral() {
 
 fun MainRoomCollector.terminalSentEnergyOverflow() {
     val sentFromIfHaveMoreThen = 220000
-    val sentToIfHaveLessThen = 90000
+    val sentToIfHaveLessThen = 100000
     val sentQuantity = 5000
     var mainRoomFrom: MainRoom? = null
     var mainRoomFromQuantityHave = 0

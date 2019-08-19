@@ -19,17 +19,29 @@ fun MainRoom.manualDefenceInStartOfTick() {
     // Group move
     var dx = 0
     var dy = 0
+    var borderLeft = 0
+    var borderTop = 0
+    var borderRight = 49
+    var borderBottom = 49
+
     var groupCanMove = true
     var groupFreeWay = true
     var groupNeedMove = false
+    var groupInFlags = true
 
-    data class RecordMove(val color: ColorConstant, val dx: Int, val dy: Int)
+    data class RecordMove(val color: ColorConstant, val dx: Int, val dy: Int, val direction: String)
 
     val listMove = listOf(
-            RecordMove(COLOR_GREEN, 0, 1),
-            RecordMove(COLOR_YELLOW, 0, -1),
-            RecordMove(COLOR_ORANGE, -1, 0),
-            RecordMove(COLOR_BROWN, 1, 0))
+            RecordMove(COLOR_GREEN, 1, 0, "right"),
+            RecordMove(COLOR_YELLOW, -1, 0, "left"),
+            RecordMove(COLOR_ORANGE, 0, -1, "top"),
+            RecordMove(COLOR_BROWN, 0, 1, "bottom"))
+
+    val flagBorder: Flag? = parent.flags.firstOrNull {
+        it.color == this.constant.manualDefenceRoomMainColorFlag
+                && it.secondaryColor == COLOR_WHITE
+    }
+
     for (listMoveRecord in listMove) {
 
         val flagMove: Flag? = parent.flags.firstOrNull {
@@ -41,47 +53,53 @@ fun MainRoom.manualDefenceInStartOfTick() {
             dx += listMoveRecord.dx
             dy += listMoveRecord.dy
             groupNeedMove = true
+            if (flagBorder != null)
+                when (listMoveRecord.direction) {
+                    "right" -> borderRight = flagBorder.pos.x-1
+                    "left" -> borderLeft = flagBorder.pos.x+1
+                    "top" -> borderTop = flagBorder.pos.y+1
+                    "bottom" -> borderBottom = flagBorder.pos.y-1
+                }
         }
     }
+
+    console.log("$borderLeft $borderRight $borderTop $borderBottom")
 
     //have dx,dy
-    val creeps = Game.creeps.values.toList().filter { it.memory.mainRoom == this.name
-            && it.memory.role in arrayOf(20,21,22) }
-
-
-    var roomTerrain:Room.Terrain? = null
+    val creeps = Game.creeps.values.toList().filter {
+        it.memory.mainRoom == this.name
+                && it.memory.role in arrayOf(20, 21, 22)
+    }
+    //ToDo solve problem
+    var roomTerrain: Room.Terrain? = null
     for (creep in creeps) {
-        val flag:Flag = Game.flags[creep.memory.subRole] ?: continue
-        if (creep.fatigue != 0) groupCanMove = false
-        val posNext = RoomPosition(flag.pos.x + dx,flag.pos.y + dy, flag.pos.roomName)
+        val flag: Flag = Game.flags[creep.memory.subRole] ?: continue
+        if (creep.fatigue != 0) {
+            groupCanMove = false
+            break
+        }
+
+        if (creep.pos.x != flag.pos.x || creep.pos.y != flag.pos.y) {
+            groupInFlags = false
+            break
+        }
+
+        val posNext = RoomPosition(flag.pos.x + dx, flag.pos.y + dy, flag.pos.roomName)
 
         if (roomTerrain == null) roomTerrain = Game.map.getRoomTerrain(posNext.roomName)
-
-        if (roomTerrain.get(posNext.x,posNext.y) == TERRAIN_MASK_WALL) groupFreeWay = false
+        //ToDo add structure and creep free way calculate
+        //ToDo add structure target
+        if (roomTerrain.get(posNext.x, posNext.y) == TERRAIN_MASK_WALL) groupFreeWay = false
+        if (posNext.x !in borderLeft..borderRight || posNext.y !in borderTop..borderBottom) groupFreeWay = false
     }
 
-    if (groupCanMove && groupFreeWay && groupNeedMove) {
+
+    if (groupCanMove && groupFreeWay && groupNeedMove && groupInFlags) {
         for (creep in creeps) {
-            val flag:Flag = Game.flags[creep.memory.subRole] ?: continue
-            val posNext = RoomPosition(flag.pos.x + dx,flag.pos.y + dy, flag.pos.roomName)
+            val flag: Flag = Game.flags[creep.memory.subRole] ?: continue
+            val posNext = RoomPosition(flag.pos.x + dx, flag.pos.y + dy, flag.pos.roomName)
             flag.setPosition(posNext)
-        }
-
-
-
-        val flagOneTurn: Flag? = parent.flags.firstOrNull {
-            it.color == this.constant.manualDefenceRoomMainColorFlag
-                    && it.secondaryColor == COLOR_WHITE
-        }
-
-        if (flagOneTurn != null) {
-            for (listMoveRecord in listMove) {
-                val flagMove: Flag? = parent.flags.firstOrNull {
-                    it.color == this.constant.manualDefenceRoomMainColorFlag
-                            && it.secondaryColor == listMoveRecord.color
-                }
-                flagMove?.remove()
-            }
+            creep.moveTo(posNext)
         }
     }
 

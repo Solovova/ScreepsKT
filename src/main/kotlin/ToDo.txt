@@ -113,10 +113,10 @@ for (key in js("Object").keys(testMutable.asDynamic()).unsafeCast<Array<String>>
 //ToDo manual defence system
 //COLOR_PURPLE COLOR_PURPLE - manual defence system mile attack place
 //room color COLOR_RED - group goto flag
-//room color COLOR_GREEN - move down
-//room color COLOR_YELLOW - move up
-//room color COLOR_ORANGE - move left
-//room color COLOR_BROWN - move right
+//room color COLOR_GREEN - move right
+//room color COLOR_YELLOW - move left
+//room color COLOR_ORANGE - move top
+//room color COLOR_BROWN - move down
 //room color COLOR_GREY - pos of target
 //room color COLOR_WHITE - 1 turn delete move flags
 
