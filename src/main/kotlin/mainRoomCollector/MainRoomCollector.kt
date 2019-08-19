@@ -15,6 +15,7 @@ import screeps.utils.isEmpty
 import screeps.utils.toMap
 import screeps.utils.unsafe.delete
 import slaveRoom
+import upgrade
 import kotlin.math.roundToInt
 
 class MainRoomCollector(val parent: MainContext, names: Array<String>) {
@@ -42,6 +43,8 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
                 mainRoom.have[creep.memory.role]++
 
                 if (creep.memory.role == 10) mainRoom.constant.creepIdOfBigBuilder = creep.id
+                //Upgrade
+                //if (creep.memory.upgrade != "" && mainRoom.constant.creepNeedUpgradeID == "")
             }
 
             // Slave rooms

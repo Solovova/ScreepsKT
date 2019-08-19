@@ -16,6 +16,7 @@ fun loop() {
 
 
 
+
     // Initialisation and protect mainContext
     if (mainContextGlob == null) mainContextGlob = MainContext()
 
@@ -24,15 +25,20 @@ fun loop() {
     protectedMainContext.messenger("HEAD", "", "Current game tick is ${Game.time} _________________________________________", COLOR_WHITE)
 
     // Start tick functions
+    var cpuStartMCStart = Game.cpu.getUsed()
     protectedMainContext.runInStartOfTick()
+    cpuStartMCStart = Game.cpu.getUsed() - cpuStartMCStart
 
+    var cpuStartMCNotEvery = Game.cpu.getUsed()
     protectedMainContext.runNotEveryTick()
-
+    cpuStartMCNotEvery = Game.cpu.getUsed() - cpuStartMCNotEvery
     // Testing functions
     testingFunctions(protectedMainContext)
 
     // End tick functions
+    var cpuStartMCEnd = Game.cpu.getUsed()
     protectedMainContext.runInEndOfTick()
+    cpuStartMCEnd = Game.cpu.getUsed() - cpuStartMCEnd
 
     console.log("Construction sites: ${Game.constructionSites.size}")
 //    val countCS: MutableMap<String,Int> = mutableMapOf()
@@ -42,6 +48,6 @@ fun loop() {
 //    for (valCS in countCS) console.log("${valCS.key}  ${valCS.value}")
 
 
-    console.log("CPU: ${(Game.cpu.getUsed() - cpuStart).roundToInt()}   Creep: ${Memory["CPUCreep"]}")
+    console.log("CPU: ${(Game.cpu.getUsed() - cpuStart).roundToInt()}   Creep: ${Memory["CPUCreep"]} McStart: ${cpuStartMCStart.roundToInt()} McNotEvery: ${cpuStartMCNotEvery.roundToInt()} McEnd: ${(cpuStartMCEnd - Game.cpu.getUsed() + cpuStart).roundToInt()}")
 
 }

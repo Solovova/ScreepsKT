@@ -5,7 +5,17 @@ import REACTION_TIME
 import screeps.api.*
 import RESOURCES_ALL
 import accounts.initMineralData
+import mainRoom.marketCreateBuyOrders
+import screeps.utils.toMap
 import toSecDigit
+
+fun MainContext.marketDeleteEmptyOrfers() {
+    val orders = Game.market.orders.toMap().filter {
+            it.value.remainingAmount == 0
+                    && !it.value.active
+                    && it.value.amount == 0}
+    for (order in orders) Game.market.cancelOrder(order.value.id)
+}
 
 fun MainContext.marketGetSellOrdersSorted(sellMineral: ResourceConstant, roomName: String): List<OrderRecord> {
 
@@ -71,12 +81,14 @@ fun MainContext.mineralDataFill() {
     initMineralData(this.mineralData)
     for (res in RESOURCES_ALL) {
         val quantity: Int = this.mainRoomCollector.rooms.values.sumBy { it.getResource(res) }
+        val need: Int = this.mainRoomCollector.rooms.values.sumBy { it.constant.needMineral[res] ?: 0 }
         val mineralDataRecord: MineralDataRecord? = this.mineralData[res]
         if (mineralDataRecord == null){
-            if (quantity != 0 ) mineralData[res] = MineralDataRecord(quantity = quantity)
+            if (quantity != 0 || need != 0) mineralData[res] = MineralDataRecord(quantity = quantity, need = need)
         }
         else {
             mineralDataRecord.quantity = quantity
+            mineralDataRecord.need = need
             mineralDataRecord.quantityDown = 0
             mineralDataRecord.quantityUp = 0
         }
@@ -84,7 +96,12 @@ fun MainContext.mineralDataFill() {
 }
 
 fun MainContext.mineralInfoShow() {
-    val mineralInfo = MineralInfo(numRows = 7)
+    val mineralInfo = MineralInfo(numRows = 5)
+    mineralInfo.addColumn(arrayOf(
+            "Res:",
+            "Quantity:",
+            "Balance:",
+            "Need:"))
     for (res in RESOURCES_ALL) {
         val mineralDataRecord: MineralDataRecord? = mineralData[res]
         if (mineralDataRecord != null) {
@@ -96,14 +113,15 @@ fun MainContext.mineralInfoShow() {
             val strBalance = if (mineralDataRecord.quantityUp - mineralDataRecord.quantityDown == 0) ""
             else (mineralDataRecord.quantityUp - mineralDataRecord.quantityDown).toString()
 
+            val strNeed = if (mineralDataRecord.need > mineralDataRecord.quantity) (- mineralDataRecord.need + mineralDataRecord.quantity).toString()
+            else ""
+
+
             mineralInfo.addColumn(arrayOf(
                     "$res",
                     strQuantity,
                     strBalance,
-                    "",
-                    strMinPrice,
-                    strMaxPrice,
-                    "_______________"))
+                    strNeed))
         }
     }
 

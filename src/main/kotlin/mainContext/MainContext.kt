@@ -6,6 +6,7 @@ import constants.Constants
 import mainRoomCollector.MainRoomCollector
 import mainRoomCollector.infoShow
 import screeps.api.*
+import kotlin.random.Random
 
 class MainContext {
     val messengerMap : MutableMap<String,String> = mutableMapOf()
@@ -55,8 +56,11 @@ class MainContext {
 
     fun runNotEveryTick() {
         this.mainRoomCollector.runNotEveryTick()
+
+        if (!this.setNextTickRun()) return
         this.tasks.deleteTaskDiedCreep()
         this.battleGroupContainer.runNotEveryTick()
+        this.marketDeleteEmptyOrfers()
     }
 
     fun runInEndOfTick() {
@@ -67,5 +71,13 @@ class MainContext {
         this.mineralInfoShow()
         this.messengerShow()
         this.mainRoomCollector.infoShow()
+    }
+
+    private fun setNextTickRun(): Boolean {
+        if (this.constants.globalConstant.roomRunNotEveryTickNextTickRunMainContext > Game.time) return false
+        this.constants.globalConstant.roomRunNotEveryTickNextTickRunMainContext = Game.time + Random.nextInt(this.constants.globalConstant.roomRunNotEveryTickTicksPauseMin,
+                this.constants.globalConstant.roomRunNotEveryTickTicksPauseMax)
+        this.messenger("TEST", "Main context", "Main room not every tick run. Next tick: ${this.constants.globalConstant.roomRunNotEveryTickNextTickRunMainContext}", COLOR_GREEN)
+        return true
     }
 }

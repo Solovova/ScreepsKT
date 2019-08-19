@@ -121,6 +121,14 @@ for (key in js("Object").keys(testMutable.asDynamic()).unsafeCast<Array<String>>
 //room color COLOR_WHITE - 1 turn delete move flags
 
 
+//room color COLOR_RED - goto
+//room color COLOR_GREEN - >
+//room color COLOR_YELLOW - <
+//room color COLOR_ORANGE - up
+//room color COLOR_BROWN - down
+//room color COLOR_GREY - target
+//room color COLOR_WHITE - borders
+
 
 //COLOR_BLUE   COLOR_BLUE - manual defence system ranged attack place
 //COLOR_CYAN   COLOR_CYAN - manual defence system healer place

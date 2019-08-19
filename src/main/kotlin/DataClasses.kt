@@ -32,7 +32,8 @@ enum class TypeOfTask {
     TransferToCreep,
     HealCreep,
     GoToRescueFlag,
-    TransferFromCreep
+    TransferFromCreep,
+    GoToMainRoomRescueFlag
 }
 
 enum class TypeOfMainRoomInfo {

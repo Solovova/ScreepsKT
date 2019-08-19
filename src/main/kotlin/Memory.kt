@@ -6,6 +6,7 @@ var CreepMemory.role: Int by memory {0}
 var CreepMemory.slaveRoom: String by memory {""}
 var CreepMemory.mainRoom: String by memory {""}
 var CreepMemory.subRole: String by memory {""}
+var CreepMemory.upgrade: String by memory {""} //w - wait, u - upgraded
 
 
 

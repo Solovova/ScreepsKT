@@ -11,5 +11,6 @@ class MineralDataRecord(var quantity: Int = 0,
                         var marketBuyAlways: Int = 0,
                         var storeMin: Int = 0,
                         var storeMax: Int = 0,
-                        var buyToRoom: String = ""
+                        var buyToRoom: String = "",
+                        var need: Int = 0
 )

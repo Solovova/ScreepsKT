@@ -41,17 +41,17 @@ fun Constants.initMainBody() {
 
     m(0).marketBuyEnergy = true
 
-    m(0).reactionActive = "UL"  //ZK
+    m(0).reactionActive = "ZK"  //ZK
     m(4).reactionActive = "GH" //UL
     m(6).reactionActive = "GH2O"
 
     m(1).reactionActive = "GH2O"
-    m(2).reactionActive = "XGH2O"
+    m(2).reactionActive = ""
     m(3).reactionActive = "XGH2O"
-    m(5).reactionActive = "XGH2O"
+    m(5).reactionActive = ""
     m(7).reactionActive = "XGH2O"
-    m(8).reactionActive = "XGH2O"
-    m(9).reactionActive = "XGH2O"
+    m(8).reactionActive = ""
+    m(9).reactionActive = ""
     m(10).reactionActive = "G"
     m(11).reactionActive = "G"
     m(12).reactionActive = "G"
@@ -61,6 +61,7 @@ fun Constants.initMainBody() {
     m(16).reactionActive = "OH"
     m(18).reactionActive = "OH"
 
+    m(6).needMineral["G".unsafeCast<ResourceConstant>()] = 10000
     m(6).needMineral["GH2O".unsafeCast<ResourceConstant>()] = 10000
     m(3).needMineral["XGH2O".unsafeCast<ResourceConstant>()] = 10000
 }

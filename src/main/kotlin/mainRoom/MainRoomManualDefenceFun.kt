@@ -63,7 +63,6 @@ fun MainRoom.manualDefenceInStartOfTick() {
         }
     }
 
-    console.log("$borderLeft $borderRight $borderTop $borderBottom")
 
     //have dx,dy
     val creeps = Game.creeps.values.toList().filter {
