@@ -61,9 +61,9 @@ class MainRoomConstant(val parent: Constants) {
 
     val creepUpgradableParts: MutableMap<Int, Map<BodyPartConstant,ResourceConstant>> = mutableMapOf()
     val creepUpgradeRole: MutableMap<Int, Boolean> = mutableMapOf()
-    val creepNeedUpgradeID: String = ""
-    val creepNeedUpgradeResource: ResourceConstant? = null
-    val creepNeedUpgradeResourceQuantity: Int = 0
+    var creepNeedUpgradeID: String = ""
+    var creepNeedUpgradeResource: ResourceConstant? = null
+    var creepNeedUpgradeResourceQuantity: Int = 0
 
     private fun getSlaveRoomConstant(slaveRoomName: String) : SlaveRoomConstant {
         val slaveRoomConstant:SlaveRoomConstant ? = this.slaveRoomConstantContainer[slaveRoomName]

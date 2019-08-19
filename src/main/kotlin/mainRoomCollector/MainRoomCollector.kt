@@ -16,6 +16,8 @@ import screeps.utils.toMap
 import screeps.utils.unsafe.delete
 import slaveRoom
 import upgrade
+import upgradeQuantiry
+import upgradeResource
 import kotlin.math.roundToInt
 
 class MainRoomCollector(val parent: MainContext, names: Array<String>) {
@@ -44,7 +46,36 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
 
                 if (creep.memory.role == 10) mainRoom.constant.creepIdOfBigBuilder = creep.id
                 //Upgrade
-                //if (creep.memory.upgrade != "" && mainRoom.constant.creepNeedUpgradeID == "")
+                //ToDo can be more then one upgrade, not only then spawn
+                if (creep.spawning && creep.memory.upgrade == "") {
+                    if (mainRoom.constant.creepUpgradeRole[creep.memory.role] == true) {
+                        var upgradeParts = mainRoom.constant.creepUpgradableParts[creep.memory.role]
+                        if (upgradeParts == null) upgradeParts = parent.constants.globalConstant.creepUpgradableParts[creep.memory.role]
+                        if (upgradeParts != null) {
+                            for(upgradePart in upgradeParts) {
+                                val quantityParts:Int = creep.body.filter { it.type == upgradePart.key }.size
+                                if (quantityParts != 0) {
+                                    creep.memory.upgradeResource = upgradePart.value.unsafeCast<String>()
+                                    creep.memory.upgradeQuantiry = quantityParts * 30
+                                    creep.memory.upgrade = "w"
+                                    break
+                                }
+                            }
+                        }else creep.memory.upgrade = "u"
+
+                    }else  creep.memory.upgrade = "u"
+                }
+
+                if (creep.memory.upgrade == "w" && mainRoom.constant.creepNeedUpgradeID == "") {
+                    mainRoom.constant.creepNeedUpgradeID = creep.id
+                    mainRoom.constant.creepNeedUpgradeResource = creep.memory.upgradeResource.unsafeCast<ResourceConstant>()
+                    mainRoom.constant.creepNeedUpgradeResourceQuantity = creep.memory.upgradeQuantiry
+                    //after this
+                    //LabFiller fill need Resource in Lab2
+                    //Lab reaction in Lab2 stop
+                    //creep have 1 task go to lab and upgrade and if OK write "u" to creep.memory.upgrade
+                }
+
             }
 
             // Slave rooms

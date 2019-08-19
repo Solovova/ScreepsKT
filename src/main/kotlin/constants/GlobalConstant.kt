@@ -20,6 +20,7 @@ class GlobalConstant {
     val showProfitWhenLessWhen: Int = 6000
 
     //CreepUpgrades
+    //if in room set it more priority
     val creepUpgradableParts: MutableMap<Int, Map<BodyPartConstant,ResourceConstant>> = mutableMapOf()
 
     val labReactionComponent: MutableMap<ResourceConstant,Array<ResourceConstant>> = mutableMapOf()

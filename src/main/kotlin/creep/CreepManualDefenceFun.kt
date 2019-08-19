@@ -32,7 +32,7 @@ fun Creep.manualDefenceGetMyFlag(color: ColorConstant): Flag? {
 fun Creep.manualDefenceMove(mainContext: MainContext, color: ColorConstant, role: String) {
     val mainRoom: MainRoom = mainContext.mainRoomCollector.rooms[this.memory.mainRoom] ?: return
     val groupPos = mainRoom.constant.manualDefenceGroupPos
-    if (groupPos != null) {
+    if (groupPos != null && groupPos.roomName != this.pos.roomName) {
         if (!this.pos.inRangeTo(groupPos, 1)) this.moveTo(groupPos)
     }else{
         val flag: Flag? = this.manualDefenceGetMyFlag(color)

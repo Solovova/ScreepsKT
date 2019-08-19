@@ -64,4 +64,5 @@ fun Constants.initMainBody() {
     m(6).needMineral["G".unsafeCast<ResourceConstant>()] = 10000
     m(6).needMineral["GH2O".unsafeCast<ResourceConstant>()] = 10000
     m(3).needMineral["XGH2O".unsafeCast<ResourceConstant>()] = 10000
+    m(0).creepUpgradeRole[7] = true
 }
