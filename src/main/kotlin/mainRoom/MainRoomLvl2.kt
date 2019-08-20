@@ -76,9 +76,10 @@ fun MainRoom.needCorrection2() {
     if (this.mineral.mineralAmount > 0 &&
             this.structureContainerNearMineral.size == 1
             && this.structureExtractor.size == 1) {
-        if (getResource(this.mineral.mineralType) < this.constant.mineralMaxInRoom)
+        if (getResource(this.mineral.mineralType) < (this.constant.mineralMaxInRoom+50000))
             this.need[1][15] = 1
-        else parent.parent.messenger("INFO", this.name, "Mineral full", COLOR_RED)
+        if (getResource(this.mineral.mineralType) > this.constant.mineralMaxInRoom)
+            parent.parent.messenger("INFO", this.name, "Mineral full", COLOR_RED)
     }
 
     val container: StructureContainer? = this.structureContainerNearMineral[0]
