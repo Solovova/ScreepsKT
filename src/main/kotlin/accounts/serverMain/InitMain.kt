@@ -20,7 +20,7 @@ fun Constants.initMainHead() {                   //M0       M1       M2       M3
     this.getMainRoomConstant("E51N33").initSlaveRoomConstantContainer(arrayOf("E51N34"))                        //M12
     this.getMainRoomConstant("E58N37").initSlaveRoomConstantContainer(arrayOf("E58N38"))                                //M14
     this.getMainRoomConstant("E52N36").initSlaveRoomConstantContainer(arrayOf("E51N36","E53N36"))                       //M15
-    this.getMainRoomConstant("E57N32").initSlaveRoomConstantContainer(arrayOf("E56N32","E56N31","E57N31"))              //M16
+    this.getMainRoomConstant("E57N32").initSlaveRoomConstantContainer(arrayOf("E56N32","E56N31","E57N31","E58N31"))              //M16
     this.getMainRoomConstant("E57N39").initSlaveRoomConstantContainer(arrayOf("E56N39","E57N38","E56N38"))              //M18
     this.getMainRoomConstant("E57N35").initSlaveRoomConstantContainer(arrayOf("E58N35","E59N35"))              //M19
     this.getMainRoomConstant("E57N37").initSlaveRoomConstantContainer(arrayOf("E57N36"))                                //M20
@@ -28,6 +28,8 @@ fun Constants.initMainHead() {                   //M0       M1       M2       M3
 
 //Call after init constants and load from memory
 fun Constants.initMainBody() {
+
+    s(16,3).model = 1
 
     //Far transfer E51N33 -> E52N33 wait
     //Far transfer E59N38 -> E58N39
