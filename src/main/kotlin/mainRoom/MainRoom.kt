@@ -343,6 +343,15 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         return (this.resTerminal[resource] ?: 0) + (this.resStorage[resource] ?: 0)
     }
 
+    private fun getTimeDeath(fRole: Int): Int {
+        return when (fRole) {
+            2 -> parent.parent.getCacheRecordRoom("mainContainer0", this)?.timeForDeath ?: 0
+            4 -> parent.parent.getCacheRecordRoom("mainContainer1", this)?.timeForDeath ?: 0
+            else -> 0
+        }
+    }
+
+
     private fun buildQueue() {
         for (i in 0 until this.have.size) this.haveForQueue[i] = this.have[i]
         val fPriorityOfRole = if (this.getResourceInStorage() < 2000) arrayOf(0, 9, 1, 3, 2, 4, 14, 5, 6, 20, 21, 22, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18)
@@ -356,7 +365,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 if (priority >= 2) fNeed += this.need[2][fRole]
                 while (this.haveForQueue[fRole] < fNeed) {
                     this.haveForQueue[fRole]++
-                    this.queue.add(QueueSpawnRecord(fRole, this.name, this.name))
+                    this.queue.add(QueueSpawnRecord(fRole, this.name, this.name, this.getTimeDeath(fRole)))
                 }
             }
         }
@@ -380,7 +389,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 if (priority >= 2) fNeed += this.need[2][fRole]
                 while (this.haveForQueue[fRole] < fNeed) {
                     this.haveForQueue[fRole]++
-                    this.queue.add(QueueSpawnRecord(fRole, this.name, this.name))
+                    this.queue.add(QueueSpawnRecord(fRole, this.name, this.name, this.getTimeDeath(fRole)))
                 }
             }
         }
@@ -438,7 +447,10 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             }
 
             7 -> {
-                if (this.room.energyCapacityAvailable < 1800) result = arrayOf(MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY)
+                //ToDO remove after 3 level room
+                val controller = this.structureController[0]
+                if (controller != null && controller.level == 8) result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
+                else if (this.room.energyCapacityAvailable < 1800) result = arrayOf(MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY)
                 else if (this.room.energyCapacityAvailable < 2300) result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY)
                 else if (this.room.energyCapacityAvailable < 3000) result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY)
                 else if (this.room.energyCapacityAvailable <= 5600) result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
@@ -492,7 +504,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 //Middle
                 //result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK)
                 //Max
-                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK)
+                result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK)
             }
 
             21 -> { //RA
@@ -501,7 +513,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 //Middle
                 //result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK)
                 //Max
-                result = arrayOf(MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK)
+                result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK)
             }
 
             22 -> {
@@ -510,7 +522,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 //Middle
                 //result = arrayOf(TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL)
                 //Max
-                result = arrayOf(TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL)
+                result = arrayOf(TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL)
             }
         }
         return result
@@ -527,6 +539,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             d["role"] = this.queue[0].role
             d["slaveRoom"] = this.queue[0].slaveRoom
             d["mainRoom"] = this.queue[0].mainRoom
+            d["tickDeath"] = this.queue[0].timeDeath
             val spawnOptions: dynamic = object {}
             spawnOptions["memory"] = d
 

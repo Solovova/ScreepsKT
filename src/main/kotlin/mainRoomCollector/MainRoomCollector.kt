@@ -15,8 +15,9 @@ import screeps.utils.isEmpty
 import screeps.utils.toMap
 import screeps.utils.unsafe.delete
 import slaveRoom
+import tickDeath
 import upgrade
-import upgradeQuantiry
+import upgradeQuantity
 import upgradeResource
 import kotlin.math.roundToInt
 
@@ -35,9 +36,10 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
 
     private fun creepsCalculate() {
         for (creep in Game.creeps.values) {
-            if (creep.carry.toMap().map { it.value }.sum() == 0
-                    && creep.ticksToLive < 100
-                    && (creep.memory.role == 106 || creep.memory.role == 108)) creep.suicide()
+            if (creep.memory.tickDeath != 0
+                    && creep.ticksToLive < creep.memory.tickDeath
+                    && creep.carry.toMap().map { it.value }.sum() == 0
+            ) creep.suicide()
 
             // Main rooms
             if (creep.memory.role in 0..99) {
@@ -52,24 +54,24 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
                         var upgradeParts = mainRoom.constant.creepUpgradableParts[creep.memory.role]
                         if (upgradeParts == null) upgradeParts = parent.constants.globalConstant.creepUpgradableParts[creep.memory.role]
                         if (upgradeParts != null) {
-                            for(upgradePart in upgradeParts) {
-                                val quantityParts:Int = creep.body.filter { it.type == upgradePart.key }.size
+                            for (upgradePart in upgradeParts) {
+                                val quantityParts: Int = creep.body.filter { it.type == upgradePart.key }.size
                                 if (quantityParts != 0) {
                                     creep.memory.upgradeResource = upgradePart.value.unsafeCast<String>()
-                                    creep.memory.upgradeQuantiry = quantityParts * 30
+                                    creep.memory.upgradeQuantity = quantityParts * 30
                                     creep.memory.upgrade = "w"
                                     break
                                 }
                             }
-                        }else creep.memory.upgrade = "u"
+                        } else creep.memory.upgrade = "u"
 
-                    }else  creep.memory.upgrade = "u"
+                    } else creep.memory.upgrade = "u"
                 }
 
                 if (creep.memory.upgrade == "w" && mainRoom.constant.creepNeedUpgradeID == "") {
                     mainRoom.constant.creepNeedUpgradeID = creep.id
                     mainRoom.constant.creepNeedUpgradeResource = creep.memory.upgradeResource.unsafeCast<ResourceConstant>()
-                    mainRoom.constant.creepNeedUpgradeResourceQuantity = creep.memory.upgradeQuantiry
+                    mainRoom.constant.creepNeedUpgradeResourceQuantity = creep.memory.upgradeQuantity
                     //after this
                     //LabFiller fill need Resource in Lab2
                     //Lab reaction in Lab2 stop
@@ -85,7 +87,7 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
 
 
 
-                slaveRoom.have[creep.memory.role-100]++
+                slaveRoom.have[creep.memory.role - 100]++
 
                 if (!slaveRoom.constant.roomHostile
                         && (creep.memory.role == 107 || creep.memory.role == 105)
@@ -106,7 +108,7 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
         if (Memory["profit"] == null) Memory["profit"] = object {}
 
         for (creep in Game.creeps.values) {
-            if (creep.memory.role in arrayOf(106,1006,108,1008,121,123,125,1121,1123,1125)) {
+            if (creep.memory.role in arrayOf(106, 1006, 108, 1008, 121, 123, 125, 1121, 1123, 1125)) {
                 val mainRoom: MainRoom = this.rooms[creep.memory.mainRoom] ?: continue
                 val slaveRoom: SlaveRoom = mainRoom.slaveRooms[creep.memory.slaveRoom] ?: continue
 

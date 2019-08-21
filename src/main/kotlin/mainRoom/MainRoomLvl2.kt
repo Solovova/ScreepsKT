@@ -42,6 +42,13 @@ fun MainRoom.needCorrection2() {
         this.need[2][7]=0
     }
 
+    //ToDO remove after 3 level room
+    val controller = this.structureController[0]
+    if (controller != null && controller.level == 8) {
+        this.need[1][7]=1
+        this.need[2][7]=0
+    }
+
     //carrier
 
     if (this.have[7]>3) this.need[1][6]=this.have[7] -1

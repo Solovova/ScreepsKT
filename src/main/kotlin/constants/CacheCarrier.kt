@@ -18,7 +18,7 @@ class CacheCarrier {
         this.default = default ?: true
         this.tickRecalculate = tickRecalculate ?: 0
         this.needCarriers = needCarriers ?: 1
-        this.timeForDeath = timeForDeath ?: 100
+        this.timeForDeath = timeForDeath ?: 0
         this.needBody = needBody ?: arrayOf<BodyPartConstant>(MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
         this.mPath = mPath ?: arrayOf()
     }

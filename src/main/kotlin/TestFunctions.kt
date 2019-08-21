@@ -3,6 +3,7 @@ import mainContext.messenger
 import mainRoom.MainRoom
 import screeps.api.*
 import slaveRoom.SlaveRoom
+import kotlin.math.roundToInt
 
 fun testingFunctions (mainContext : MainContext) {
 //    val mCash:MutableMap<ResourceConstant,Int> = mutableMapOf()
@@ -67,6 +68,5 @@ fun testingFunctions (mainContext : MainContext) {
 //    }
 
 
-
-
+    console.log("${(233 / 100 * 100)}")
 }
