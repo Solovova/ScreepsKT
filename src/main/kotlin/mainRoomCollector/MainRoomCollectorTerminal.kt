@@ -7,6 +7,7 @@ import screeps.api.OK
 import screeps.api.RESOURCE_ENERGY
 import screeps.api.structures.StructureTerminal
 import screeps.utils.toMap
+import kotlin.math.max
 import kotlin.math.min
 
 fun MainRoomCollector.runTerminalsTransfer() {
@@ -31,11 +32,17 @@ fun MainRoomCollector.terminalSentEnergy() {
 fun MainRoomCollector.terminalSentMineral() {
     val minTransfer = 1000
 
+    //Logic
+    //needResource term, haveResource term, haveResourceInRoom term+storage
+    //needResource > haveResource && needResource <= haveResourceInRoom -> wait
+    //needResource < haveResource && needResource <100 -> needResource = 100
+
+
     for (roomTo in this.rooms.values) {
         val terminalTo = roomTo.structureTerminal[0] ?: continue
         if (terminalTo.cooldown != 0) continue
         for (needResourceRecord in roomTo.constant.needMineral) {
-            val needResourceQuantity = needResourceRecord.value - roomTo.getResource(needResourceRecord.key)
+            val needResourceQuantity = max(needResourceRecord.value - roomTo.getResource(needResourceRecord.key), 100)
             val needResource = needResourceRecord.key
             val canMineralTakeTerminal = roomTo.constant.mineralAllMaxTerminal - (terminalTo.store.toMap().map { it.value }.sum()
                     - roomTo.getResourceInTerminal(RESOURCE_ENERGY))
@@ -44,12 +51,19 @@ fun MainRoomCollector.terminalSentMineral() {
                 if (roomFrom.name == roomTo.name) continue
                 val terminalFrom = roomFrom.structureTerminal[0] ?: continue
                 if (terminalFrom.cooldown != 0) continue
-                val haveResourceQuantity = roomFrom.getResource(needResource) -
+                val haveResourceQuantity = roomFrom.getResourceInTerminal(needResource)
+                val haveResourceQuantityInRoom = roomFrom.getResource(needResource) -
                         (roomFrom.constant.needMineral[needResource] ?: 0)
+
                 val quantityTransfer = min(min(min(
                         haveResourceQuantity, needResourceQuantity),
                         parent.constants.globalConstant.sentMaxMineralQuantity),
                         canMineralTakeTerminal)
+
+                if (quantityTransfer < needResourceQuantity
+                        && quantityTransfer < parent.constants.globalConstant.sentMaxMineralQuantity
+                        && quantityTransfer < haveResourceQuantityInRoom) continue  //wait because not all resource transfer from storage to terminal
+
                 if (quantityTransfer < 100) continue
                 //One transfer per tick
                 if (terminalFrom.send(needResource, quantityTransfer, roomTo.name) == OK) return

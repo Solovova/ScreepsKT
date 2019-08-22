@@ -38,7 +38,7 @@ class MainContext {
         //Game.market.createOrder(ORDER_SELL,"XGH2O".unsafeCast<ResourceConstant>(),2.380,10000,"E52N38")
         //val result = Game.market.deal("5d4b64f5e4c2aa66fdcc1fdd",10000,"E54N37")
 //        console.log("Trade: $result")
-        //this.directControlTaskClearInRoom("E54N39")
+        this.directControlTaskClearInRoom("W7N5")
     }
 
     fun runInStartOfTick() {

@@ -41,11 +41,11 @@ fun Constants.initMainBody() {
 
     m(0).marketBuyEnergy = true
 
-    m(0).reactionActive = "ZK"  //ZK
+    m(0).reactionActive = "UL"  //ZK
     m(4).reactionActive = "GH" //UL
     m(6).reactionActive = "GH2O"
 
-    m(1).reactionActive = "GH2O"
+    m(1).reactionActive = "XGH2O"
     m(2).reactionActive = "OH"
     m(3).reactionActive = "OH" //XGH2O
     m(5).reactionActive = "OH"
