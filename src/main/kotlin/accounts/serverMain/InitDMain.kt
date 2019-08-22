@@ -1,6 +1,7 @@
 package accounts.serverMain
 
 import mainRoom.MainRoom
+import screeps.api.ResourceConstant
 import slaveRoom.SlaveRoom
 
 fun constantMainRoomInitMain(mainRoom: MainRoom) {
@@ -16,6 +17,10 @@ fun constantMainRoomInitMain(mainRoom: MainRoom) {
             mainRoom.constant.defenceHits = 100000
         }
     }
+
+    if (mainRoom.name == "E54N39") mainRoom.needMineral["G".unsafeCast<ResourceConstant>()] = 10000  //M6
+    if (mainRoom.name == "E54N39") mainRoom.needMineral["GH2O".unsafeCast<ResourceConstant>()] = 10000  //M6
+    if (mainRoom.name == "E52N38") mainRoom.needMineral["XGH2O".unsafeCast<ResourceConstant>()] = 10000  //M3
 
     //if(mainRoom.name == "E54N39") mainRoom.constant.defenceHits = 4000000
 }

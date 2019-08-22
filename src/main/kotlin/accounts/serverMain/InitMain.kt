@@ -7,7 +7,7 @@ import screeps.api.ResourceConstant
 fun Constants.initMainHead() {                   //M0       M1       M2       M3       M4       M5       M6        M7        M8        M9
     this.initMainRoomConstantContainer( arrayOf("E54N37","E59N36","E52N35","E52N38","E53N39","E52N37","E54N39", "E51N39", "E53N38", "E51N37",
                                                 "E59N38","E57N34","E51N33","E51N35","E58N37","E52N36","E57N32", "E58N39", "E57N39", "E57N35",
-                                                "E57N37","E52N33") )
+                                                "E57N37","E52N33","E58N31") )
     //Colonization E49N39
     this.getMainRoomConstant("E54N37").initSlaveRoomConstantContainer(arrayOf("E53N37","E54N36"))                                //M0
     this.getMainRoomConstant("E59N36").initSlaveRoomConstantContainer(arrayOf("E58N36"))                                //M1
@@ -30,6 +30,7 @@ fun Constants.initMainHead() {                   //M0       M1       M2       M3
 fun Constants.initMainBody() {
 
     s(16,3).model = 1
+    m(22).creepSpawn = false
 
     //Far transfer E51N33 -> E52N33 wait
     //Far transfer E59N38 -> E58N39
@@ -40,6 +41,8 @@ fun Constants.initMainBody() {
 //    m(6).sentEnergyToRoom = "E54N37"
 
     m(0).marketBuyEnergy = true
+    m(0).creepUpgradeRole[7] = true
+    m(4).creepUpgradeRole[7] = true
 
     m(0).reactionActive = "UL"  //ZK
     m(4).reactionActive = "GH" //UL
@@ -61,8 +64,6 @@ fun Constants.initMainBody() {
     m(16).reactionActive = "OH"
     m(18).reactionActive = "OH"
 
-    m(6).needMineral["G".unsafeCast<ResourceConstant>()] = 10000
-    m(6).needMineral["GH2O".unsafeCast<ResourceConstant>()] = 10000
-    m(3).needMineral["XGH2O".unsafeCast<ResourceConstant>()] = 10000
+
     m(0).creepUpgradeRole[7] = true
 }

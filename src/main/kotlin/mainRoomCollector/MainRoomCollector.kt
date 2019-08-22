@@ -8,7 +8,6 @@ import mainContext.messenger
 import slaveRoom.SlaveRoom
 import mainRoom
 import mainRoom.MainRoom
-import mainRoom.logisticAddCarry
 import role
 import screeps.api.*
 import screeps.utils.isEmpty
@@ -68,16 +67,15 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
                     } else creep.memory.upgrade = "u"
                 }
 
-                if (creep.memory.upgrade == "w" && mainRoom.constant.creepNeedUpgradeID == "") {
-                    mainRoom.constant.creepNeedUpgradeID = creep.id
-                    mainRoom.constant.creepNeedUpgradeResource = creep.memory.upgradeResource.unsafeCast<ResourceConstant>()
-                    mainRoom.constant.creepNeedUpgradeResourceQuantity = creep.memory.upgradeQuantity
+                if (creep.memory.upgrade == "w" && mainRoom.creepNeedUpgradeID == "") {
+                    mainRoom.creepNeedUpgradeID = creep.id
+                    mainRoom.creepNeedUpgradeResource = creep.memory.upgradeResource.unsafeCast<ResourceConstant>()
+                    mainRoom.creepNeedUpgradeResourceQuantity = creep.memory.upgradeQuantity
                     //after this
                     //LabFiller fill need Resource in Lab2
                     //Lab reaction in Lab2 stop
                     //creep have 1 task go to lab and upgrade and if OK write "u" to creep.memory.upgrade
                 }
-
             }
 
             // Slave rooms
@@ -99,8 +97,27 @@ class MainRoomCollector(val parent: MainContext, names: Array<String>) {
             // Logist add transfer
             if (creep.memory.role == 14 || creep.memory.role == 1014) {
                 val mainRoom: MainRoom = this.rooms[creep.memory.mainRoom] ?: continue
-                mainRoom.logisticAddCarry(creep)
+                for (res in creep.carry.toMap()) mainRoom.resStorage[res.key] = (mainRoom.resStorage[res.key] ?: 0) + res.value
             }
+
+
+        }
+
+        //Add resource upgrade
+        for (mainRoom in this.rooms.values) {
+            if (mainRoom.creepNeedUpgradeID == "") continue
+            val resource: ResourceConstant = mainRoom.creepNeedUpgradeResource.unsafeCast<ResourceConstant>()
+            var resourceQuantityAllLabFiller = 0
+            val creepsLabFiller = Game.creeps.toMap().filter { (it.value.memory.role == 18 || it.value.memory.role == 1018)
+                    && it.value.memory.mainRoom == mainRoom.name}
+            for (creep in creepsLabFiller) resourceQuantityAllLabFiller += creep.value.carry[resource] ?: 0
+
+            val lab = mainRoom.structureLabSort[2]
+            val resourceQuantityLab2 = if (lab != null && lab.mineralType == resource) lab.mineralAmount else 0
+
+            //console.log("Test $resourceQuantityAllLabFiller $resourceQuantityLab2")
+
+            mainRoom.resTerminal[resource] = (mainRoom.resTerminal[resource] ?: 0) + resourceQuantityLab2 + resourceQuantityAllLabFiller
         }
     }
 

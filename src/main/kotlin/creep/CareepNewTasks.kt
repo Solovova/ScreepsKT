@@ -12,6 +12,7 @@ import screeps.api.Game.structures
 import screeps.api.structures.*
 import screeps.utils.toMap
 import slaveRoom
+import upgrade
 
 fun Creep.takeFromStorage(creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
     var result = false
@@ -327,6 +328,22 @@ fun Creep.takeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext
         }
         if (objForFilling != null) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Take, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))
+            result = true
+        }
+    }
+    return result
+}
+
+fun Creep.upgradeCreep(mainContext: MainContext, mainRoom: MainRoom): Boolean {
+    // 0 - Source 0, 1 - Source 1, 2 - Controller, 3 - any container
+    var result = false
+    if (this.memory.upgrade == "w") {
+        val lab2: StructureLab? = mainRoom.structureLabSort[2]
+        if (lab2 == null) {
+            this.memory.upgrade = "u"
+            return false
+        }else{
+            mainContext.tasks.add(this.id, CreepTask(TypeOfTask.UpgradeCreep, idObject0 = lab2.id, posObject0 = lab2.pos))
             result = true
         }
     }

@@ -11,6 +11,7 @@ import role
 import mainRoom
 import screeps.utils.toMap
 import slaveRoom
+import upgrade
 
 fun Creep.doTask(mainContext: MainContext) {
     if (!mainContext.tasks.isTaskForCreep(this)) return
@@ -93,6 +94,18 @@ fun Creep.doTask(mainContext: MainContext) {
             if (task.come) {
                 val controller: StructureController? = (Game.getObjectById(task.idObject0) as StructureController?)
                 if (controller != null) this.upgradeController(controller)
+            }
+        }
+
+        TypeOfTask.UpgradeCreep -> {
+            if (!task.come) this.doTaskGoTo(task, task.posObject0, 1)
+            if (task.come) {
+                val lab: StructureLab? = (Game.getObjectById(task.idObject0) as StructureLab?)
+                if (lab == null) this.memory.upgrade = "u"
+                if (lab != null && mainRoom.creepNeedUpgradeID == this.id) {
+                    lab.boostCreep(this)
+                    this.memory.upgrade = "u"
+                }
             }
         }
 

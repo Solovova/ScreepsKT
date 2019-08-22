@@ -81,7 +81,7 @@ fun MainContext.mineralDataFill() {
     initMineralData(this.mineralData)
     for (res in RESOURCES_ALL) {
         val quantity: Int = this.mainRoomCollector.rooms.values.sumBy { it.getResource(res) }
-        val need: Int = this.mainRoomCollector.rooms.values.sumBy { it.constant.needMineral[res] ?: 0 }
+        val need: Int = this.mainRoomCollector.rooms.values.sumBy { it.needMineral[res] ?: 0 }
         val mineralDataRecord: MineralDataRecord? = this.mineralData[res]
         if (mineralDataRecord == null){
             if (quantity != 0 || need != 0) mineralData[res] = MineralDataRecord(quantity = quantity, need = need)
@@ -106,8 +106,8 @@ fun MainContext.mineralInfoShow() {
         val mineralDataRecord: MineralDataRecord? = mineralData[res]
         if (mineralDataRecord != null) {
             val strQuantity = if (mineralDataRecord.quantity == 0) "" else mineralDataRecord.quantity.toString().toSecDigit()
-            val strMinPrice = if (mineralDataRecord.priceMin == 0.0) "" else mineralDataRecord.priceMin.toString()
-            val strMaxPrice = if (mineralDataRecord.priceMax == 0.0) "" else mineralDataRecord.priceMax.toString()
+            //val strMinPrice = if (mineralDataRecord.priceMin == 0.0) "" else mineralDataRecord.priceMin.toString()
+            //val strMaxPrice = if (mineralDataRecord.priceMax == 0.0) "" else mineralDataRecord.priceMax.toString()
             //val strProduceUp = if (mineralDataRecord.quantityUp == 0) "" else mineralDataRecord.quantityUp.toString()
             //val strProduceDown = if (mineralDataRecord.quantityDown == 0) "" else mineralDataRecord.quantityDown.toString()
             val strBalance = if (mineralDataRecord.quantityUp - mineralDataRecord.quantityDown == 0) ""

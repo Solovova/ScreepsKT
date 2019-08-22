@@ -1,6 +1,7 @@
 package accounts.serverTest
 
 import constants.Constants
+import screeps.api.ResourceConstant
 
 fun Constants.initTestHead() {
     this.initMainRoomConstantContainer( arrayOf("W5N3","W4N3","W7N3","W7N5") )
@@ -22,4 +23,6 @@ fun Constants.initTestBody() {
     m(0).reactionActive = "ZK"
     m(1).reactionActive = "UL"
     m(2).reactionActive = "G"
+
+    m(1).creepUpgradeRole[7] = true
 }

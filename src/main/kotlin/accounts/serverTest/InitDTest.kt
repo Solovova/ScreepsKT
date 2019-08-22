@@ -1,9 +1,11 @@
 package accounts.serverTest
 
 import mainRoom.MainRoom
+import screeps.api.ResourceConstant
 import slaveRoom.SlaveRoom
 
 fun constantMainRoomInitTest(mainRoom: MainRoom) {
+    //if (mainRoom.name == "W5N3") mainRoom.needMineral["GH2O".unsafeCast<ResourceConstant>()] = 200000  //M0
 
 }
 

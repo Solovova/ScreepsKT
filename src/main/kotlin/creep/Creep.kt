@@ -10,6 +10,7 @@ import role
 import screeps.api.*
 import screeps.utils.toMap
 import slaveRoom
+import upgrade
 
 fun Creep.getDescribeForQueue(mainContext: MainContext):String {
     val mainRoom: MainRoom = mainContext.mainRoomCollector.rooms[this.memory.mainRoom] ?: return ""
@@ -95,6 +96,7 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
     }
 
     if (this.memory.role == 7) {
+        if (!isTask) isTask = this.upgradeCreep(mainContext,mainRoom)
         if (!isTask) isTask = this.signRoom(mainContext,mainRoom)
         if (!isTask) isTask = this.takeFromContainer(2,creepCarry,mainContext,mainRoom)
         if (!isTask) isTask = this.upgradeNormalOrEmergency(0,creepCarry,mainContext,mainRoom)

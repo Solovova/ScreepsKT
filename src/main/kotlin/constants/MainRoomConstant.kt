@@ -37,8 +37,6 @@ class MainRoomConstant(val parent: Constants) {
     var energyMaxTerminal: Int = 60000
     var mineralMinTerminal: Int = 10000
     var mineralAllMaxTerminal: Int = 150000
-    var needMineral: MutableMap<ResourceConstant,Int> = mutableMapOf()
-
 
     //Market
     var marketBuyEnergy: Boolean = false
@@ -61,9 +59,7 @@ class MainRoomConstant(val parent: Constants) {
 
     val creepUpgradableParts: MutableMap<Int, Map<BodyPartConstant,ResourceConstant>> = mutableMapOf()
     val creepUpgradeRole: MutableMap<Int, Boolean> = mutableMapOf()
-    var creepNeedUpgradeID: String = ""
-    var creepNeedUpgradeResource: ResourceConstant? = null
-    var creepNeedUpgradeResourceQuantity: Int = 0
+
 
     private fun getSlaveRoomConstant(slaveRoomName: String) : SlaveRoomConstant {
         val slaveRoomConstant:SlaveRoomConstant ? = this.slaveRoomConstantContainer[slaveRoomName]

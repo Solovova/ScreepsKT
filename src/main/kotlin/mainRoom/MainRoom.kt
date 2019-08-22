@@ -25,7 +25,12 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
     //Cash data
     val resStorage: MutableMap<ResourceConstant, Int> = mutableMapOf()  //Stored in Store + Logist
-    private val resTerminal: MutableMap<ResourceConstant, Int> = mutableMapOf()
+    val resTerminal: MutableMap<ResourceConstant, Int> = mutableMapOf()
+
+    var creepNeedUpgradeID: String = ""
+    var creepNeedUpgradeResource: ResourceConstant? = null
+    var creepNeedUpgradeResourceQuantity: Int = 0
+    var needMineral: MutableMap<ResourceConstant,Int> = mutableMapOf()
 
     //StructureSpawn
     private var _structureSpawn: Map<String, StructureSpawn>? = null
@@ -860,19 +865,26 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         if (lab1.mineralAmount != 0 && lab1.mineralType != reactionComponent[1]) return
         for (ind in 2 until this.structureLabSort.size) {
             val lab = this.structureLabSort[ind] ?: continue
+            if (ind == 2 && this.creepNeedUpgradeID != "") continue
             if (lab.cooldown != 0) continue
             lab.runReaction(lab0, lab1)
         }
     }
 
     private fun setMineralNeed() {
-        if (this.constant.reactionActive == "") return
-        val reaction = this.constant.reactionActive.unsafeCast<ResourceConstant>()
-        if (this.structureLabSort.size !in arrayOf(3, 6, 10)) return
-        val reactionComponent = this.parent.parent.constants.globalConstant.labReactionComponent[reaction]
-                ?: return
-        this.constant.needMineral[reactionComponent[0]] = 2000
-        this.constant.needMineral[reactionComponent[1]] = 2000
+        if (this.constant.reactionActive != ""){
+            val reaction = this.constant.reactionActive.unsafeCast<ResourceConstant>()
+            if (this.structureLabSort.size !in arrayOf(3, 6, 10)) return
+            val reactionComponent = this.parent.parent.constants.globalConstant.labReactionComponent[reaction]
+                    ?: return
+            this.needMineral[reactionComponent[0]] = (this.needMineral[reactionComponent[0]] ?: 0) + 2000
+            this.needMineral[reactionComponent[1]] = (this.needMineral[reactionComponent[1]] ?: 0) + 2000
+        }
+
+        if (this.creepNeedUpgradeID != "") {
+            val resource: ResourceConstant = this.creepNeedUpgradeResource.unsafeCast<ResourceConstant>()
+            this.needMineral[resource] = (this.needMineral[resource] ?: 0) + this.creepNeedUpgradeResourceQuantity
+        }
     }
 }
 

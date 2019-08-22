@@ -101,7 +101,4 @@ fun MainRoom.setLogistTask(creep: Creep) {
     }
 }
 
-fun MainRoom.logisticAddCarry(creep: Creep) {
-    for (res in creep.carry.toMap()) this.resStorage[res.key] = (this.resStorage[res.key] ?: 0) + res.value
-}
 

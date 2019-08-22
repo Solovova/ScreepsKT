@@ -10,6 +10,7 @@ import CreepTask
 import role
 import mainRoom
 import slaveRoom
+import upgrade
 
 fun Creep.endTask(mainContext: MainContext) {
     if (!mainContext.tasks.isTaskForCreep(this)) return
@@ -90,6 +91,10 @@ fun Creep.endTask(mainContext: MainContext) {
 
         TypeOfTask.Drop -> {
             if (creepCarry == 0) mainContext.tasks.deleteTask(this.id)
+        }
+
+        TypeOfTask.UpgradeCreep -> {
+            if (this.memory.upgrade == "u") mainContext.tasks.deleteTask(this.id)
         }
 
         TypeOfTask.TransferTo -> {
