@@ -30,7 +30,7 @@ class GlobalConstant {
             for (key1 in js("Object").keys(REACTIONS[key0]).unsafeCast<Array<ResourceConstant>>())
                 labReactionComponent[REACTIONS[key0][key1].unsafeCast<ResourceConstant>()] = arrayOf(key0,key1)
 
-        creepUpgradableParts[7] = mutableMapOf<BodyPartConstant,ResourceConstant>(WORK to "GH2O".unsafeCast<ResourceConstant>())
+        creepUpgradableParts[7] = mutableMapOf<BodyPartConstant,ResourceConstant>(WORK to "XGH2O".unsafeCast<ResourceConstant>())
     }
 
 

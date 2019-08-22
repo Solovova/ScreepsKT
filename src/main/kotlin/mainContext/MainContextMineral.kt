@@ -5,11 +5,13 @@ import REACTION_TIME
 import screeps.api.*
 import RESOURCES_ALL
 import accounts.initMineralData
+import mainRoom.MainRoom
 import mainRoom.marketCreateBuyOrders
 import screeps.utils.toMap
 import toSecDigit
+import kotlin.math.min
 
-fun MainContext.marketDeleteEmptyOrfers() {
+fun MainContext.marketDeleteEmptyOffers() {
     val orders = Game.market.orders.toMap().filter {
             it.value.remainingAmount == 0
                     && !it.value.active
@@ -149,5 +151,21 @@ fun MainContext.mineralProductionFill() {
                 else this.mineralData[reactionComponentRc] = MineralDataRecord(quantityDown = produce)
             }
         }
+    }
+}
+
+fun MainContext.mineralSellExcess() {
+    for (resource in RESOURCES_ALL) {
+        val mineralDataRecord = mineralData[resource] ?: continue
+        if (mineralDataRecord.marketSellExcess == 0 || mineralDataRecord.quantity < mineralDataRecord.marketSellExcess) continue
+        val mainRoomForSale: MainRoom = this.mainRoomCollector.rooms.values.firstOrNull { it.getResourceInTerminal(resource) > 5000 }
+                ?: continue
+        val orders = this.marketGetBuyOrdersSorted(resource,mainRoomForSale.name)
+        if (orders.isEmpty()) continue
+        val order = orders[0]
+
+        //console.log("Order $resource ${order.order.id}  ${order.realPrice}")
+
+        if (order.realPrice > mineralDataRecord.priceMin) Game.market.deal(order.order.id,min(order.order.amount,5000),mainRoomForSale.name)
     }
 }

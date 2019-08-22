@@ -60,7 +60,8 @@ class MainContext {
         if (!this.setNextTickRun()) return
         this.tasks.deleteTaskDiedCreep()
         this.battleGroupContainer.runNotEveryTick()
-        this.marketDeleteEmptyOrfers()
+        this.marketDeleteEmptyOffers()
+        this.mineralSellExcess()
     }
 
     fun runInEndOfTick() {
