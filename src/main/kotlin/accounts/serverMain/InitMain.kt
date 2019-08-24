@@ -24,13 +24,16 @@ fun Constants.initMainHead() {                   //M0       M1       M2       M3
     this.getMainRoomConstant("E57N39").initSlaveRoomConstantContainer(arrayOf("E56N39","E57N38","E56N38"))              //M18
     this.getMainRoomConstant("E57N35").initSlaveRoomConstantContainer(arrayOf("E58N35","E59N35"))              //M19
     this.getMainRoomConstant("E57N37").initSlaveRoomConstantContainer(arrayOf("E57N36"))                                //M20
+
+    this.getMainRoomConstant("E58N31").initSlaveRoomConstantContainer(arrayOf("E59N31"))                                //M22
+
 }
 
 //Call after init constants and load from memory
 fun Constants.initMainBody() {
 
     s(16,3).model = 1
-    m(22).creepSpawn = false
+    s(22,0).autoBuildRoad = true
 
     //Far transfer E51N33 -> E52N33 wait
     //Far transfer E59N38 -> E58N39
@@ -41,10 +44,10 @@ fun Constants.initMainBody() {
 //    m(6).sentEnergyToRoom = "E54N37"
 
     m(0).marketBuyEnergy = true
-    m(0).creepUpgradeRole[7] = true
-    m(4).creepUpgradeRole[7] = true
+    //m(0).creepUpgradeRole[7] = true
+    //m(4).creepUpgradeRole[7] = true
 
-    m(0).reactionActive = "UL"  //ZK
+    m(0).reactionActive = "ZK"  //ZK
     m(4).reactionActive = "GH" //UL
     m(6).reactionActive = "GH2O"
 
@@ -55,8 +58,8 @@ fun Constants.initMainBody() {
     m(7).reactionActive = "OH" //XGH2O
     m(8).reactionActive = "OH"
     m(9).reactionActive = "OH"
-    m(10).reactionActive = "G"
-    m(11).reactionActive = "G"
+    m(10).reactionActive = "XGH2O"
+    m(11).reactionActive = "XGH2O"
     m(12).reactionActive = "G"
     m(13).reactionActive = "GH"
     m(14).reactionActive = "G"
@@ -66,4 +69,5 @@ fun Constants.initMainBody() {
 
 
     m(0).creepUpgradeRole[7] = true
+    m(10).defenceHits = 3000000
 }

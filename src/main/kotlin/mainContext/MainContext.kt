@@ -38,7 +38,8 @@ class MainContext {
         //Game.market.createOrder(ORDER_SELL,"XGH2O".unsafeCast<ResourceConstant>(),2.380,10000,"E52N38")
         //val result = Game.market.deal("5d4b64f5e4c2aa66fdcc1fdd",10000,"E54N37")
 //        console.log("Trade: $result")
-        this.directControlTaskClearInRoom("W7N5")
+        //this.directControlTaskClearInRoom("W7N5")
+        //Game.market.changeOrderPrice("5d59136a49ede365f79c43d0",1.0)
     }
 
     fun runInStartOfTick() {
@@ -57,11 +58,11 @@ class MainContext {
     fun runNotEveryTick() {
         this.mainRoomCollector.runNotEveryTick()
 
+        this.mineralSellBuy()
         if (!this.setNextTickRun()) return
         this.tasks.deleteTaskDiedCreep()
         this.battleGroupContainer.runNotEveryTick()
         this.marketDeleteEmptyOffers()
-        this.mineralSellExcess()
     }
 
     fun runInEndOfTick() {

@@ -102,6 +102,13 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
         if (!isTask) isTask = this.upgradeNormalOrEmergency(0,creepCarry,mainContext,mainRoom)
     }
 
+    if (this.memory.role == 19) {
+        if (!isTask) isTask = this.upgradeCreep(mainContext,mainRoom)
+        if (!isTask) isTask = this.signRoom(mainContext,mainRoom)
+        if (!isTask) isTask = this.takeFromContainer(4,creepCarry,mainContext,mainRoom)
+        if (!isTask) isTask = this.upgradeNormalOrEmergency(0,creepCarry,mainContext,mainRoom)
+    }
+
     if (this.memory.role == 8) {
         if (mainRoom.getResourceInStorage() > (mainRoom.constant.energyBuilder - 5000)) {
             if (!isTask) isTask = this.takeFromStorage(creepCarry, mainContext, mainRoom)
@@ -159,6 +166,14 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
     if (this.memory.role == 18 || this.memory.role == 1018) {
         if (this.memory.role == 18 && this.ticksToLive<44) this.memory.role = this.memory.role + 1000
         if (!isTask) mainRoom.setLabFillerTask(this)
+    }
+
+    if (this.memory.role == 19 || this.memory.role == 1019) {
+        if ((this.memory.role == 19) && this.ticksToLive<100) this.memory.role = this.memory.role + 1000
+        if (!isTask) isTask = this.upgradeCreep(mainContext,mainRoom)
+        if (!isTask) isTask = this.signRoom(mainContext,mainRoom)
+        if (!isTask) isTask = this.takeFromContainer(4,creepCarry,mainContext,mainRoom)
+        if (!isTask) isTask = this.upgradeNormalOrEmergency(0,creepCarry,mainContext,mainRoom)
     }
 
     if (this.memory.role == 20) {

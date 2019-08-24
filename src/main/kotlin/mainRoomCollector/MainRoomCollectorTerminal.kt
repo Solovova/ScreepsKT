@@ -94,8 +94,6 @@ fun MainRoomCollector.terminalSentMineral() {
 }
 
 fun MainRoomCollector.terminalSentEnergyOverflow() {
-    val sentFromIfHaveMoreThen = 220000
-    val sentToIfHaveLessThen = 120000
     val sentQuantity = 5000
     var mainRoomFrom: MainRoom? = null
     var mainRoomFromQuantityHave = 0
@@ -104,21 +102,20 @@ fun MainRoomCollector.terminalSentEnergyOverflow() {
 
     for (room in this.rooms.values) {
         if (room.getLevelOfRoom() < 2) continue
-        val quality = room.getResource()
-        if (quality > mainRoomFromQuantityHave) {
-            mainRoomFromQuantityHave = quality
+        val quantity = room.getResource() - room.constant.energyExcessSent
+        if (quantity > mainRoomFromQuantityHave) {
+            mainRoomFromQuantityHave = quantity
             mainRoomFrom = room
         }
-        if (quality < mainRoomToQuantityHave) {
-            mainRoomToQuantityHave = quality
+        if (quantity < mainRoomToQuantityHave) {
+            mainRoomToQuantityHave = quantity
             mainRoomTo = room
         }
     }
 
 
 
-    if (mainRoomFromQuantityHave > sentFromIfHaveMoreThen
-            && mainRoomToQuantityHave < sentToIfHaveLessThen
+    if (sentQuantity in (mainRoomToQuantityHave + 1) until mainRoomFromQuantityHave
             && mainRoomFrom != null
             && mainRoomTo != null) {
         val terminalFrom: StructureTerminal = mainRoomFrom.structureTerminal[0] ?: return

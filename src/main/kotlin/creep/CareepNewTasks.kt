@@ -316,7 +316,7 @@ fun Creep.transferToLink(type: Int, creepCarry: Int, mainContext: MainContext, m
 }
 
 fun Creep.takeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext, mainRoom: MainRoom): Boolean {
-    // 0 - Source 0, 1 - Source 1, 2 - Controller, 3 - any container
+    // 0 - Source 0, 1 - Source 1, 2 - Controller, 3 - any container, 4 - link near controller
     var result = false
     if (creepCarry == 0) {
         var objForFilling: Structure? = null
@@ -325,6 +325,7 @@ fun Creep.takeFromContainer(type: Int, creepCarry: Int, mainContext: MainContext
             1 -> objForFilling = mainRoom.structureContainerNearSource[1]
             2 -> objForFilling = mainRoom.structureContainerNearController[0]
             3 -> objForFilling = mainRoom.structureContainer.values.filter { it.store.energy != 0 }.maxBy { it.store.energy }
+            4 -> objForFilling = mainRoom.structureLinkNearController[0]
         }
         if (objForFilling != null) {
             mainContext.tasks.add(this.id, CreepTask(TypeOfTask.Take, idObject0 = objForFilling.id, posObject0 = objForFilling.pos))

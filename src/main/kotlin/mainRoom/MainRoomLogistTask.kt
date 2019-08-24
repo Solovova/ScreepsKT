@@ -8,12 +8,23 @@ import kotlin.math.min
 
 fun MainRoom.setLogistTask(creep: Creep) {
     //00 Link near Storage ->
+
     val link = this.structureLinkNearStorage[0]
     val storage = this.structureStorage[0]
-    if (link != null && link.energy != 0 && storage != null) {
-        parent.parent.tasks.add(creep.id, CreepTask(TypeOfTask.Transport, link.id, link.pos, storage.id, storage.pos, RESOURCE_ENERGY, 0))
-        return
+
+    if (getLevelOfRoom() == 3 && this.have[19] != 0 && this.source.size == 1) {
+        if (link != null && link.energy < link.energyCapacity && storage != null) {
+            val transportQuantity: Int = min(link.energyCapacity - link.energy, creep.carryCapacity)
+            parent.parent.tasks.add(creep.id, CreepTask(TypeOfTask.Transport,  storage.id, storage.pos,link.id, link.pos, RESOURCE_ENERGY, transportQuantity))
+            return
+        }
+    }else{
+        if (link != null && link.energy != 0 && storage != null) {
+            parent.parent.tasks.add(creep.id, CreepTask(TypeOfTask.Transport, link.id, link.pos, storage.id, storage.pos, RESOURCE_ENERGY, 0))
+            return
+        }
     }
+
 
     val terminal = this.structureTerminal[0]
     if (terminal == null || storage == null) return

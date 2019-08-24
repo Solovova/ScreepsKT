@@ -12,6 +12,7 @@ import mainRoomCollector.MainRoomCollector
 import screeps.api.*
 import screeps.api.structures.*
 import screeps.utils.toMap
+import kotlin.math.min
 import kotlin.random.Random
 
 class MainRoom(val parent: MainRoomCollector, val name: String, val describe: String, val constant: MainRoomConstant) {
@@ -30,7 +31,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     var creepNeedUpgradeID: String = ""
     var creepNeedUpgradeResource: ResourceConstant? = null
     var creepNeedUpgradeResourceQuantity: Int = 0
-    var needMineral: MutableMap<ResourceConstant,Int> = mutableMapOf()
+    var needMineral: MutableMap<ResourceConstant, Int> = mutableMapOf()
 
     //StructureSpawn
     private var _structureSpawn: Map<String, StructureSpawn>? = null
@@ -205,6 +206,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                     ?: throw AssertionError("Error get StructureLinkNearStorage")
         }
 
+
     //StructureTerminal
     private var _structureTerminal: Map<Int, StructureTerminal>? = null
     val structureTerminal: Map<Int, StructureTerminal>
@@ -333,6 +335,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             0 -> this.needCorrection0()
             1 -> this.needCorrection1()
             2 -> this.needCorrection2()
+            3 -> this.needCorrection3()
         }
     }
 
@@ -359,8 +362,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
     private fun buildQueue() {
         for (i in 0 until this.have.size) this.haveForQueue[i] = this.have[i]
-        val fPriorityOfRole = if (this.getResourceInStorage() < 2000) arrayOf(0, 9, 1, 3, 2, 4, 14, 5, 6, 20, 21, 22, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18)
-        else arrayOf(0, 9, 5, 14, 1, 3, 2, 4, 20, 21, 22, 6, 7, 10, 8, 11, 12, 13, 15, 16, 17, 18)
+        val fPriorityOfRole = if (this.getResourceInStorage() < 2000) arrayOf(0, 9, 1, 3, 2, 4, 14, 5, 6, 20, 21, 22, 7, 19, 10, 8, 11, 12, 13, 15, 16, 17, 18)
+        else arrayOf(0, 9, 5, 14, 1, 3, 2, 4, 20, 21, 22, 6, 7, 19, 10, 8, 11, 12, 13, 15, 16, 17, 18)
 
         //Main 0..1
         for (priority in 0..1) {
@@ -503,6 +506,10 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                 result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
             }
 
+            19 -> {
+                result = arrayOf(MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY)
+            }
+
             20 -> {
                 //Min
                 //result = arrayOf(MOVE)
@@ -634,6 +641,15 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     //0 - only role 0 creep
     //1 - Storage, 3 container, energy >300+20*50 1300
     fun getLevelOfRoom(): Int {
+        if (this.room.energyCapacityAvailable >= 5600
+                && this.structureLinkNearSource.size == this.source.size
+                && this.structureLinkNearController.size == 1
+                && this.structureStorage.size == 1
+                && this.structureTerminal.size == 1
+                && this.structureLinkNearStorage.size == 1
+                && (this.structureController[0]?.level ?: 0) == 8
+        ) return 3
+
         if (this.room.energyCapacityAvailable >= 1800
                 && this.structureLinkNearSource.size == this.source.size
                 && this.structureContainerNearController.size == 1
@@ -793,20 +809,73 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         }
 
         if (controller.level == 8) {
-            if (this.room.energyCapacityAvailable != 10850) return " Missing extension"
+            if (this.structureLinkNearController.size != 1) return " Missing link near controller"
+            if (this.structureContainerNearController.containsKey(0)) return " Not need container near controller"
+            if (this.structureSpawn.size != 3) return " Missing spawn"
+            if (this.room.energyCapacityAvailable != 12900) return " Missing extension"
+            if (this.structureTower.size != 6) return " Missing tower"
+            if (this.source.isNotEmpty() && !this.structureLinkNearSource.containsKey(0)) return " Missing link near source 0"
+            if (this.source.size > 1 && !this.structureLinkNearSource.containsKey(1)) return " Missing link near source 1"
+            if (!this.structureStorage.containsKey(0)) return " Missing storage"
+            if (this.structureTerminal.size != 1) return " Missing terminal"
+            if (this.structureLinkNearStorage.size != 1) return " Missing link near storage"
+            if (this.structureContainerNearSource.containsKey(0)) return " Not need container near source 0"
+            if (this.structureContainerNearSource.containsKey(1)) return " Not need container near source 1"
+            if (this.structureExtractor.size != 1) return " Missing extractor"
+            if (this.structureContainerNearMineral.size != 1) return " Missing container near mineral"
+            if (this.structureLab.size < 10) return " Missing lab"
         }
         return ""
     }
 
     private fun runLinkTransfers() {
-        val fLinkTo: StructureLink = this.structureLinkNearStorage[0] ?: return
-        if (fLinkTo.energy != 0) return
+        val levelOfRoom = this.getLevelOfRoom()
+        if (levelOfRoom < 3 || this.have[19] == 0) {
+            val fLinkTo: StructureLink = this.structureLinkNearStorage[0] ?: return
+            if (fLinkTo.energy != 0) return
 
-        for (link in this.structureLinkNearSource.values)
-            if (link.energy >= 700 && link.cooldown == 0) {
-                link.transferEnergy(fLinkTo, link.energy)
-                break
+            for (link in this.structureLinkNearSource.values)
+                if (link.energy >= 700 && link.cooldown == 0) {
+                    link.transferEnergy(fLinkTo, link.energy)
+                    break
+                }
+            return
+        }
+
+        if (levelOfRoom == 3) {
+            if (this.source.size == 2) {
+                val fLinkStorage: StructureLink = this.structureLinkNearStorage[0] ?: return
+                val fLinkController: StructureLink = this.structureLinkNearController[0] ?: return
+
+                for (link in this.structureLinkNearSource.values)
+                    if (link.energy >= 500 && link.cooldown == 0 && fLinkController.cooldown == 0 && fLinkController.energy < 300) {
+                        link.transferEnergy(fLinkController, min(link.energy, fLinkController.energyCapacity - fLinkController.energy))
+                        return
+                    }
+
+                for (link in this.structureLinkNearSource.values)
+                    if (link.energy >= 700 && link.cooldown == 0 && fLinkStorage.cooldown == 0 && fLinkStorage.energy == 0) {
+                        link.transferEnergy(fLinkStorage, link.energy)
+                        break
+                    }
             }
+
+            if (this.source.size == 1) {
+                val fLinkStorage: StructureLink = this.structureLinkNearStorage[0] ?: return
+                val fLinkController: StructureLink = this.structureLinkNearController[0] ?: return
+                val fLinkSource: StructureLink = this.structureLinkNearSource[0] ?: return
+
+                if (fLinkSource.energy >= 500 && fLinkSource.cooldown == 0 && fLinkController.cooldown == 0 && fLinkController.energy < 300) {
+                    fLinkSource.transferEnergy(fLinkController, min(fLinkSource.energy, fLinkController.energyCapacity - fLinkController.energy))
+                    return
+                }
+
+                if (fLinkStorage.energy >= 500 && fLinkStorage.cooldown == 0 && fLinkController.cooldown == 0 && fLinkController.energy == 0) {
+                    fLinkStorage.transferEnergy(fLinkController, fLinkSource.energy)
+                    return
+                }
+            }
+        }
     }
 
     private fun fillCash() {
@@ -872,18 +941,21 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     }
 
     private fun setMineralNeed() {
-        if (this.constant.reactionActive != ""){
+        if (this.constant.reactionActive != "") {
             val reaction = this.constant.reactionActive.unsafeCast<ResourceConstant>()
             if (this.structureLabSort.size !in arrayOf(3, 6, 10)) return
             val reactionComponent = this.parent.parent.constants.globalConstant.labReactionComponent[reaction]
                     ?: return
-            this.needMineral[reactionComponent[0]] = (this.needMineral[reactionComponent[0]] ?: 0) + 2000
-            this.needMineral[reactionComponent[1]] = (this.needMineral[reactionComponent[1]] ?: 0) + 2000
+            this.needMineral[reactionComponent[0]] = (this.needMineral[reactionComponent[0]]
+                    ?: 0) + 2000
+            this.needMineral[reactionComponent[1]] = (this.needMineral[reactionComponent[1]]
+                    ?: 0) + 2000
         }
 
         if (this.creepNeedUpgradeID != "") {
             val resource: ResourceConstant = this.creepNeedUpgradeResource.unsafeCast<ResourceConstant>()
-            this.needMineral[resource] = (this.needMineral[resource] ?: 0) + this.creepNeedUpgradeResourceQuantity
+            this.needMineral[resource] = (this.needMineral[resource]
+                    ?: 0) + this.creepNeedUpgradeResourceQuantity
         }
     }
 }

@@ -37,6 +37,7 @@ class MainRoomConstant(val parent: Constants) {
     var energyMaxTerminal: Int = 60000
     var mineralMinTerminal: Int = 10000
     var mineralAllMaxTerminal: Int = 150000
+    var energyExcessSent: Int = 200000
 
     //Market
     var marketBuyEnergy: Boolean = false
