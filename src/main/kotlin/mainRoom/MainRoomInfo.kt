@@ -35,6 +35,7 @@ fun MainRoom.getInfoQueue(): MainRoomInfoRecord {
 
 fun MainRoom.getInfoController(): MainRoomInfoRecord {
     var result = "l: ${this.structureController[0]?.level} "
+    if (this.structureController[0]?.level == 8) return MainRoomInfoRecord(result, false)
     result += "${this.structureController[0]?.progress}".padStart(9)
     result += "/ "
     result += "${this.structureController[0]?.progressTotal}".padStart(9)

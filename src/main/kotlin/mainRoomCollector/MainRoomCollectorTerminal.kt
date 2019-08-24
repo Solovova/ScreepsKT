@@ -45,8 +45,8 @@ fun MainRoomCollector.terminalSentMineral() {
         for (needResourceRecord in roomTo.needMineral) {
             val needResource = needResourceRecord.key
             var needResourceQuantity = needResourceRecord.value - roomTo.getResource(needResourceRecord.key)
-            if (needResource == "GH2O".unsafeCast<ResourceConstant>())
-                console.log("TEST Room ${roomTo.name} need: ${needResourceRecord.value} have: ${roomTo.getResource(needResourceRecord.key)} trans: $needResourceQuantity")
+            //if (needResource == "GH2O".unsafeCast<ResourceConstant>())
+             //   console.log("TEST Room ${roomTo.name} need: ${needResourceRecord.value} have: ${roomTo.getResource(needResourceRecord.key)} trans: $needResourceQuantity")
 
 
             if (needResourceQuantity <= 0) continue
@@ -70,23 +70,23 @@ fun MainRoomCollector.terminalSentMineral() {
                         parent.constants.globalConstant.sentMaxMineralQuantity),
                         canMineralTakeTerminal)
 
-                if (needResource == "GH2O".unsafeCast<ResourceConstant>())
-                    console.log("TEST Room ${roomFrom.name} transfer: $quantityTransfer")
+                //if (needResource == "GH2O".unsafeCast<ResourceConstant>())
+                //    console.log("TEST Room ${roomFrom.name} transfer: $quantityTransfer")
 
                 if (quantityTransfer < needResourceQuantity
                         && quantityTransfer < parent.constants.globalConstant.sentMaxMineralQuantity
                         && quantityTransfer < haveResourceQuantityInRoom) continue  //wait because not all resource transfer from storage to terminal
 
-                if (needResource == "GH2O".unsafeCast<ResourceConstant>())
-                    console.log("TEST Room ${roomFrom.name} transfer: $quantityTransfer")
+                //if (needResource == "GH2O".unsafeCast<ResourceConstant>())
+                //    console.log("TEST Room ${roomFrom.name} transfer: $quantityTransfer")
 
                 if (quantityTransfer < 100) continue
                 //One transfer per tick
 
-                if (needResource == "GH2O".unsafeCast<ResourceConstant>())
-                    console.log("TEST Transfer Room ${roomFrom.name} transfer: $quantityTransfer roomTo: ${roomTo.name}")
+                //if (needResource == "GH2O".unsafeCast<ResourceConstant>())
+                 //   console.log("TEST Transfer Room ${roomFrom.name} transfer: $quantityTransfer roomTo: ${roomTo.name}")
                 val result = terminalFrom.send(needResource, quantityTransfer, roomTo.name)
-                console.log(result)
+                //console.log(result)
                 if (result == OK) return
             }
         }

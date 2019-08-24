@@ -68,5 +68,5 @@ fun testingFunctions (mainContext : MainContext) {
 //    }
 
 
-    console.log("${(233 / 100 * 100)}")
+    //console.log("${(233 / 100 * 100)}")
 }
