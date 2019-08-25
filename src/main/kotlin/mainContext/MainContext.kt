@@ -3,6 +3,7 @@ package mainContext
 import Tasks
 import battleGroup.BattleGroupContainer
 import constants.Constants
+import mainRoom.doSnapShot
 import mainRoomCollector.MainRoomCollector
 import mainRoomCollector.infoShow
 import screeps.api.*
@@ -40,6 +41,9 @@ class MainContext {
 //        console.log("Trade: $result")
         //this.directControlTaskClearInRoom("W7N5")
         //Game.market.changeOrderPrice("5d59136a49ede365f79c43d0",1.0)
+
+//        for (mainRoom in this.mainRoomCollector.rooms.values)
+//            mainRoom.doSnapShot()
     }
 
     fun runInStartOfTick() {

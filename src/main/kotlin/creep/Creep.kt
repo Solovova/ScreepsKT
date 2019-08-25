@@ -169,7 +169,7 @@ fun Creep.newTask(mainContext: MainContext):Boolean {
     }
 
     if (this.memory.role == 19 || this.memory.role == 1019) {
-        if ((this.memory.role == 19) && this.ticksToLive<100) this.memory.role = this.memory.role + 1000
+        if ((this.memory.role == 19) && this.ticksToLive<110) this.memory.role = this.memory.role + 1000
         if (!isTask) isTask = this.upgradeCreep(mainContext,mainRoom)
         if (!isTask) isTask = this.signRoom(mainContext,mainRoom)
         if (!isTask) isTask = this.takeFromContainer(4,creepCarry,mainContext,mainRoom)

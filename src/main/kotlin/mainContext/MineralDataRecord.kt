@@ -11,7 +11,8 @@ class MineralDataRecord(var quantity: Int = 0,
                         var storeMax: Int = 0,  //production control if stored>storeMax stop produce
                         var buyToRoom: String = "",
                         var sellFromRoom: String = "",
-                        var need: Int = 0
+                        var need: Int = 0,
+                        var onlyDirectBuy: Boolean = false //direct buy then quantity < storeMax && realPrice < priceMin
 )
 
 //Sell algorithm

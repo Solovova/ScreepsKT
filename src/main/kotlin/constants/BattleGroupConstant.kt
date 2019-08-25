@@ -42,6 +42,7 @@ class BattleGroupConstant {
                 if (d["creeps"][ind] == null) break
                 val creep: Creep? = Game.getObjectById(d["creeps"][ind]["creep"] as String)
                 val role: Int = d["creeps"][ind]["role"] as Int
+
                 if (creep == null) {
                     ind++
                     continue

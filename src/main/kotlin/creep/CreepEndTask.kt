@@ -240,7 +240,15 @@ fun Creep.endTask(mainContext: MainContext) {
         }
 
         TypeOfTask.Transport -> {
+            if (creepCarry != 0) {
+                val lab: Structure? = Game.getObjectById(task.idObject1)
+                if (lab != null && lab is StructureLab) {
+                    val carryMineral = this.carry.toMap().toList().firstOrNull { it.second != 0 }
+                    if (carryMineral!= null && carryMineral.first != lab.mineralType) mainContext.tasks.deleteTask(this.id)
+                }
+            }
             if (creepCarry == 0 && task.take) mainContext.tasks.deleteTask(this.id)
+
         }
 
         TypeOfTask.EraserAttack -> {

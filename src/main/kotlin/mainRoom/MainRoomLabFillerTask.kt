@@ -5,6 +5,8 @@ import screeps.api.ResourceConstant
 import LabFillerTask
 import screeps.api.RESOURCE_ENERGY
 import CreepTask
+import screeps.api.get
+import screeps.utils.toMap
 import kotlin.math.min
 
 fun MainRoom.setLabFillerTask(creep: Creep) {
@@ -13,6 +15,15 @@ fun MainRoom.setLabFillerTask(creep: Creep) {
     val lab1 = this.structureLabSort[1] ?: return
     val sourceLab = arrayOf(lab0, lab1)
     val listTasks: MutableList<LabFillerTask> = mutableListOf()
+
+    if (creep.carry.toMap().map { it.value }.sum() != 0) {
+        val resTransfer = creep.carry.toMap().filter { it.value != 0 }.toList().firstOrNull()
+        if (resTransfer != null) {
+            parent.parent.tasks.add(creep.id, CreepTask(TypeOfTask.TransferTo, terminal.id, terminal.pos,
+                    resource = resTransfer.first, quantity = resTransfer.second))
+            return
+        }
+    }
 
     //fill energy to Lab2
     val lab2 = this.structureLabSort[2] ?: return

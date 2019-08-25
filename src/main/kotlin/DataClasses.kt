@@ -94,6 +94,8 @@ data class BattleGroupQueueRecord(var body: Array<BodyPartConstant> = arrayOf(),
 )
 
 data class BattleGroupCreeps(var creep: Creep,
-                             var role: Int = 0
+                             var role: Int = 0,
+                             var pos: RoomPosition? = null
 )
+
 
