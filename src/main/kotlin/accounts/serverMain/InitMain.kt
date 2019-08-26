@@ -49,10 +49,10 @@ fun Constants.initMainBody() {
     m(6).reactionActive = "GH2O"
 
     m(1).reactionActive = "XGH2O"
-    m(2).reactionActive = ""
+    m(2).reactionActive = "XGH2O"
     m(3).reactionActive = "G" //XGH2O
-    m(5).reactionActive = ""
-    m(7).reactionActive = "" //XGH2O
+    m(5).reactionActive = "XGH2O"
+    m(7).reactionActive = "XGH2O" //XGH2O
     m(8).reactionActive = ""
     m(9).reactionActive = ""
     m(10).reactionActive = "XGH2O"

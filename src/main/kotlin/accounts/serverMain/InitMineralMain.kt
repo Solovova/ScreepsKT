@@ -20,6 +20,14 @@ fun initMineralMain(mineralData: MutableMap<ResourceConstant, MineralDataRecord>
             sellFromRoom = "E54N37"
     )
 
+    mineralData["H".unsafeCast<ResourceConstant>()] = MineralDataRecord(
+            priceMax = 0.090,
+            priceMin = 0.070,
+            marketSellExcess = 200000,
+            marketBuyLack = 6000000,
+            sellFromRoom = "E58N39"
+    )
+
     mineralData["L".unsafeCast<ResourceConstant>()] = MineralDataRecord(
             priceMax = 0.100,
             priceMin = 0.080,

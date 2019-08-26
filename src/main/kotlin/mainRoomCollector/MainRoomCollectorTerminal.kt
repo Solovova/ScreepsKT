@@ -46,7 +46,7 @@ fun MainRoomCollector.terminalSentMineral() {
             val needResource = needResourceRecord.key
             var needResourceQuantity = needResourceRecord.value - roomTo.getResource(needResourceRecord.key)
             //if (needResource == "GH2O".unsafeCast<ResourceConstant>())
-             //   console.log("TEST Room ${roomTo.name} need: ${needResourceRecord.value} have: ${roomTo.getResource(needResourceRecord.key)} trans: $needResourceQuantity")
+            //   console.log("TEST Room ${roomTo.name} need: ${needResourceRecord.value} have: ${roomTo.getResource(needResourceRecord.key)} trans: $needResourceQuantity")
 
 
             if (needResourceQuantity <= 0) continue
@@ -84,7 +84,7 @@ fun MainRoomCollector.terminalSentMineral() {
                 //One transfer per tick
 
                 //if (needResource == "GH2O".unsafeCast<ResourceConstant>())
-                 //   console.log("TEST Transfer Room ${roomFrom.name} transfer: $quantityTransfer roomTo: ${roomTo.name}")
+                //   console.log("TEST Transfer Room ${roomFrom.name} transfer: $quantityTransfer roomTo: ${roomTo.name}")
                 val result = terminalFrom.send(needResource, quantityTransfer, roomTo.name)
                 //console.log(result)
                 if (result == OK) return
@@ -95,36 +95,41 @@ fun MainRoomCollector.terminalSentMineral() {
 
 fun MainRoomCollector.terminalSentEnergyOverflow() {
     val sentQuantity = 5000
-    var mainRoomFrom: MainRoom? = null
-    var mainRoomFromQuantityHave = 0
-    var mainRoomTo: MainRoom? = null
-    var mainRoomToQuantityHave = 2000000
+    val emergencyMineralQuantity = 30000
 
-    for (room in this.rooms.values) {
-        if (room.getLevelOfRoom() < 2) continue
-        val quantity = room.getResource() - room.constant.energyExcessSent
-        if (quantity > mainRoomFromQuantityHave) {
-            mainRoomFromQuantityHave = quantity
-            mainRoomFrom = room
+    //Emergency to
+    var mainRoomTo: MainRoom? = this.rooms.values.filter {
+        it.constant.levelOfRoom >= 2
+                && it.getResource() < emergencyMineralQuantity
+    }.minBy { it.getResource() }
+
+    var mainRoomFrom: MainRoom? = this.rooms.values.filter {
+        it.constant.levelOfRoom >= 2
+                && it.getResource() > it.constant.energyExcessSent
+    }.maxBy { it.getResource() - it.constant.energyExcessSent }
+
+    if (mainRoomTo != null) {
+        if (mainRoomFrom == null) {
+            mainRoomFrom = this.rooms.values.filter {
+                it.constant.levelOfRoom >= 2
+                        && it.getResource() > emergencyMineralQuantity
+            }.maxBy { it.getResource() }
         }
-        if (quantity < mainRoomToQuantityHave) {
-            mainRoomToQuantityHave = quantity
-            mainRoomTo = room
-        }
+    } else {
+        mainRoomTo = this.rooms.values.filter {
+            it.constant.levelOfRoom >= 2
+                    && it.getResource() < it.constant.energyExcessSent
+        }.minBy { it.getResource() - it.constant.energyExcessSent }
     }
 
-
-
-    if (sentQuantity in (mainRoomToQuantityHave + 1) until mainRoomFromQuantityHave
-            && mainRoomFrom != null
-            && mainRoomTo != null) {
+    if (mainRoomFrom != null && mainRoomTo != null) {
         val terminalFrom: StructureTerminal = mainRoomFrom.structureTerminal[0] ?: return
         val terminalTo: StructureTerminal = mainRoomTo.structureTerminal[0] ?: return
         if (terminalFrom.cooldown == 0 && terminalTo.cooldown == 0) {
             val result = terminalFrom.send(RESOURCE_ENERGY, sentQuantity, mainRoomTo.name)
             if (result == OK)
                 parent.messenger("INFO", mainRoomFrom.name,
-                        "Send energy $sentQuantity from ${mainRoomFrom.name} $mainRoomFromQuantityHave -> ${mainRoomTo.name} $mainRoomToQuantityHave", COLOR_GREEN)
+                        "Send energy $sentQuantity from ${mainRoomFrom.name} $sentQuantity -> ${mainRoomTo.name}", COLOR_GREEN)
         }
     }
 }

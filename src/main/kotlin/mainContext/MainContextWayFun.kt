@@ -25,6 +25,11 @@ fun MainContext.getWayFromPosToPos(fPos1: RoomPosition, fPos2: RoomPosition, inS
                 costs.set(struct.pos.x, struct.pos.y, 1)
         }
 
+        room.find(FIND_CONSTRUCTION_SITES).forEach { cs ->
+            if (cs.structureType == STRUCTURE_ROAD)
+                costs.set(cs.pos.x, cs.pos.y, 1)
+        }
+
         room.find(FIND_HOSTILE_STRUCTURES).forEach { struct ->
             costs.set(struct.pos.x, struct.pos.y, 0xff)
         }
@@ -37,7 +42,7 @@ fun MainContext.getWayFromPosToPos(fPos1: RoomPosition, fPos2: RoomPosition, inS
     }
 
     return PathFinder.search(fPos1, goals, options {
-        maxOps = 3000
+        maxOps = 5000
         maxRooms = 6
         plainCost = inSwampCost
         swampCost = inPlainCost

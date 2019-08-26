@@ -448,7 +448,9 @@ class SlaveRoom(val parent: MainRoom, val name: String, val describe: String, va
 
                 if (this.source.containsKey(0) && this.rescueFlag.containsKey(0)) this.need[1][20] = 1
                 val carrierAuto0: CacheCarrier? = parent.parent.parent.getCacheRecordRoom("slaveContainer0",this.parent,this)
+                //if (this.name == "E56N34") console.log("null")
                 if (carrierAuto0!=null) {
+                    //if (this.name == "E56N34") console.log("${carrierAuto0.needCarriers}")
                     if (this.need[1][21] == 0) this.need[1][21] = carrierAuto0.needCarriers
                 }
 

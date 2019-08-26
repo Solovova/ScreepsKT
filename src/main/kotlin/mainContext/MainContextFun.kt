@@ -31,10 +31,13 @@ fun MainContext.getCacheRecordRoom(type: String, mainRoom: MainRoom, slaveRoom: 
 
     var carrierAuto: CacheCarrier? = this.constants.globalConstant.dataCacheCarrierAuto[keyRecord]
 
+    //if  (slaveRoom?.name == "E56N34") console.log(carrierAuto)
     if (recalculate || carrierAuto == null || carrierAuto.default || (carrierAuto.tickRecalculate + 1000) < Game.time){
         val ret = this.getWayFromPosToPos(objectFrom.pos, objectTo.pos, inSwampCost = inSwampCost, inPlainCost = inPlainCost)
+        //if  (slaveRoom?.name == "E56N34") console.log(objectTo.pos)
         messenger("TEST", mainRoom.name, "Recalculate ways: $type ${!ret.incomplete}", COLOR_YELLOW)
         if (!ret.incomplete) {
+            if  (slaveRoom?.name == "E56N34") console.log(objectTo.pos)
             carrierAuto = this.getCarrierAuto(ret, mainRoom, slaveRoom = slaveRoom)
             this.constants.globalConstant.dataCacheCarrierAuto[keyRecord] = carrierAuto
         }

@@ -177,12 +177,13 @@ fun MainContext.mineralSellOrderCreate(resource: ResourceConstant, mineralDataRe
     val orders = Game.market.getAllOrders().filter {
         it.resourceType == resource
                 && it.type == ORDER_SELL
+                && it.remainingAmount != 0
                 && it.amount != 0
     }.sortedBy { it.price }
     var sumQuantity = 0
     var sellOrder: Market.Order? = null
     for (order in orders) {
-        sumQuantity += order.amount
+        sumQuantity += order.remainingAmount
         sellOrder = order
         if (sumQuantity > quantitySkip) break
     }
