@@ -5,7 +5,7 @@ external val LAB_MINERAL_CAPACITY: IntConstant
 external val REACTION_TIME: Record<ResourceConstant, Int>
 external val RESOURCES_ALL: Array<ResourceConstant>
 external val REACTIONS: dynamic
-external val BOOSTS:dynamic
+external val BOOSTS: dynamic
 
 enum class TypeOfTask {
     GoToRoom,
@@ -70,9 +70,9 @@ data class LabFillerTask(val StructureFrom: Structure,
                          val priority: Int)
 
 
-
 enum class TypeBattleGroupMode {
-    Defence
+    Defence,
+    Test
 }
 
 data class BattleGroupData(var mode: TypeBattleGroupMode,
@@ -88,14 +88,38 @@ enum class BattleGroupStep {
     Sleep
 }
 
-data class BattleGroupQueueRecord(var body: Array<BodyPartConstant> = arrayOf(),
-                                  var upgrade: String = "",
-                                  var build: Boolean = false
-)
+data class BattleGroupCreep(var creep: Creep? = null,
+                            var role: Int = 0,
+                            var pos: RoomPosition? = null,
+                            var body: Array<BodyPartConstant> = arrayOf(),
+                            var upgrade: String = "",
+                            var spawnID: String = ""
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class.js != other::class.js) return false
 
-data class BattleGroupCreeps(var creep: Creep,
-                             var role: Int = 0,
-                             var pos: RoomPosition? = null
-)
+        other as BattleGroupCreep
+
+        if (creep != other.creep) return false
+        if (role != other.role) return false
+        if (pos != other.pos) return false
+        if (spawnID != other.spawnID) return false
+        if (!body.contentEquals(other.body)) return false
+        if (upgrade != other.upgrade) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = creep?.hashCode() ?: 0
+        result = 31 * result + role
+        result = 31 * result + (pos?.hashCode() ?: 0)
+        result = 31 * result + body.contentHashCode()
+        result = 31 * result + upgrade.hashCode()
+        result = 31 * result + spawnID.hashCode()
+        return result
+    }
+}
 
 

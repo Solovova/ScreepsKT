@@ -2,9 +2,8 @@ package constants
 
 import TypeBattleGroupMode
 import BattleGroupStep
-import BattleGroupQueueRecord
 import screeps.api.BodyPartConstant
-import BattleGroupCreeps
+import BattleGroupCreep
 import screeps.api.Creep
 import screeps.api.Game
 
@@ -13,43 +12,26 @@ class BattleGroupConstant {
     var roomName: String = ""
     var assembleRoom: String = ""
     var step: BattleGroupStep = BattleGroupStep.GetPowerHostileCreep
-    var queue: MutableList<BattleGroupQueueRecord> = mutableListOf()
-    var creeps: MutableList<BattleGroupCreeps> = mutableListOf()
+    var creeps: MutableList<BattleGroupCreep> = mutableListOf()
 
     fun fromDynamic(d: dynamic) {
         if (d == null) return
         if (d["mode"] != null) this.mode = TypeBattleGroupMode.valueOf(d["mode"] as String)
         if (d["roomName"] != null) this.roomName = d["roomName"] as String
+        if (d["assembleRoom"] != null) this.assembleRoom = d["assembleRoom"] as String
         if (d["step"] != null) this.step = BattleGroupStep.valueOf(d["step"] as String)
-
-        if (d["queue"] != null) {
-            var ind = 0
-            while (true) {
-                if (d["queue"][ind] == null) break
-                val battleGroupQueueRecord = BattleGroupQueueRecord()
-                battleGroupQueueRecord.body = d["queue"][ind]["body"] as Array<BodyPartConstant>
-                battleGroupQueueRecord.build = d["queue"][ind]["build"] as Boolean
-                battleGroupQueueRecord.upgrade = d["queue"][ind]["upgrade"] as String
-                this.queue.add(ind, battleGroupQueueRecord)
-                ind++
-            }
-        }
 
         if (d["creeps"] != null) {
             var ind = 0
-            var indList = 0
             while (true) {
                 if (d["creeps"][ind] == null) break
                 val creep: Creep? = Game.getObjectById(d["creeps"][ind]["creep"] as String)
+                val spawnID: String = (d["creeps"][ind]["spawnID"] ?: "") as String
                 val role: Int = d["creeps"][ind]["role"] as Int
-
-                if (creep == null) {
-                    ind++
-                    continue
-                }
-                this.creeps.add(indList, BattleGroupCreeps(creep, role))
+                val body: Array<BodyPartConstant> = d["creeps"][ind]["body"] as Array<BodyPartConstant>
+                val upgrade: String = (d["creeps"][ind]["upgrade"] ?: "") as String
+                this.creeps.add(ind, BattleGroupCreep(creep = creep, role = role, body = body, upgrade = upgrade, spawnID = spawnID))
                 ind++
-                indList++
             }
         }
     }
@@ -58,21 +40,25 @@ class BattleGroupConstant {
         val result: dynamic = object {}
         result["mode"] = this.mode.toString()
         result["roomName"] = this.roomName
+        result["assembleRoom"] = this.assembleRoom
         result["step"] = this.step.toString()
 
-        result["queue"] = object {}
-        for ((ind, battleGroupQueueRecord) in queue.withIndex()) {
-            result["queue"][ind] = object {}
-            result["queue"][ind]["body"] = battleGroupQueueRecord.body
-            result["queue"][ind]["build"] = battleGroupQueueRecord.build
-            result["queue"][ind]["upgrade"] = battleGroupQueueRecord.upgrade
-        }
-
         result["creeps"] = object {}
-        for ((ind, battleGroupCreeps) in creeps.withIndex()) {
+        for ((ind, battleGroupCreep) in creeps.withIndex()) {
             result["creeps"][ind] = object {}
-            result["creeps"][ind]["creep"] = battleGroupCreeps.creep.id
-            result["creeps"][ind]["role"] = battleGroupCreeps.role
+
+//            if (battleGroupCreep.creep == null) {
+//                result["creeps"][ind]["creep"] = ""
+//            }else{
+//                result["creeps"][ind]["creep"] = battleGroupCreep.creep?.id ?: ""
+//            }
+            console.log(battleGroupCreep.creep == null)
+            console.log(battleGroupCreep.creep?.id ?: "")
+            result["creeps"][ind]["creep"] = battleGroupCreep.creep?.id ?: ""
+            result["creeps"][ind]["role"] = battleGroupCreep.role
+            result["creeps"][ind]["upgrade"] = battleGroupCreep.upgrade
+            result["creeps"][ind]["body"] = battleGroupCreep.body
+            result["creeps"][ind]["spawnID"] = battleGroupCreep.spawnID
         }
         return result
     }

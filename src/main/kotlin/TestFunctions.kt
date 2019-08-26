@@ -70,6 +70,11 @@ fun testingFunctions (mainContext : MainContext) {
 
 
     //console.log("${(233 / 100 * 100)}")
-
-
+    //mainContext.battleGroupContainer.addTestGroup("E54N36")
+    //mainContext.battleGroupContainer.deleteBattleGroup("testRoomE54N36")
+//    mainContext.battleGroupContainer.deleteBattleGroup("2")
+    val battleGroup = mainContext.battleGroupContainer.battleGroupContainer["testRoomE54N36"]
+    if (battleGroup != null) {
+        mainContext.messenger("INFO",battleGroup.name,"Step: ${battleGroup.constants.step}", COLOR_YELLOW)
+    }
 }

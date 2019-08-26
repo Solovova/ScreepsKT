@@ -1,6 +1,7 @@
 package mainRoom
 
 import accounts.constantMainRoomInit
+import battleGroup.BattleGroup
 import mainContext.MainContext
 import constants.MainRoomConstant
 import constants.SlaveRoomConstant
@@ -32,6 +33,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
     var creepNeedUpgradeResource: ResourceConstant? = null
     var creepNeedUpgradeResourceQuantity: Int = 0
     var needMineral: MutableMap<ResourceConstant, Int> = mutableMapOf()
+
+    var spawnForBattleGroup: BattleGroup? = null
 
     //StructureSpawn
     private var _structureSpawn: Map<String, StructureSpawn>? = null
@@ -378,9 +381,14 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             }
         }
 
+        //BattleGroup
+        if (this.spawnForBattleGroup != null) {
+            this.queue.add(QueueSpawnRecord(99, this.name, this.name, 0))
+        }
+
         //Slave 0
         for (slaveRoom in this.slaveRooms.values) {
-            for (i in 0 until slaveRoom.have.size) slaveRoom.haveForQueue[i] = slaveRoom.have[i]
+            for (i in slaveRoom.have.indices) slaveRoom.haveForQueue[i] = slaveRoom.have[i]
             slaveRoom.buildQueue(this.queue, 0)
         }
 
@@ -547,6 +555,33 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             if (!spawn.isActive() || spawn.spawning != null) continue
             var result: ScreepsReturnCode = OK
 
+            //Battle group
+            if (this.queue[0].role == 99) {
+                this.parent.parent.messenger("INFO",this.name, "Need spawn creep for bg: ${this.spawnForBattleGroup?.name}", COLOR_YELLOW)
+                val battleGroup = this.spawnForBattleGroup
+                if (battleGroup != null) {
+                    val queueBg = battleGroup.constants.creeps.firstOrNull{ it.creep == null && it.spawnID == ""}
+                    if (queueBg != null) {
+                        val d: dynamic = object {}
+                        d["role"] = queueBg.role + 300
+                        d["slaveRoom"] = battleGroup.name
+                        d["mainRoom"] = this.queue[0].mainRoom
+                        d["tickDeath"] = 0
+                        val spawnOptions: dynamic = object {}
+                        spawnOptions["memory"] = d
+                        result = spawn.spawnCreep(queueBg.body, "bg_${queueBg.role}_${battleGroup.name}_${Game.time}_${spawn.id} ", spawnOptions.unsafeCast<SpawnOptions>())
+                        queueBg.spawnID = spawn.id
+                    }else{
+                        this.queue.removeAt(0)
+                        if (this.queue.size == 0) return
+                    }
+                }else{
+                    this.queue.removeAt(0)
+                    if (this.queue.size == 0) return
+                }
+            }
+
+
             val d: dynamic = object {}
             d["role"] = this.queue[0].role
             d["slaveRoom"] = this.queue[0].slaveRoom
@@ -563,9 +598,12 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
                     result = spawn.spawnCreep(slaveRoom.getBodyRole(this.queue[0].role), "mst_${this.queue[0].mainRoom}_${this.queue[0].slaveRoom}_${Game.time} ", spawnOptions.unsafeCast<SpawnOptions>())
             }
             if (result == OK) {
-                this.queue[0].slaveRoom != this.queue[0].mainRoom
-                val slaveRoom: SlaveRoom? = this.slaveRooms[this.queue[0].slaveRoom]
-                slaveRoom?.profitMinus(this.queue[0].role)
+                if (this.queue[0].slaveRoom != this.queue[0].mainRoom) {
+                    val slaveRoom: SlaveRoom? = this.slaveRooms[this.queue[0].slaveRoom]
+                    slaveRoom?.profitMinus(this.queue[0].role)
+                }
+
+                //this.parent.parent.messenger("INFO",this.name, "Start spawn creep Name: ${spawn.}", COLOR_YELLOW)
 
                 this.queue.removeAt(0)
             }

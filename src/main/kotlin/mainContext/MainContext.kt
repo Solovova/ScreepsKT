@@ -15,7 +15,7 @@ class MainContext {
     val constants: Constants = Constants(this)
     val tasks: Tasks = Tasks(this)
     var mainRoomCollector: MainRoomCollector = MainRoomCollector(this, arrayOf())
-    private val battleGroupContainer: BattleGroupContainer = BattleGroupContainer(this)
+    val battleGroupContainer: BattleGroupContainer = BattleGroupContainer(this)
 
     init {
 //        RESOURCE_ENERGY: "energy",

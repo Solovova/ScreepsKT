@@ -9,7 +9,7 @@ import screeps.api.COLOR_RED
 import BattleGroupData
 
 class BattleGroupContainer(val parent: MainContext) {
-    private val battleGroupContainer: MutableMap<String, BattleGroup> = mutableMapOf()
+    val battleGroupContainer: MutableMap<String, BattleGroup> = mutableMapOf()
     val constants: BattleGroupContainerConstant
 
     init {
@@ -44,6 +44,11 @@ class BattleGroupContainer(val parent: MainContext) {
     fun defenceRoom(roomName: String) {
         this.addBattleGroup("defenceRoom$roomName",
                 BattleGroupData(TypeBattleGroupMode.Defence, roomName = roomName))
+    }
+
+    fun addTestGroup(roomName: String) {
+        this.addBattleGroup("testRoom$roomName",
+                BattleGroupData(TypeBattleGroupMode.Test, roomName = roomName))
     }
 
     fun runInStartOfTick() {

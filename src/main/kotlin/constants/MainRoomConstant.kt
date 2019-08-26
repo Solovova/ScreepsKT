@@ -1,5 +1,6 @@
 package constants
 
+import battleGroup.BattleGroup
 import mainContext.messenger
 import screeps.api.*
 
@@ -60,7 +61,6 @@ class MainRoomConstant(val parent: Constants) {
 
     val creepUpgradableParts: MutableMap<Int, Map<BodyPartConstant,ResourceConstant>> = mutableMapOf()
     val creepUpgradeRole: MutableMap<Int, Boolean> = mutableMapOf()
-
 
     private fun getSlaveRoomConstant(slaveRoomName: String) : SlaveRoomConstant {
         val slaveRoomConstant:SlaveRoomConstant ? = this.slaveRoomConstantContainer[slaveRoomName]

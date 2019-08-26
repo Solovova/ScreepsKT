@@ -1,6 +1,7 @@
 package battleGroup
 
+import BattleGroupCreep
 
-class BattleGroupCreeps() {
-//    val listCreeps: List<BattleGroupCreep> = mutableListOf()
+class BattleGroupCreeps(val parent: BattleGroup) {
+    val creeps: MutableList<BattleGroupCreep> = parent.constants.creeps
 }
