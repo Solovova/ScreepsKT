@@ -556,31 +556,11 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             var result: ScreepsReturnCode = OK
 
             //Battle group
-            if (this.queue[0].role == 99) {
-                this.parent.parent.messenger("INFO",this.name, "Need spawn creep for bg: ${this.spawnForBattleGroup?.name}", COLOR_YELLOW)
-                val battleGroup = this.spawnForBattleGroup
-                if (battleGroup != null) {
-                    val queueBg = battleGroup.constants.creeps.firstOrNull{ it.creep == null && it.spawnID == ""}
-                    if (queueBg != null) {
-                        val d: dynamic = object {}
-                        d["role"] = queueBg.role + 300
-                        d["slaveRoom"] = battleGroup.name
-                        d["mainRoom"] = this.queue[0].mainRoom
-                        d["tickDeath"] = 0
-                        val spawnOptions: dynamic = object {}
-                        spawnOptions["memory"] = d
-                        result = spawn.spawnCreep(queueBg.body, "bg_${queueBg.role}_${battleGroup.name}_${Game.time}_${spawn.id} ", spawnOptions.unsafeCast<SpawnOptions>())
-                        queueBg.spawnID = spawn.id
-                    }else{
-                        this.queue.removeAt(0)
-                        if (this.queue.size == 0) return
-                    }
-                }else{
+            if (this.queue[0].role == 99)
+                if (this.spawnForBattleGroup?.bgCreeps?.spawnCreep(this,spawn) != false) {
                     this.queue.removeAt(0)
                     if (this.queue.size == 0) return
-                }
-            }
-
+                }else continue
 
             val d: dynamic = object {}
             d["role"] = this.queue[0].role

@@ -53,16 +53,16 @@ fun Constants.initMainBody() {
     m(3).reactionActive = "G" //XGH2O
     m(5).reactionActive = "XGH2O"
     m(7).reactionActive = "XGH2O" //XGH2O
-    m(8).reactionActive = ""
+    m(8).reactionActive = "UL"
     m(9).reactionActive = ""
     m(10).reactionActive = "XGH2O"
     m(11).reactionActive = "XGH2O"
-    m(12).reactionActive = ""
+    m(12).reactionActive = "XGH2O"
     m(13).reactionActive = ""
-    m(14).reactionActive = ""
+    m(14).reactionActive = "XGH2O"
     m(15).reactionActive = ""
     m(16).reactionActive = "XGH2O"
-    m(18).reactionActive = ""
+    m(18).reactionActive = "XGH2O"
 
 
     m(0).creepUpgradeRole[7] = true

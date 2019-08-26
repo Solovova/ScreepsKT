@@ -12,7 +12,7 @@ class BattleGroup {
     val constants: BattleGroupConstant
     val name: String
     val parent: BattleGroupContainer
-    private val bgCreeps: BattleGroupCreeps
+    val bgCreeps: BattleGroupCreeps
 
     constructor(parent: BattleGroupContainer, name: String) {
         this.parent = parent
@@ -79,6 +79,19 @@ class BattleGroup {
             }
 
             BattleGroupStep.WaitBuildGroup -> {
+                this.setPointerAssembleRoomToBG()
+                return
+            }
+            else -> {}
+        }
+    }
+
+    fun runNotEveryTick() {
+    }
+
+    fun runInEndOfTick() {
+        when (this.constants.step) {
+            BattleGroupStep.WaitBuildGroup -> {
                 this.turnGroupToAssemblePoint()
                 return
             }
@@ -96,13 +109,10 @@ class BattleGroup {
             BattleGroupStep.Sleep -> {
                 return
             }
+
+            else -> {
+            }
         }
-    }
-
-    fun runNotEveryTick() {
-    }
-
-    fun runInEndOfTick() {
     }
 
     private fun getPowerHostileCreep() {
@@ -113,9 +123,9 @@ class BattleGroup {
         //1 - mile
         //2 - range
         //3 - healer
-        this.bgCreeps.creeps.add(0,BattleGroupCreep(creep = null, role = 2,body = arrayOf(MOVE)))
-        this.bgCreeps.creeps.add(1,BattleGroupCreep(creep = null, role = 2,body = arrayOf(MOVE)))
-        this.bgCreeps.creeps.add(2,BattleGroupCreep(creep = null, role = 3,body = arrayOf(MOVE, MOVE)))
+        this.bgCreeps.creeps.add(0, BattleGroupCreep(creep = null, role = 2, body = arrayOf(MOVE)))
+        this.bgCreeps.creeps.add(1, BattleGroupCreep(creep = null, role = 2, body = arrayOf(MOVE)))
+        this.bgCreeps.creeps.add(2, BattleGroupCreep(creep = null, role = 3, body = arrayOf(MOVE, MOVE)))
     }
 
     private fun isGroupReady(): Boolean {
@@ -169,19 +179,38 @@ class BattleGroup {
     private fun turnExplorer() {
     }
 
-    private fun turnGroupToAssemblePoint() {
+    private fun setPointerAssembleRoomToBG() {
 
-        if (this.bgCreeps.creeps.any { it.creep == null && it.spawnID == ""}) {
+        if (this.bgCreeps.creeps.any { it.creep == null && it.spawnID == "" }) {
             val mainRoom: MainRoom? = this.parent.parent.mainRoomCollector.rooms[this.constants.assembleRoom]
             if (mainRoom != null && mainRoom.spawnForBattleGroup == null) mainRoom.spawnForBattleGroup = this
         }
 
-        for (spawnCreep in this.bgCreeps.creeps.filter { it.creep == null && it.spawnID != ""}) {
-            val spawn:StructureSpawn = Game.getObjectById(spawnCreep.spawnID) ?: continue
+        for (spawnCreep in this.bgCreeps.creeps.filter { it.creep == null && it.spawnID != "" }) {
+            val spawn: StructureSpawn = Game.getObjectById(spawnCreep.spawnID) ?: continue
             val creep: Creep = Game.creeps[spawn.spawning?.name ?: "not spawn"] ?: continue
             spawnCreep.creep = creep
             spawnCreep.spawnID = ""
         }
+    }
+
+    private fun turnGroupToAssemblePoint() {
+        if (this.constants.assembleRoom == "") return
+        val flag = this.parent.parent.mainRoomCollector.flags.firstOrNull { it.color == COLOR_BROWN
+                && it.secondaryColor == COLOR_BROWN
+                && it.pos.roomName == this.constants.assembleRoom } ?: return
+
+        var allAssemble = true
+        for (creepData in bgCreeps.creeps){
+            val creep = creepData.creep
+            if (creep != null) {
+                if (!creep.pos.inRangeTo(flag.pos,1)){
+                    creepData.creep?.moveTo(flag.pos)
+                    allAssemble = false
+                }
+            }else allAssemble = false
+        }
+        if (allAssemble) this.constants.step = BattleGroupStep.GotoNeedRoom
     }
 
     private fun turnGroupToNeedRoom() {
@@ -189,4 +218,5 @@ class BattleGroup {
 
     private fun turnGroupToBattle() {
     }
+
 }
