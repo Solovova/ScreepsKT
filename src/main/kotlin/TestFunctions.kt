@@ -73,8 +73,8 @@ fun testingFunctions (mainContext : MainContext) {
     //mainContext.battleGroupContainer.addTestGroup("E54N36")
     //mainContext.battleGroupContainer.deleteBattleGroup("testRoomE54N36")
 //    mainContext.battleGroupContainer.deleteBattleGroup("2")
-    val battleGroup = mainContext.battleGroupContainer.battleGroupContainer["testRoomE54N36"]
-    if (battleGroup != null) {
-        mainContext.messenger("INFO",battleGroup.name,"Step: ${battleGroup.constants.step}", COLOR_YELLOW)
-    }
+//    val battleGroup = mainContext.battleGroupContainer.battleGroupContainer["testRoomE54N36"]
+//    if (battleGroup != null) {
+//        mainContext.messenger("INFO",battleGroup.name,"Step: ${battleGroup.constants.step}", COLOR_YELLOW)
+//    }
 }

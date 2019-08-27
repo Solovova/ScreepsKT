@@ -7,6 +7,9 @@ import mainContext.MainContext
 import mainContext.messenger
 import screeps.api.COLOR_RED
 import BattleGroupData
+import BgSpawnResult
+import mainRoom.MainRoom
+import screeps.api.structures.StructureSpawn
 
 class BattleGroupContainer(val parent: MainContext) {
     val battleGroupContainer: MutableMap<String, BattleGroup> = mutableMapOf()
@@ -87,5 +90,18 @@ class BattleGroupContainer(val parent: MainContext) {
             if (battleGroup.constants.assembleRoom == roomName)
                 listBg.add(listBg.size,battleGroup)
         return listBg
+    }
+
+
+    fun spawnCreep(mainRoom: MainRoom, spawn: StructureSpawn): BgSpawnResult {
+        var result = BgSpawnResult.QueueEmpty
+        for (battleGroup in battleGroupContainer.values) {
+            if (battleGroup.constants.step == BattleGroupStep.WaitBuildGroup &&
+                    mainRoom.name == battleGroup.constants.assembleRoom) {
+                result = battleGroup.spawnCreep(mainRoom,spawn)
+                if (result == BgSpawnResult.StartSpawn) return result
+            }
+        }
+        return result
     }
 }

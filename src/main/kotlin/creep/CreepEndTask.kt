@@ -240,7 +240,7 @@ fun Creep.endTask(mainContext: MainContext) {
         }
 
         TypeOfTask.Transport -> {
-            if (creepCarry != 0) {
+            if (creepCarry - (this.carry[RESOURCE_ENERGY] ?: 0) != 0) {
                 val lab: Structure? = Game.getObjectById(task.idObject1)
                 if (lab != null && lab is StructureLab) {
                     val carryMineral = this.carry.toMap().toList().firstOrNull { it.second != 0 }

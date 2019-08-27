@@ -364,7 +364,7 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
 
 
     private fun buildQueue() {
-        for (i in 0 until this.have.size) this.haveForQueue[i] = this.have[i]
+        for (i in this.have.indices) this.haveForQueue[i] = this.have[i]
         val fPriorityOfRole = if (this.getResourceInStorage() < 2000) arrayOf(0, 9, 1, 3, 2, 4, 14, 5, 6, 20, 21, 22, 7, 19, 10, 8, 11, 12, 13, 15, 16, 17, 18)
         else arrayOf(0, 9, 5, 14, 1, 3, 2, 4, 20, 21, 22, 6, 7, 19, 10, 8, 11, 12, 13, 15, 16, 17, 18)
 
@@ -382,9 +382,8 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
         }
 
         //BattleGroup
-        if (this.spawnForBattleGroup != null) {
-            this.queue.add(QueueSpawnRecord(99, this.name, this.name, 0))
-        }
+        this.queue.add(QueueSpawnRecord(99, this.name, this.name, 0))
+
 
         //Slave 0
         for (slaveRoom in this.slaveRooms.values) {
@@ -556,11 +555,15 @@ class MainRoom(val parent: MainRoomCollector, val name: String, val describe: St
             var result: ScreepsReturnCode = OK
 
             //Battle group
-            if (this.queue[0].role == 99)
-                if (this.spawnForBattleGroup?.bgCreeps?.spawnCreep(this,spawn) != false) {
+            if (this.queue[0].role == 99) {
+                val resultBgSpawn = this.parent.parent.battleGroupContainer.spawnCreep(this,spawn)
+                if (resultBgSpawn == BgSpawnResult.StartSpawn) continue
+                if (resultBgSpawn == BgSpawnResult.CantSpawn) return
+                if (resultBgSpawn == BgSpawnResult.QueueEmpty) {
                     this.queue.removeAt(0)
                     if (this.queue.size == 0) return
-                }else continue
+                }
+            }
 
             val d: dynamic = object {}
             d["role"] = this.queue[0].role

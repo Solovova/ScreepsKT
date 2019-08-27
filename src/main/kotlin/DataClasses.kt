@@ -88,12 +88,19 @@ enum class BattleGroupStep {
     Sleep
 }
 
+enum class BgSpawnResult {
+    StartSpawn,
+    QueueEmpty,
+    CantSpawn
+}
+
 data class BattleGroupCreep(var creep: Creep? = null,
                             var role: Int = 0,
                             var pos: RoomPosition? = null,
                             var body: Array<BodyPartConstant> = arrayOf(),
                             var upgrade: String = "",
-                            var spawnID: String = ""
+                            var spawnID: String = "",
+                            var posChainMove: RoomPosition? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -104,6 +111,7 @@ data class BattleGroupCreep(var creep: Creep? = null,
         if (creep != other.creep) return false
         if (role != other.role) return false
         if (pos != other.pos) return false
+        if (posChainMove != other.posChainMove) return false
         if (spawnID != other.spawnID) return false
         if (!body.contentEquals(other.body)) return false
         if (upgrade != other.upgrade) return false
@@ -118,6 +126,7 @@ data class BattleGroupCreep(var creep: Creep? = null,
         result = 31 * result + body.contentHashCode()
         result = 31 * result + upgrade.hashCode()
         result = 31 * result + spawnID.hashCode()
+        result = 31 * result + (posChainMove?.hashCode() ?: 0)
         return result
     }
 }

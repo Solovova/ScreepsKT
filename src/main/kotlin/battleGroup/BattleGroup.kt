@@ -6,20 +6,21 @@ import screeps.api.*
 import mainContext.messenger
 import mainRoom.MainRoom
 import BattleGroupCreep
+import BgSpawnResult
+import screeps.api.structures.SpawnOptions
 import screeps.api.structures.StructureSpawn
+import screeps.utils.copy
 
 class BattleGroup {
     val constants: BattleGroupConstant
     val name: String
     val parent: BattleGroupContainer
-    val bgCreeps: BattleGroupCreeps
 
     constructor(parent: BattleGroupContainer, name: String) {
         this.parent = parent
         this.name = name
         this.constants = parent.parent.constants.battleGroupConstantContainer[this.name]
                 ?: BattleGroupConstant()
-        this.bgCreeps = BattleGroupCreeps(this)
     }
 
     constructor(parent: BattleGroupContainer, name: String, battleGroupData: BattleGroupData) : this(parent, name) {
@@ -64,8 +65,10 @@ class BattleGroup {
     }
 
     fun runInStartOfTick() {
-        for (ind in bgCreeps.creeps.indices)
-            if (bgCreeps.creeps[ind].creep != null) bgCreeps.creeps[ind].creep = Game.getObjectById(bgCreeps.creeps[ind].creep?.id)
+        //reInitial creeps
+        for (ind in this.constants.creeps.indices)
+            if (this.constants.creeps[ind].creep != null)
+                this.constants.creeps[ind].creep = Game.getObjectById(this.constants.creeps[ind].creep?.id)
 
         this.steps()
         when (this.constants.step) {
@@ -123,9 +126,9 @@ class BattleGroup {
         //1 - mile
         //2 - range
         //3 - healer
-        this.bgCreeps.creeps.add(0, BattleGroupCreep(creep = null, role = 2, body = arrayOf(MOVE)))
-        this.bgCreeps.creeps.add(1, BattleGroupCreep(creep = null, role = 2, body = arrayOf(MOVE)))
-        this.bgCreeps.creeps.add(2, BattleGroupCreep(creep = null, role = 3, body = arrayOf(MOVE, MOVE)))
+        this.constants.creeps.add(0, BattleGroupCreep(creep = null, role = 2, body = arrayOf(MOVE)))
+        this.constants.creeps.add(1, BattleGroupCreep(creep = null, role = 2, body = arrayOf(MOVE)))
+        this.constants.creeps.add(2, BattleGroupCreep(creep = null, role = 3, body = arrayOf(MOVE, MOVE)))
     }
 
     private fun isGroupReady(): Boolean {
@@ -181,12 +184,12 @@ class BattleGroup {
 
     private fun setPointerAssembleRoomToBG() {
 
-        if (this.bgCreeps.creeps.any { it.creep == null && it.spawnID == "" }) {
+        if (this.constants.creeps.any { it.creep == null && it.spawnID == "" }) {
             val mainRoom: MainRoom? = this.parent.parent.mainRoomCollector.rooms[this.constants.assembleRoom]
             if (mainRoom != null && mainRoom.spawnForBattleGroup == null) mainRoom.spawnForBattleGroup = this
         }
 
-        for (spawnCreep in this.bgCreeps.creeps.filter { it.creep == null && it.spawnID != "" }) {
+        for (spawnCreep in this.constants.creeps.filter { it.creep == null && it.spawnID != "" }) {
             val spawn: StructureSpawn = Game.getObjectById(spawnCreep.spawnID) ?: continue
             val creep: Creep = Game.creeps[spawn.spawning?.name ?: "not spawn"] ?: continue
             spawnCreep.creep = creep
@@ -200,23 +203,37 @@ class BattleGroup {
                 && it.secondaryColor == COLOR_BROWN
                 && it.pos.roomName == this.constants.assembleRoom } ?: return
 
-        var allAssemble = true
-        for (creepData in bgCreeps.creeps){
-            val creep = creepData.creep
-            if (creep != null) {
-                if (!creep.pos.inRangeTo(flag.pos,1)){
-                    creepData.creep?.moveTo(flag.pos)
-                    allAssemble = false
-                }
-            }else allAssemble = false
-        }
-        if (allAssemble) this.constants.step = BattleGroupStep.GotoNeedRoom
+        this.moveToFree(flag.pos)
+        if (this.allInTheirPos(flag.pos)) this.constants.step = BattleGroupStep.GotoNeedRoom
     }
 
+
+
     private fun turnGroupToNeedRoom() {
+        if (this.constants.assembleRoom == "") return
+        val flag = this.parent.parent.mainRoomCollector.flags.firstOrNull { it.color == COLOR_BROWN
+                && it.secondaryColor == COLOR_BROWN
+                && it.pos.roomName == this.constants.assembleRoom } ?: return
+
+        this.moveToChain(flag.pos)
     }
 
     private fun turnGroupToBattle() {
     }
 
+    fun spawnCreep(mainRoom: MainRoom, spawn: StructureSpawn): BgSpawnResult {
+        val queueBg = this.constants.creeps.firstOrNull { it.creep == null && it.spawnID == "" }
+                ?: return BgSpawnResult.QueueEmpty
+        val d: dynamic = object {}
+        d["role"] = queueBg.role + 300
+        d["slaveRoom"] = this.name
+        d["mainRoom"] = mainRoom.name
+        d["tickDeath"] = 0
+        val spawnOptions: dynamic = object {}
+        spawnOptions["memory"] = d
+        return if (spawn.spawnCreep(queueBg.body, "bg_${queueBg.role}_${this.name}_${Game.time}_${spawn.id} ", spawnOptions.unsafeCast<SpawnOptions>()) == OK) {
+            queueBg.spawnID = spawn.id
+            BgSpawnResult.StartSpawn
+        }else BgSpawnResult.CantSpawn
+    }
 }
