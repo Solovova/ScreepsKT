@@ -26,7 +26,8 @@ fun MainRoom.needCorrection3() {
 
 
     if (this.getResourceInStorage() > this.constant.energyBuilder) {
-        this.need[1][19]=1
+        //ToDo temporary
+        //this.need[1][19]=1
     }
 
     //2.1 Small upgrader

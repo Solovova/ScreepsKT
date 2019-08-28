@@ -29,6 +29,9 @@ fun constantMainRoomInitMain(mainRoom: MainRoom) {
 
     if (mainRoom.name == "E51N39") mainRoom.constant.energyExcessSent = 220000
     if (mainRoom.name == "E52N38") mainRoom.constant.energyExcessSent = 220000
+    if (mainRoom.name == "E57N35") mainRoom.constant.energyExcessSent = 220000
+    if (mainRoom.name == "E57N37") mainRoom.constant.energyExcessSent = 220000
+
 
     if (mainRoom.name == "E54N39") mainRoom.needMineral["G".unsafeCast<ResourceConstant>()] = 10000  //M6
     if (mainRoom.name == "E54N39") mainRoom.needMineral["GH2O".unsafeCast<ResourceConstant>()] = 10000  //M6
@@ -36,6 +39,9 @@ fun constantMainRoomInitMain(mainRoom: MainRoom) {
     if (mainRoom.name == "E52N37") mainRoom.needMineral["L".unsafeCast<ResourceConstant>()] = 10000  //M3
     if (mainRoom.name == "E54N37") mainRoom.needMineral["O".unsafeCast<ResourceConstant>()] = 10000  //M3
     if (mainRoom.name == "E58N39") mainRoom.needMineral["H".unsafeCast<ResourceConstant>()] = 10000  //M3
+    if (mainRoom.name == "E59N36") mainRoom.needMineral["Z".unsafeCast<ResourceConstant>()] = 10000
+
+
 
 
 
