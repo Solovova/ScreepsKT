@@ -33,7 +33,7 @@ fun MainRoom.needCorrection3() {
     //2.1 Small upgrader
     if (this.need[0][6] == 0 && this.need[1][6] == 0 && this.need[2][6] == 0 &&
             this.need[0][7] == 0 && this.need[1][7] == 0 && this.need[2][7] == 0 &&
-            this.have[6] == 0 && this.have[7] == 0 && this.getTicksToDowngrade() < 10000)
+            this.have[6] == 0 && this.have[7] == 0 && this.getTicksToDowngrade() < 50000)
         this.need[0][13]=1
 
     //8 Builder

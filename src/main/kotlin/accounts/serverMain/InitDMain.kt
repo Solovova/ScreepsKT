@@ -27,10 +27,10 @@ fun constantMainRoomInitMain(mainRoom: MainRoom) {
         }
     }
 
-    if (mainRoom.name == "E51N39") mainRoom.constant.energyExcessSent = 220000
-    if (mainRoom.name == "E52N38") mainRoom.constant.energyExcessSent = 220000
-    if (mainRoom.name == "E57N35") mainRoom.constant.energyExcessSent = 220000
-    if (mainRoom.name == "E57N37") mainRoom.constant.energyExcessSent = 220000
+//    if (mainRoom.name == "E57N34") mainRoom.constant.energyExcessSent = 220000
+//    if (mainRoom.name == "E57N35") mainRoom.constant.energyExcessSent = 220000
+//    if (mainRoom.name == "E52N33") mainRoom.constant.energyExcessSent = 220000
+//    if (mainRoom.name == "E58N31") mainRoom.constant.energyExcessSent = 220000
 
 
     if (mainRoom.name == "E54N39") mainRoom.needMineral["G".unsafeCast<ResourceConstant>()] = 10000  //M6
@@ -40,6 +40,8 @@ fun constantMainRoomInitMain(mainRoom: MainRoom) {
     if (mainRoom.name == "E54N37") mainRoom.needMineral["O".unsafeCast<ResourceConstant>()] = 10000  //M3
     if (mainRoom.name == "E58N39") mainRoom.needMineral["H".unsafeCast<ResourceConstant>()] = 10000  //M3
     if (mainRoom.name == "E59N36") mainRoom.needMineral["Z".unsafeCast<ResourceConstant>()] = 10000
+    if (mainRoom.name == "E57N39") mainRoom.needMineral["U".unsafeCast<ResourceConstant>()] = 10000
+
 
 
 
@@ -50,11 +52,10 @@ fun constantMainRoomInitMain(mainRoom: MainRoom) {
 }
 
 fun constantSlaveRoomInitMain(slaveRoom: SlaveRoom) {
-    if (slaveRoom.parent.name == "E57N32" && slaveRoom.name == "E58N31") {
-        slaveRoom.need[0][2] = 2
+    if (slaveRoom.parent.name == "E51N39" && slaveRoom.name == "E49N39") {
+        slaveRoom.need[0][0] = 0
+        slaveRoom.need[0][2] = 4
     }
 
-    if (slaveRoom.parent.name == "E51N33" && slaveRoom.name == "E52N33") {
-        slaveRoom.need[1][2] = 2
-    }
+
 }
